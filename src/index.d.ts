@@ -5,10 +5,15 @@ export type addTaskError = {
 export type addEndpoint = () => true | addTaskError;
 export type Endpoint = () => {}
 
+export type extensionManifesto = {
+    name: string
+}
+
 export type Extensions = {
-    load?: () => void,
-    available?: () => true | string,
-    addTask?: (addEndpoint: addEndpoint) => void
+    init?: () => void,
+    available?: () => { success: false, message: string } | { success: true },
+    addTask?: (addEndpoint: addEndpoint) => void,
+    manifesto: extensionManifesto
 };
 
 export type TurboSearchCoreOptions = {
