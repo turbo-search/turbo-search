@@ -48,6 +48,9 @@ export type AddTaskAndEndpointData = {
 export type ExtensionManifesto = {
     name: string,
     queryPath?: string,
+    dependence?: { [extensionName: string]: string },
+    coreDependence?: string,
+    version: string,
 }
 
 export type Extensions = {

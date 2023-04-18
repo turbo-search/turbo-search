@@ -1,8 +1,11 @@
 import { catchError } from "./error/catchError.js";
 import type { Extensions, TurboSearchCoreOptions, Endpoint, AddEndpointData, AddTaskData, Task, TurboSearchKit, Endpoints, Tasks, AddTaskAndEndpointData } from "./index.d.js";
+import { compareDependenceVersion } from "./utils/compareDependenceVersion.js";
+import { version } from "./version.js";
 
 export class turboSearchCore {
 
+    public version = version;
     public extensions: Extensions[] = [];
     public endpoints: Endpoints = {};
     public tasks: Tasks = {};
@@ -12,7 +15,7 @@ export class turboSearchCore {
 
         //check extensions manifesto
         this.extensions.forEach((extension, index) => {
-            if (!extension.manifesto.name) {
+            if (!extension.manifesto || !extension.manifesto.name) {
                 catchError("manifesto", ["extension manifesto error", "extension index is " + index])
             }
         });
@@ -32,6 +35,31 @@ export class turboSearchCore {
                         //TODO:Error Log
                     }
                 }
+            }
+        });
+
+        //dependencies check
+        this.extensions.forEach((extension) => {
+
+            if (extension.manifesto.coreDependence) {
+                if (extension.manifesto.coreDependence === "" || !compareDependenceVersion(this.version, extension.manifesto.coreDependence)) {
+                    catchError("dependence", [extension.manifesto.name + " coreDependence is not match"])
+                }
+            }
+
+            if (extension.manifesto.dependence) {
+                Object.keys(extension.manifesto.dependence).forEach((dependenceExtensionName) => {
+                    const dependenceExtension = this.extensions.find((extension) => extension.manifesto.name === dependenceExtensionName);
+                    if (!dependenceExtension) {
+                        catchError("dependence", [extension.manifesto.name + " dependence " + dependenceExtensionName + " is not found"])
+                    } else {
+                        if (dependenceExtension.manifesto.coreDependence) {
+                            if (dependenceExtension.manifesto.coreDependence === "" || !compareDependenceVersion(dependenceExtension.manifesto.version, extension.manifesto.dependence![dependenceExtensionName])) {
+                                catchError("dependence", [extension.manifesto.name + " dependence " + dependenceExtensionName + " coreDependence is not match"])
+                            }
+                        }
+                    }
+                })
             }
         });
 

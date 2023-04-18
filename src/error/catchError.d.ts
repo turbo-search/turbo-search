@@ -1,1 +1,1 @@
-export type ErrorType = "init" | "available" | "manifesto";
+export type ErrorType = "init" | "available" | "manifesto" | "dependence";
