@@ -1,19 +1,59 @@
-export type addTaskError = {
-    code: number,
-    message: string
+//拡張機能にturbo-searchへのアクセスを提供するもの
+export type TurboSearchKit = {
+    addTask: (task: AddTaskData) => void,
+    addEndpoint: (endpoint: AddEndpointData) => void,
+    addTaskAndEndpoint: (addTaskAndEndpoint: AddTaskAndEndpointData) => void,
+    endpoints: Endpoints,
+    tasks: Tasks
 }
-export type addEndpoint = () => true | addTaskError;
-export type Endpoint = () => {}
 
-export type extensionManifesto = {
-    name: string
+export type Endpoints = { [queryPath: string]: { [endpointName: string]: Endpoint } }
+export type Tasks = { [queryPath: string]: { [endpointName: string]: Task } }
+
+//タスクを追加するときのデータ
+export type AddTaskData = {
+    name: string,
+    extensionManifesto: ExtensionManifesto,
+    function: () => void,
+}
+
+//タスクのデータ
+export type Task = {
+    name: string,
+    extensionManifesto: ExtensionManifesto,
+    function: () => void,
+}
+
+//エンドポイントを追加するときのデータ
+export type AddEndpointData = {
+    name: string,
+    extensionManifesto: ExtensionManifesto,
+    function: () => void,
+}
+
+//エンドポイントのデータ
+export type Endpoint = {
+    name: string,
+    extensionManifesto: ExtensionManifesto,
+    function: () => void,
+}
+
+//タスクとエンドポイントを追加するときのデータ
+export type AddTaskAndEndpointData = {
+    name: string,
+    extensionManifesto: ExtensionManifesto,
+    function: () => void,
+}
+
+export type ExtensionManifesto = {
+    name: string,
+    queryPath?: string,
 }
 
 export type Extensions = {
-    init?: () => void,
+    init?: (turboSearchKit?: TurboSearchKit) => void,
     available?: () => { success: false, message: string } | { success: true },
-    addTask?: (addEndpoint: addEndpoint) => void,
-    manifesto: extensionManifesto
+    manifesto: ExtensionManifesto
 };
 
 export type TurboSearchCoreOptions = {
