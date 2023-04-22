@@ -1,3 +1,5 @@
+import { version } from "./version";
+
 //拡張機能にturbo-searchへのアクセスを提供するもの
 export type TurboSearchKit = {
     addTask: (task: AddTaskData) => void,
@@ -64,4 +66,28 @@ export type TurboSearchCoreOptions = {
     error: {
         strictAvailable?: boolean
     }
+}
+
+
+export abstract class TurboSearchCore {
+    public version = version;
+    public extensions: Extensions[] = [];
+    public endpoints: Endpoints = {};
+    public tasks: Tasks = {};
+
+    addEndpoint(endpoint: AddEndpointData) {
+        this._addEndpoint(endpoint);
+    }
+    abstract _addEndpoint(endpoint: AddEndpointData): void;
+
+    addTask(task: AddTaskData) {
+        this._addTask(task);
+    }
+    abstract _addTask(task: AddTaskData): void;
+
+    addTaskAndEndpoint(addTaskAndEndpoint: AddTaskAndEndpointData) {
+        this._addTaskAndEndpoint(addTaskAndEndpoint);
+    }
+    abstract _addTaskAndEndpoint(addTaskAndEndpoint: AddTaskAndEndpointData): void;
+
 }

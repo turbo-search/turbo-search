@@ -1,9 +1,9 @@
 import { catchError } from "./error/catchError.js";
-import type { Extensions, TurboSearchCoreOptions, Endpoint, AddEndpointData, AddTaskData, Task, TurboSearchKit, Endpoints, Tasks, AddTaskAndEndpointData } from "./index.d.js";
+import { AddEndpointData, AddTaskAndEndpointData, AddTaskData, Endpoints, Extensions, Tasks, TurboSearchCore, TurboSearchCoreOptions, TurboSearchKit } from "./index.base.js";
 import { compareDependenceVersion } from "./utils/compareDependenceVersion.js";
 import { version } from "./version.js";
 
-export class turboSearchCore {
+export class turboSearchCore extends TurboSearchCore {
 
     public version = version;
     public extensions: Extensions[] = [];
@@ -11,6 +11,7 @@ export class turboSearchCore {
     public tasks: Tasks = {};
 
     constructor(options: TurboSearchCoreOptions) {
+        super();
         this.extensions = options.extensions;
 
         //check extensions manifesto
@@ -66,14 +67,14 @@ export class turboSearchCore {
         //extensions loader & add task , endpoint
         this.extensions.forEach((extension) => {
             if (typeof extension.init === "function") {
-                extension.init(this.turboSearchKit());
+                extension.init(this._turboSearchKit());
             }
         });
 
     }
 
     // APIなど外部から参照されるような処理を追加する
-    addEndpoint(endpoint: AddEndpointData) {
+    _addEndpoint(endpoint: AddEndpointData) {
         const addEndpointData = {
             name: endpoint.name,
             extensionManifesto: endpoint.extensionManifesto,
@@ -93,7 +94,7 @@ export class turboSearchCore {
     }
 
     //DBなど内部から参照されるような処理を追加する
-    addTask(task: AddTaskData) {
+    _addTask(task: AddTaskData) {
         const addTaskData = {
             name: task.name,
             extensionManifesto: task.extensionManifesto,
@@ -113,24 +114,24 @@ export class turboSearchCore {
     }
 
     // taskとendpoint両方を追加する
-    addTaskAndEndpoint(taskAndEndpoint: AddTaskAndEndpointData) {
-        this.addTask({
+    _addTaskAndEndpoint(taskAndEndpoint: AddTaskAndEndpointData) {
+        this._addTask({
             name: taskAndEndpoint.name,
             extensionManifesto: taskAndEndpoint.extensionManifesto,
             function: taskAndEndpoint.function
         });
-        this.addEndpoint({
+        this._addEndpoint({
             name: taskAndEndpoint.name,
             extensionManifesto: taskAndEndpoint.extensionManifesto,
             function: taskAndEndpoint.function
         });
     }
 
-    turboSearchKit(): TurboSearchKit {
+    _turboSearchKit(): TurboSearchKit {
         return {
-            addTask: this.addTask,
+            addTask: this._addTask,
             addEndpoint: this.addEndpoint,
-            addTaskAndEndpoint: this.addTaskAndEndpoint,
+            addTaskAndEndpoint: this._addTaskAndEndpoint,
             endpoints: this.endpoints,
             tasks: this.tasks
         }

@@ -4,20 +4,25 @@ export const compareDependenceVersion = (currentVersion: string, requiredVersion
     // currentVersionを正規化する
     currentVersion = normalizeVersion(currentVersion);
     // requiredVersionを正規化する
-    requiredVersion = normalizeVersion(requiredVersion);
-
-    // requiredVersionが">="、">"、"<="、"<"のいずれかの演算子を持つかどうかを確認する
-    const operator = requiredVersion[0];
-    if (operator === ">" || operator === "<") {
-        requiredVersion = `${operator}=${requiredVersion.slice(1)}`;
-    }
+    requiredVersion = normalizeVersionObj(requiredVersion);
 
     // semverパッケージを使用して、現在のバージョンと必要なバージョンを比較する
-    const semver = require("semver");
     return semver.satisfies(currentVersion, requiredVersion);
 }
 
 // バージョンを正規化するためのヘルパー関数
+function normalizeVersionObj(version: string) {
+    if (!version) {
+        return "";
+    }
+    // バージョンをx.y.zの形式に正規化する
+    //初めの文字が>=,>,<=,<のいずれかの場合は、それを抜きだす
+    //戻り値は、{operator:">=",version:"1.0.0"}のようなオブジェクト
+    const versionParts = version.match(/^(>=|>|<=|<)?(.*)$/);
+
+    return (versionParts ? versionParts[1] : "") + semver.valid(semver.coerce(version));
+}
+
 function normalizeVersion(version: string) {
     if (!version) {
         return "";
