@@ -5,7 +5,7 @@ const errorType = ["init", "available", "manifesto", "dependence"]
 
 export const catchError = (type: ErrorType, message: string[]) => {
 
-    console.error(`Error: ${type}`)
+    console.error(`ERROR TYPE: ${type}`)
     message.map((msg) => {
         console.error("ERROR:" + msg)
     })

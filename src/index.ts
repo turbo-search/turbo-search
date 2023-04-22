@@ -12,6 +12,14 @@ export class turboSearchCore extends TurboSearchCore {
 
     constructor(options: TurboSearchCoreOptions) {
         super();
+
+        //同じ名前の拡張機能があるかチェック
+        const extensionNames = options.extensions.map((extension) => extension.manifesto.name);
+        const duplicateExtensionNames = extensionNames.filter((name, index) => extensionNames.indexOf(name) !== index);
+        if (duplicateExtensionNames.length > 0) {
+            catchError("manifesto", ["Duplicate extension name", "Duplicate extension name is " + duplicateExtensionNames.join(", ")])
+        }
+
         this.extensions = options.extensions;
 
         //check extensions manifesto
@@ -43,20 +51,23 @@ export class turboSearchCore extends TurboSearchCore {
         this.extensions.forEach((extension) => {
 
             if (extension.manifesto.coreDependence) {
-                if (extension.manifesto.coreDependence === "" || !compareDependenceVersion(this.version, extension.manifesto.coreDependence)) {
-                    catchError("dependence", [extension.manifesto.name + " coreDependence is not match"])
+                if (extension.manifesto.coreDependence !== "" && !compareDependenceVersion(this.version, extension.manifesto.coreDependence)) {
+                    catchError("dependence", [extension.manifesto.name + " coreDependence is not match", "Requested Version : " + extension.manifesto.coreDependence, "Current version : " + this.version])
                 }
             }
 
-            if (extension.manifesto.dependence) {
+            //依存している拡張機能があるかチェック
+            if (extension.manifesto.dependence && typeof extension.manifesto.dependence !== "undefined" && Object.keys(extension.manifesto.dependence).length > 0) {
                 Object.keys(extension.manifesto.dependence).forEach((dependenceExtensionName) => {
+                    // 依存している拡張機能の情報
                     const dependenceExtension = this.extensions.find((extension) => extension.manifesto.name === dependenceExtensionName);
                     if (!dependenceExtension) {
-                        catchError("dependence", [extension.manifesto.name + " dependence " + dependenceExtensionName + " is not found"])
+                        catchError("dependence", [extension.manifesto.name + " is dependent on " + dependenceExtensionName, "The following solutions are available", "Add the extension : " + dependenceExtensionName, "Remove the extension : " + extension.manifesto.name])
                     } else {
-                        if (dependenceExtension.manifesto.coreDependence) {
-                            if (dependenceExtension.manifesto.coreDependence === "" || !compareDependenceVersion(dependenceExtension.manifesto.version, extension.manifesto.dependence![dependenceExtensionName])) {
-                                catchError("dependence", [extension.manifesto.name + " dependence " + dependenceExtensionName + " coreDependence is not match"])
+                        // 依存関係のバージョンチェック
+                        if (extension.manifesto.dependence) {
+                            if (extension.manifesto.dependence[dependenceExtensionName] !== "" && !compareDependenceVersion(dependenceExtension.manifesto.version, extension.manifesto.dependence[dependenceExtensionName])) {
+                                catchError("dependence", ["Extension:" + extension.manifesto.name + " specifies " + dependenceExtensionName + " version " + extension.manifesto.dependence[dependenceExtensionName] + ".", "The current version of " + dependenceExtensionName + " is " + dependenceExtension.manifesto.version + "."])
                             }
                         }
                     }
