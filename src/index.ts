@@ -1,5 +1,8 @@
 import { catchError } from "./error/catchError.js";
 import { AddEndpointData, AddTaskAndEndpointData, AddTaskData, Endpoints, Extensions, Tasks, TurboSearchCore, TurboSearchCoreOptions, TurboSearchKit } from "./index.base.js";
+import { Jobs } from "./jobs/jobs.base.js";
+import { jobs } from "./jobs/jobs.js";
+import { Job } from "./jobs/jobsDatabase.base.js";
 import { compareDependenceVersion } from "./utils/compareDependenceVersion.js";
 import { version } from "./version.js";
 
@@ -9,6 +12,7 @@ export class turboSearchCore extends TurboSearchCore {
     public extensions: Extensions[] = [];
     public endpoints: Endpoints = {};
     public tasks: Tasks = {};
+    private job;
 
     constructor(options: TurboSearchCoreOptions) {
         super();
@@ -82,6 +86,8 @@ export class turboSearchCore extends TurboSearchCore {
             }
         });
 
+        //setup jobs
+        this.job = options.jobs || new jobs();
     }
 
     // APIなど外部から参照されるような処理を追加する
@@ -146,6 +152,11 @@ export class turboSearchCore extends TurboSearchCore {
             endpoints: this.endpoints,
             tasks: this.tasks
         }
+    }
+
+    _getJobs(): Promise<Job[]> {
+        const jobs = this.job.getJobs();
+        return Promise.resolve(jobs);
     }
 
 }

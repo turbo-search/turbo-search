@@ -1,3 +1,5 @@
+import { Jobs } from "./jobs/jobs.base";
+import { Job } from "./jobs/jobsDatabase.base";
 import { version } from "./version";
 
 //拡張機能にturbo-searchへのアクセスを提供するもの
@@ -61,7 +63,21 @@ export type Extensions = {
     manifesto: ExtensionManifesto
 };
 
+export type Crawler = {
+    name: string,
+}
+
+export type Adder = {
+    name: string,
+    description: string,
+    crawler: Crawler,
+
+}
+
 export type TurboSearchCoreOptions = {
+
+    adders: Adder[]
+    jobs?: Jobs,
     extensions: Extensions[],
     error: {
         strictAvailable?: boolean
@@ -90,4 +106,8 @@ export abstract class TurboSearchCore {
     }
     abstract _addTaskAndEndpoint(addTaskAndEndpoint: AddTaskAndEndpointData): void;
 
+    getJobs(): Promise<Job[]> {
+        return this._getJobs();
+    }
+    abstract _getJobs(): Promise<Job[]>;
 }
