@@ -1,5 +1,5 @@
 import { catchError } from "./error/catchError.js";
-import { AddEndpointData, AddTaskAndEndpointData, AddTaskData, Endpoints, Extensions, Tasks, TurboSearchCore, TurboSearchCoreOptions, TurboSearchKit } from "./index.base.js";
+import { AddEndpointData, AddTaskAndEndpointData, AddTaskData, Endpoints, Extension, Tasks, TurboSearchCore, TurboSearchCoreOptions, TurboSearchKit } from "./index.base.js";
 import { jobs } from "./jobs/jobs.js";
 import { compareDependenceVersion } from "./utils/compareDependenceVersion.js";
 import { version } from "./version.js";
@@ -7,7 +7,7 @@ import { version } from "./version.js";
 export class turboSearchCore implements TurboSearchCore {
 
     public version = version;
-    public extensions: Extensions[] = [];
+    public extensions: Extension[] = [];
     public endpoints: Endpoints = {};
     public tasks: Tasks = {};
     private _job;

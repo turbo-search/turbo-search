@@ -58,11 +58,12 @@ export type ExtensionManifesto = {
     version: string,
 }
 
-export type Extensions = {
+export type Extension = {
     init?: (turboSearchKit?: TurboSearchKit) => void,
     available?: () => { success: false, message: string } | { success: true },
     manifesto: ExtensionManifesto
 };
+
 
 export type Crawler = {
     inputSchema: Z.Schema;
@@ -105,7 +106,7 @@ export type TurboSearchCoreOptions = {
     adders: Adder[],
     database: Database,
     jobs?: Jobs,
-    extensions: Extensions[],
+    extensions: Extension[],
     error: {
         strictAvailable?: boolean
     }
@@ -113,7 +114,7 @@ export type TurboSearchCoreOptions = {
 
 export type TurboSearchCore = {
     version: string;
-    extensions: Extensions[];
+    extensions: Extension[];
     endpoints: Endpoints;
     tasks: Tasks;
 
