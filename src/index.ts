@@ -1,8 +1,6 @@
 import { catchError } from "./error/catchError.js";
 import { AddEndpointData, AddTaskAndEndpointData, AddTaskData, Endpoints, Extensions, Tasks, TurboSearchCore, TurboSearchCoreOptions, TurboSearchKit } from "./index.base.js";
-import { Jobs } from "./jobs/jobs.base.js";
 import { jobs } from "./jobs/jobs.js";
-import { Job } from "./jobs/jobsDatabase.base.js";
 import { compareDependenceVersion } from "./utils/compareDependenceVersion.js";
 import { version } from "./version.js";
 
