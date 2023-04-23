@@ -8,7 +8,8 @@ export type TurboSearchKit = {
     addEndpoint: (endpoint: AddEndpointData) => void,
     addTaskAndEndpoint: (addTaskAndEndpoint: AddTaskAndEndpointData) => void,
     endpoints: Endpoints,
-    tasks: Tasks
+    tasks: Tasks,
+    job: Jobs,
 }
 
 export type Endpoints = { [queryPath: string]: { [endpointName: string]: Endpoint } }
@@ -83,8 +84,6 @@ export type TurboSearchCoreOptions = {
         strictAvailable?: boolean
     }
 }
-
-
 export abstract class TurboSearchCore {
     public version = version;
     public extensions: Extensions[] = [];
@@ -105,9 +104,4 @@ export abstract class TurboSearchCore {
         this._addTaskAndEndpoint(addTaskAndEndpoint);
     }
     abstract _addTaskAndEndpoint(addTaskAndEndpoint: AddTaskAndEndpointData): void;
-
-    getJobs(): Promise<Job[]> {
-        return this._getJobs();
-    }
-    abstract _getJobs(): Promise<Job[]>;
 }

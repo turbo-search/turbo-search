@@ -150,13 +150,9 @@ export class turboSearchCore extends TurboSearchCore {
             addEndpoint: this.addEndpoint,
             addTaskAndEndpoint: this._addTaskAndEndpoint,
             endpoints: this.endpoints,
-            tasks: this.tasks
+            tasks: this.tasks,
+            job: this.job
         }
-    }
-
-    _getJobs(): Promise<Job[]> {
-        const jobs = this.job.getJobs();
-        return Promise.resolve(jobs);
     }
 
 }
