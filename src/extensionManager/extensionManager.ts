@@ -1,7 +1,7 @@
 import { catchError } from '../error/catchError.js';
-import { Extension, TurboSearchCoreOptions, TurboSearchKit } from '../index.base.js';
+import { Extension, TurboSearchCoreOptions, TurboSearchKit } from '../indexType.js';
 import { compareDependenceVersion } from '../utils/compareDependenceVersion.js';
-import { ExtensionManager } from './extensionManager.d.js';
+import { ExtensionManager } from './extensionManagerType.js';
 
 export class extensionManager implements ExtensionManager {
     private _error;

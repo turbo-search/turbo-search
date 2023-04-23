@@ -1,12 +1,11 @@
 import { extensionManager } from "./extensionManager/extensionManager.js";
-import { AddEndpointData, AddTaskAndEndpointData, AddTaskData, Endpoints, Extension, Tasks, TurboSearchCore, TurboSearchCoreOptions, TurboSearchKit } from "./index.base.js";
+import { AddEndpointData, AddTaskAndEndpointData, AddTaskData, Endpoints, Extension, Tasks, TurboSearchCore, TurboSearchCoreOptions, TurboSearchKit } from "./indexType.js";
 import { jobs } from "./jobs/jobs.js";
 import { version } from "./version.js";
 
 export class turboSearchCore implements TurboSearchCore {
 
     public version = version;
-    public extensions: Extension[] = [];
     public endpoints: Endpoints = {};
     public tasks: Tasks = {};
     private _job;
@@ -16,7 +15,6 @@ export class turboSearchCore implements TurboSearchCore {
 
         //setup extensions
         this._extensionManager = new extensionManager(options.extensions, options.error, this.version, this.turboSearchKit());
-        this.extensions = this._extensionManager.setupExtensions();
 
         //setup jobs
         this._job = options.jobs || new jobs();

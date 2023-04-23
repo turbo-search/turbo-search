@@ -1,1 +1,0 @@
-export type ErrorType = "init" | "available" | "manifesto" | "dependence";

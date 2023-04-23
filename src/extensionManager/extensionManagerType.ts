@@ -1,3 +1,5 @@
+import { Extension, TurboSearchKit } from "../indexType";
+
 export type ExtensionManager = {
 
     //同じ名前の拡張機能がないかどうかチェック

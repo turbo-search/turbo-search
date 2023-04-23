@@ -66,18 +66,21 @@ export type Extension = {
 
 
 export type Crawler = {
+    name: string,
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
     process: (inputData: Z.infer<Pipe["inputSchema"]>, turboSearchKit: TurboSearchKit) => Pipe["outputSchema"];
 }
 
 export type Indexer = {
+    name: string,
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
     process: (inputData: Z.infer<Pipe["inputSchema"]>, turboSearchKit: TurboSearchKit) => Pipe["outputSchema"];
 }
 
 export type Pipe = {
+    name: string,
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
     process: (inputData: Z.infer<Pipe["inputSchema"]>, turboSearchKit: TurboSearchKit) => Pipe["outputSchema"];
@@ -114,7 +117,6 @@ export type TurboSearchCoreOptions = {
 
 export type TurboSearchCore = {
     version: string;
-    extensions: Extension[];
     endpoints: Endpoints;
     tasks: Tasks;
 

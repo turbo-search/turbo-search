@@ -1,7 +1,7 @@
 import { exit } from "process"
-import type { ErrorType } from "./catchError.d.js"
+import type { ErrorType } from "./catchErrorType.js"
 
-const errorType = ["init", "available", "manifesto", "dependence"]
+const errorType = ["init", "available", "manifesto", "dependence", "pipe", "crawler", "indexer", "adder"]
 
 export const catchError = (type: ErrorType, message: string[]) => {
 
