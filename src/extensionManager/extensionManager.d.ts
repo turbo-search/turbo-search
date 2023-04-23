@@ -1,23 +1,23 @@
 export type ExtensionManager = {
 
     //同じ名前の拡張機能がないかどうかチェック
-    checkDuplicateExtensionName: () => Promise<void>,
+    checkDuplicateExtensionName: () => void,
 
     //check extensions manifesto
-    checkManifesto: () => Promise<void>,
+    checkManifesto: () => void,
 
     //extensions available check
-    checkAvailable: () => Promise<void>,
+    checkAvailable: () => void,
 
     //dependencies check
-    checkDependence: () => Promise<void>,
+    checkDependence: () => void,
 
     //extensions loader & add task , endpoint
-    load: (turboSearchKit: TurboSearchKit) => Promise<void>,
+    load: (turboSearchKit: TurboSearchKit) => void,
 
     //get extensions
-    getExtensions: () => Promise<Extension[]>,
+    getExtensions: () => Extension[],
 
     //setup extensions
-    setupExtensions: () => Promise<Extension[]>,
+    setupExtensions: () => Extension[],
 }

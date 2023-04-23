@@ -17,7 +17,7 @@ export class extensionManager implements ExtensionManager {
     }
 
     //同じ名前の拡張機能がないかどうかチェック
-    async checkDuplicateExtensionName() {
+    checkDuplicateExtensionName() {
         const extensionNames = this._extensions.map((extension) => extension.manifesto.name);
         const duplicateExtensionNames = extensionNames.filter((name, index) => extensionNames.indexOf(name) !== index);
         if (duplicateExtensionNames.length > 0) {
@@ -26,7 +26,7 @@ export class extensionManager implements ExtensionManager {
     }
 
     //check extensions manifesto
-    async checkManifesto() {
+    checkManifesto() {
         this._extensions.forEach((extension, index) => {
             if (!extension.manifesto || !extension.manifesto.name) {
                 catchError("manifesto", ["extension manifesto error", "extension index is " + index])
@@ -35,7 +35,7 @@ export class extensionManager implements ExtensionManager {
     }
 
     //extensions available check
-    async checkAvailable() {
+    checkAvailable() {
         this._extensions.map((extension) => {
             if (typeof extension.available !== "function") {
                 return true;
@@ -55,7 +55,7 @@ export class extensionManager implements ExtensionManager {
     }
 
     //dependencies check
-    async checkDependence() {
+    checkDependence() {
         this._extensions.forEach((extension) => {
 
             if (extension.manifesto.coreDependence) {
@@ -85,7 +85,7 @@ export class extensionManager implements ExtensionManager {
     }
 
     //extensions loader & add task , endpoint
-    async load() {
+    load() {
         this._extensions.forEach((extension) => {
             if (typeof extension.init === "function") {
                 extension.init(this._turboSearchKit);
@@ -94,17 +94,17 @@ export class extensionManager implements ExtensionManager {
     }
 
     //get extensions
-    async getExtensions() {
+    getExtensions() {
         return this._extensions;
     }
 
     //setup extensions
-    async setupExtensions() {
-        await this.checkDuplicateExtensionName();
-        await this.checkManifesto();
-        await this.checkAvailable();
-        await this.checkDependence();
-        await this.load();
+    setupExtensions() {
+        this.checkDuplicateExtensionName();
+        this.checkManifesto();
+        this.checkAvailable();
+        this.checkDependence();
+        this.load();
         return this.getExtensions();
     }
 
