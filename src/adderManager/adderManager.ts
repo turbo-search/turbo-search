@@ -1,6 +1,5 @@
-import { TurboSearchKit } from './../../dist/index.base.d';
 import { catchError } from '../error/catchError.js';
-import { Adder } from '../indexType.js';
+import { Adder, TurboSearchKit } from '../indexType.js';
 import type { AdderManager, Ran } from './adderManagerType.js';
 import type Z from 'zod';
 
