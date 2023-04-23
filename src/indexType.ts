@@ -69,21 +69,21 @@ export type Crawler = {
     name: string,
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
-    process: (inputData: Z.infer<Pipe["inputSchema"]>, turboSearchKit: TurboSearchKit) => Pipe["outputSchema"];
+    process: (inputData: Z.infer<Pipe["inputSchema"]>, turboSearchKit: TurboSearchKit) => Promise<{ success: false, message: string, error: any } | { success: true, output: Z.infer<Crawler["outputSchema"]> }>;
 }
 
 export type Indexer = {
     name: string,
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
-    process: (inputData: Z.infer<Pipe["inputSchema"]>, turboSearchKit: TurboSearchKit) => Pipe["outputSchema"];
+    process: (inputData: Z.infer<Pipe["inputSchema"]>, turboSearchKit: TurboSearchKit) => Promise<{ success: false, message: string, error: any } | { success: true, output: Z.infer<Indexer["outputSchema"]> }>;
 }
 
 export type Pipe = {
     name: string,
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
-    process: (inputData: Z.infer<Pipe["inputSchema"]>, turboSearchKit: TurboSearchKit) => Pipe["outputSchema"];
+    process: (inputData: Z.infer<Pipe["inputSchema"]>, turboSearchKit: TurboSearchKit) => Promise<{ success: false, message: string, error: any } | { success: true, output: Z.infer<Pipe["outputSchema"]> }>;
 }
 
 export type Adder = {

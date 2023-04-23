@@ -1,7 +1,7 @@
 import { TurboSearchKit } from './../../dist/index.base.d';
 import { catchError } from '../error/catchError.js';
 import { Adder } from '../indexType.js';
-import type { AdderManager } from './adderManagerType.js';
+import type { AdderManager, Ran } from './adderManagerType.js';
 import type Z from 'zod';
 
 export class adderManager implements AdderManager {
@@ -136,32 +136,51 @@ export class adderManager implements AdderManager {
             //zodでinputのスキーマをチェック
             const inputSchemaCheckResult = inputSchema.safeParse(input);
             if (inputSchemaCheckResult.success) {
+                //@ts-ignore
                 const safeInput = inputSchemaCheckResult.data;
-                const ranList: ("coreToCrawler" | "crawler" | "crawlerToIndexer" | "indexer" | "indexerToCore")[] = [];
+                const ranList: Ran[] = [];
 
                 //実行処理
                 //TODO:実行処理を実装する
+                //adder.pipes.coreToCrawler
+                const toCrawler = adder.pipes.coreToCrawler.length > 0 ? await this.runCoreToCrawler(adder, safeInput) : safeInput;
+                ranList.push("coreToCrawler");
 
-                const output = {}
+                //adder.crawler
+                const toCrawlerToIndexer = adder.crawler ? await this.runCrawler(adder, toCrawler) : toCrawler;
+                ranList.push("crawler");
+
+                //adder.pipes.crawlerToIndexer
+                const toIndexer = adder.pipes.crawlerToIndexer.length > 0 ? await this.runCrawlerToIndexer(adder, toCrawlerToIndexer) : toCrawlerToIndexer;
+                ranList.push("crawlerToIndexer");
+
+                //adder.indexer
+                const toIndexerToCore = adder.indexer ? await this.runIndexer(adder, toIndexer) : toIndexer;
+                ranList.push("indexer");
+
+                //adder.pipes.indexerToCore
+                const toCore = adder.pipes.indexerToCore.length > 0 ? await this.runIndexerToCore(adder, toIndexerToCore) : toIndexerToCore;
+                ranList.push("indexerToCore");
 
                 //outputのスキーマを取得
                 const outputSchema = adder.outputSchema;
                 //zodでoutputのスキーマをチェック
-                const outputSchemaCheckResult = outputSchema.safeParse(output);
+                const outputSchemaCheckResult = outputSchema.safeParse(toCore);
                 if (outputSchemaCheckResult.success) {
+                    //@ts-ignore
                     const safeOutput = outputSchemaCheckResult.data;
                     return {
                         success: true,
                         output: safeOutput,
                         ran: ranList
-                    }
+                    } as { success: true, output: object, ran: Ran[] }
                 } else {
                     return {
                         success: false,
                         message: "The output does not match the output schema of adder:" + adderName + ".",
                         error: outputSchemaCheckResult.error,
                         ran: ranList
-                    }
+                    } as { success: false, message: string, error: Z.ZodError<any>, ran: Ran[] }
                 }
             } else {
                 return {
@@ -169,79 +188,210 @@ export class adderManager implements AdderManager {
                     message: "The input does not match the input schema of adder:" + adderName + ".",
                     error: inputSchemaCheckResult.error,
                     ran: []
-                }
+                } as { success: false, message: string, error: Z.ZodError<any>, ran: Ran[] }
             }
         } else {
             return {
                 success: false,
                 message: "The adder:" + adderName + " does not exist.",
                 ran: []
-            }
+            } as { success: false, message: string, ran: Ran[] }
         }
     }
 
     //coreToCrawlerを実行する
-    private async runCoreToCrawler(adder: Adder, input: object) {
+    async runCoreToCrawler(adder: Adder, input: object) {
         //pipe.coreToCrawlerを取得する
         const coreToCrawler = adder.pipes.coreToCrawler;
         if (typeof coreToCrawler === "undefined" || !coreToCrawler || coreToCrawler.length === 0) {
-            return input;
+            return { success: true, data: input } as { success: true, data: object };
         } else {
-            let output = input;
+            let output: { success: true, data: object } | { success: false, message: string, error: Z.ZodError<any> } = { success: true, data: input };
             for (const pipe of coreToCrawler) {
-                output = await pipe.process(output, this._turboSearchKit);
+                if (!output.success) {
+                    break;
+                }
+
+                //スキーマをチェック
+                const schemaCheckResult = pipe.inputSchema.safeParse(output);
+                if (schemaCheckResult.success) {
+                    //@ts-ignore 実行する
+                    const ranData = await pipe.process(schemaCheckResult.data, this._turboSearchKit);
+                    if (ranData.success) {
+                        output = {
+                            success: true,
+                            data: ranData.output
+                        }
+                    } else {
+                        output = {
+                            success: false,
+                            message: ranData.message,
+                            error: ranData.error
+                        }
+                    }
+                } else {
+                    output = {
+                        success: false,
+                        message: "The output does not match the input schema of pipe:" + pipe.name + ".",
+                        error: schemaCheckResult.error
+                    }
+                }
             }
             return output;
-        }
-    }
-
-    //crawlerを実行する
-    private async runCrawler(adder: Adder, input: object) {
-        //crawlerを取得する
-        const crawler = adder.crawler;
-        if (typeof crawler === "undefined" && !crawler) {
-            return input;
-        } else {
-            return await crawler.process(input, this._turboSearchKit);
         }
     }
 
     //crawlerToIndexerを実行する
-    private async runCrawlerToIndexer(adder: Adder, input: object) {
+    async runCrawlerToIndexer(adder: Adder, input: object) {
         //pipe.crawlerToIndexerを取得する
         const crawlerToIndexer = adder.pipes.crawlerToIndexer;
         if (typeof crawlerToIndexer === "undefined" || !crawlerToIndexer || crawlerToIndexer.length === 0) {
-            return input;
+            return { success: true, data: input } as { success: true, data: object };
         } else {
-            let output = input;
+            let output: { success: true, data: object } | { success: false, message: string, error: Z.ZodError<any> } = { success: true, data: input };
             for (const pipe of crawlerToIndexer) {
-                output = await pipe.process(output, this._turboSearchKit);
+                if (!output.success) {
+                    break;
+                }
+
+                //スキーマをチェック
+                const schemaCheckResult = pipe.inputSchema.safeParse(output);
+                if (schemaCheckResult.success) {
+                    //@ts-ignore 実行する
+                    const ranData = await pipe.process(schemaCheckResult.data, this._turboSearchKit);
+                    if (ranData.success) {
+                        output = {
+                            success: true,
+                            data: ranData.output
+                        }
+                    } else {
+                        output = {
+                            success: false,
+                            message: ranData.message,
+                            error: ranData.error
+                        }
+                    }
+                } else {
+                    output = {
+                        success: false,
+                        message: "The output does not match the input schema of pipe:" + pipe.name + ".",
+                        error: schemaCheckResult.error
+                    }
+                }
             }
             return output;
         }
     }
 
-    //indexerを実行する
-    private async runIndexer(adder: Adder, input: object) {
-        //indexerを取得する
-        const indexer = adder.indexer;
-        if (typeof indexer === "undefined" && !indexer) {
-            return input;
-        } else {
-            return await indexer.process(input, this._turboSearchKit);
-        }
-    }
-
     //indexerToCoreを実行する
-    private async runIndexerToCore(adder: Adder, input: object) {
+    async runIndexerToCore(adder: Adder, input: object) {
         //pipe.indexerToCoreを取得する
         const indexerToCore = adder.pipes.indexerToCore;
         if (typeof indexerToCore === "undefined" || !indexerToCore || indexerToCore.length === 0) {
-            return input;
+            return { success: true, data: input } as { success: true, data: object };
         } else {
-            let output = input;
+            let output: { success: true, data: object } | { success: false, message: string, error: Z.ZodError<any> } = { success: true, data: input };
             for (const pipe of indexerToCore) {
-                output = await pipe.process(output, this._turboSearchKit);
+                if (!output.success) {
+                    break;
+                }
+
+                //スキーマをチェック
+                const schemaCheckResult = pipe.inputSchema.safeParse(output);
+                if (schemaCheckResult.success) {
+                    //@ts-ignore 実行する
+                    const ranData = await pipe.process(schemaCheckResult.data, this._turboSearchKit);
+                    if (ranData.success) {
+                        output = {
+                            success: true,
+                            data: ranData.output
+                        }
+                    } else {
+                        output = {
+                            success: false,
+                            message: ranData.message,
+                            error: ranData.error
+                        }
+                    }
+                } else {
+                    output = {
+                        success: false,
+                        message: "The output does not match the input schema of pipe:" + pipe.name + ".",
+                        error: schemaCheckResult.error
+                    }
+                }
+            }
+            return output;
+        }
+    }
+
+    //Crawlerを実行する
+    async runCrawler(adder: Adder, input: object) {
+        //crawlerを取得する
+        const crawler = adder.crawler;
+        if (typeof crawler === "undefined" || !crawler) {
+            return { success: true, data: input } as { success: true, data: object };
+        } else {
+            let output: { success: true, data: object } | { success: false, message: string, error: Z.ZodError<any> } = { success: true, data: input };
+            //スキーマをチェック
+            const schemaCheckResult = crawler.inputSchema.safeParse(output);
+            if (schemaCheckResult.success) {
+                //@ts-ignore 実行する
+                const ranData = await crawler.process(schemaCheckResult.data, this._turboSearchKit);
+                if (ranData.success) {
+                    output = {
+                        success: true,
+                        data: ranData.output
+                    }
+                } else {
+                    output = {
+                        success: false,
+                        message: ranData.message,
+                        error: ranData.error
+                    }
+                }
+            } else {
+                output = {
+                    success: false,
+                    message: "The output does not match the input schema of pipe:" + crawler.name + ".",
+                    error: schemaCheckResult.error
+                }
+            }
+            return output;
+        }
+    }
+
+    //Indexerを実行する
+    async runIndexer(adder: Adder, input: object) {
+        //indexerを取得する
+        const indexer = adder.indexer;
+        if (typeof indexer === "undefined" || !indexer) {
+            return { success: true, data: input } as { success: true, data: object };
+        } else {
+            let output: { success: true, data: object } | { success: false, message: string, error: Z.ZodError<any> } = { success: true, data: input };
+            //スキーマをチェック
+            const schemaCheckResult = indexer.inputSchema.safeParse(output);
+            if (schemaCheckResult.success) {
+                //@ts-ignore 実行する
+                const ranData = await indexer.process(schemaCheckResult.data, this._turboSearchKit);
+                if (ranData.success) {
+                    output = {
+                        success: true,
+                        data: ranData.output
+                    }
+                } else {
+                    output = {
+                        success: false,
+                        message: ranData.message,
+                        error: ranData.error
+                    }
+                }
+            } else {
+                output = {
+                    success: false,
+                    message: "The output does not match the input schema of pipe:" + indexer.name + ".",
+                    error: schemaCheckResult.error
+                }
             }
             return output;
         }
