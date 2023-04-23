@@ -68,40 +68,49 @@ export type Crawler = {
     name: string,
 }
 
+export type Indexer = {
+    name: string,
+}
+
+export type Pipe<inputData, outputData> = {
+    name: string,
+}
+
 export type Adder = {
     name: string,
     description: string,
     crawler: Crawler,
+    indexer: Indexer,
+    pipes: {
+        coreToCrawler: Pipe[],
+        crawlerToIndexer: Pipe[],
+        indexerToCore: Pipe[],
+    }
+}
+
+export abstract class Database {
 
 }
 
 export type TurboSearchCoreOptions = {
 
-    adders: Adder[]
+    adders: Adder[],
+    database: Database,
     jobs?: Jobs,
     extensions: Extensions[],
     error: {
         strictAvailable?: boolean
     }
 }
-export abstract class TurboSearchCore {
-    public version = version;
-    public extensions: Extensions[] = [];
-    public endpoints: Endpoints = {};
-    public tasks: Tasks = {};
+export type TurboSearchCore = {
+    version: string;
+    extensions: Extensions[];
+    endpoints: Endpoints;
+    tasks: Tasks;
 
-    addEndpoint(endpoint: AddEndpointData) {
-        this._addEndpoint(endpoint);
-    }
-    abstract _addEndpoint(endpoint: AddEndpointData): void;
+    addEndpoint: (endpoint: AddEndpointData) => Promise<void>,
 
-    addTask(task: AddTaskData) {
-        this._addTask(task);
-    }
-    abstract _addTask(task: AddTaskData): void;
+    addTask: (task: AddTaskData) => Promise<void>,
 
-    addTaskAndEndpoint(addTaskAndEndpoint: AddTaskAndEndpointData) {
-        this._addTaskAndEndpoint(addTaskAndEndpoint);
-    }
-    abstract _addTaskAndEndpoint(addTaskAndEndpoint: AddTaskAndEndpointData): void;
+    addTaskAndEndpoint: (addTaskAndEndpoint: AddTaskAndEndpointData) => Promise<void>,
 }
