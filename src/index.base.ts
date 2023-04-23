@@ -1,6 +1,6 @@
 import { Jobs } from "./jobs/jobs.base";
-import { Job } from "./jobs/jobsDatabase.base";
-import { version } from "./version";
+import { z } from "zod";
+import type Z from "zod";
 
 //拡張機能にturbo-searchへのアクセスを提供するもの
 export type TurboSearchKit = {
@@ -65,15 +65,21 @@ export type Extensions = {
 };
 
 export type Crawler = {
-    name: string,
+    inputSchema: Z.Schema;
+    outputSchema: Z.Schema;
+    process: (inputData: Z.infer<Pipe["inputSchema"]>, turboSearchKit: TurboSearchKit) => Pipe["outputSchema"];
 }
 
 export type Indexer = {
-    name: string,
+    inputSchema: Z.Schema;
+    outputSchema: Z.Schema;
+    process: (inputData: Z.infer<Pipe["inputSchema"]>, turboSearchKit: TurboSearchKit) => Pipe["outputSchema"];
 }
 
-export type Pipe<inputData, outputData> = {
-    name: string,
+export type Pipe = {
+    inputSchema: Z.Schema;
+    outputSchema: Z.Schema;
+    process: (inputData: Z.infer<Pipe["inputSchema"]>, turboSearchKit: TurboSearchKit) => Pipe["outputSchema"];
 }
 
 export type Adder = {
@@ -85,10 +91,12 @@ export type Adder = {
         coreToCrawler: Pipe[],
         crawlerToIndexer: Pipe[],
         indexerToCore: Pipe[],
-    }
+    },
+    inputSchema: Z.Schema,
+    outputSchema: Z.Schema,
 }
 
-export abstract class Database {
+export type Database = {
 
 }
 
@@ -102,6 +110,7 @@ export type TurboSearchCoreOptions = {
         strictAvailable?: boolean
     }
 }
+
 export type TurboSearchCore = {
     version: string;
     extensions: Extensions[];
