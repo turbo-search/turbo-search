@@ -6,6 +6,7 @@ import {
 } from "../indexType.js";
 import { compareDependenceVersion } from "../utils/compareDependenceVersion.js";
 import { ExtensionManager } from "./extensionManagerType.js";
+import { extensionSchema } from "./extensionSchema.js";
 
 export class extensionManager implements ExtensionManager {
   private _error;
@@ -23,6 +24,21 @@ export class extensionManager implements ExtensionManager {
     this._coreVersion = coreVersion;
     this._extensions = extensions;
     this._turboSearchKit = turboSearchKit;
+  }
+
+  //extensionのバリデーション
+  validate() {
+    this._extensions.forEach((extension, index) => {
+      //zodでバリデーション
+      const result = extensionSchema.safeParse(extension);
+      if (!result.success) {
+        catchError("extensionValidation", [
+          "extension validation error",
+          "extension name is " + extension.manifesto.name,
+          "error is " + result.error.message,
+        ]);
+      }
+    });
   }
 
   //同じ名前の拡張機能がないかどうかチェック
@@ -114,8 +130,8 @@ export class extensionManager implements ExtensionManager {
             if (!dependenceExtension) {
               catchError("dependence", [
                 extension.manifesto.name +
-                  " is dependent on " +
-                  dependenceExtensionName,
+                " is dependent on " +
+                dependenceExtensionName,
                 "The following solutions are available",
                 "Add the extension : " + dependenceExtensionName,
                 "Remove the extension : " + extension.manifesto.name,
@@ -125,7 +141,7 @@ export class extensionManager implements ExtensionManager {
               if (extension.manifesto.dependence) {
                 if (
                   extension.manifesto.dependence[dependenceExtensionName] !==
-                    "" &&
+                  "" &&
                   !compareDependenceVersion(
                     dependenceExtension.manifesto.version,
                     extension.manifesto.dependence[dependenceExtensionName]
@@ -133,17 +149,17 @@ export class extensionManager implements ExtensionManager {
                 ) {
                   catchError("dependence", [
                     "Extension:" +
-                      extension.manifesto.name +
-                      " specifies " +
-                      dependenceExtensionName +
-                      " version " +
-                      extension.manifesto.dependence[dependenceExtensionName] +
-                      ".",
+                    extension.manifesto.name +
+                    " specifies " +
+                    dependenceExtensionName +
+                    " version " +
+                    extension.manifesto.dependence[dependenceExtensionName] +
+                    ".",
                     "The current version of " +
-                      dependenceExtensionName +
-                      " is " +
-                      dependenceExtension.manifesto.version +
-                      ".",
+                    dependenceExtensionName +
+                    " is " +
+                    dependenceExtension.manifesto.version +
+                    ".",
                   ]);
                 }
               }
@@ -170,6 +186,7 @@ export class extensionManager implements ExtensionManager {
 
   //setup extensions
   setupExtensions() {
+    this.validate();
     this.checkDuplicateExtensionName();
     this.checkManifesto();
     this.checkAvailable();

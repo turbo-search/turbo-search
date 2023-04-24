@@ -6,4 +6,5 @@ export type ErrorType =
   | "pipe"
   | "crawler"
   | "indexer"
-  | "adder";
+  | "adder"
+  | "extensionValidation";

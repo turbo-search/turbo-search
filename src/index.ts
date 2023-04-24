@@ -28,6 +28,7 @@ export class turboSearchCore implements TurboSearchCore {
       this.version,
       this.turboSearchKit()
     );
+    this._extensionManager.setupExtensions();
 
     //setup jobs
     this._job = options.jobs || new jobs();

@@ -1,6 +1,10 @@
 import { Extension, TurboSearchKit } from "../indexType";
 
 export type ExtensionManager = {
+
+  //extensionのバリデーション
+  validate: () => void;
+
   //同じ名前の拡張機能がないかどうかチェック
   checkDuplicateExtensionName: () => void;
 
