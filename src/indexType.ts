@@ -15,6 +15,9 @@ export type TurboSearchKit = {
   job: Jobs;
 };
 
+//Databaseへのアクセスを提供するもの
+export type DatabaseKit = {};
+
 //タスクとエンドポイントを追加するときのデータ
 export type AddTaskAndEndpointData = {
   name: string;
