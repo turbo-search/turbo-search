@@ -13,48 +13,47 @@ export type TurboSearchKit = {
 };
 
 export type Endpoints = {
-  [queryPath: string]: { [endpointName: string]: Endpoint };
+  [provider: string]: { [endpointName: string]: Endpoint };
 };
-export type Tasks = { [queryPath: string]: { [endpointName: string]: Task } };
+export type Tasks = { [provider: string]: { [taskName: string]: Task } };
 
 //タスクを追加するときのデータ
 export type AddTaskData = {
   name: string;
-  extensionManifesto: ExtensionManifesto;
+  provider: "core" | string;
   function: () => void;
 };
 
 //タスクのデータ
 export type Task = {
   name: string;
-  extensionManifesto: ExtensionManifesto;
+  provider: "core" | string;
   function: () => void;
 };
 
 //エンドポイントを追加するときのデータ
 export type AddEndpointData = {
   name: string;
-  extensionManifesto: ExtensionManifesto;
+  provider: "core" | string;
   function: () => void;
 };
 
 //エンドポイントのデータ
 export type Endpoint = {
   name: string;
-  extensionManifesto: ExtensionManifesto;
+  provider: "core" | string;
   function: () => void;
 };
 
 //タスクとエンドポイントを追加するときのデータ
 export type AddTaskAndEndpointData = {
   name: string;
-  extensionManifesto: ExtensionManifesto;
+  provider: "core" | string;
   function: () => void;
 };
 
 export type ExtensionManifesto = {
   name: string;
-  queryPath?: string;
   dependence?: { [extensionName: string]: string };
   coreDependence?: string;
   version: string;

@@ -37,54 +37,38 @@ export class turboSearchCore implements TurboSearchCore {
   async addEndpoint(endpoint: AddEndpointData) {
     const addEndpointData = {
       name: endpoint.name,
-      extensionManifesto: endpoint.extensionManifesto,
+      provider: endpoint.provider,
       function: endpoint.function,
     };
-    if (endpoint.extensionManifesto.queryPath) {
-      if (!this.endpoints[endpoint.extensionManifesto.queryPath]) {
-        this.endpoints[endpoint.extensionManifesto.queryPath] = {};
-      }
-      this.endpoints[endpoint.extensionManifesto.queryPath][endpoint.name] =
-        addEndpointData;
-    } else {
-      if (!this.endpoints[endpoint.extensionManifesto.name]) {
-        this.endpoints[endpoint.extensionManifesto.name] = {};
-      }
-      this.endpoints[endpoint.extensionManifesto.name][endpoint.name] =
-        addEndpointData;
+    if (!this.endpoints[endpoint.provider || "other"]) {
+      this.endpoints[endpoint.provider || "other"] = {};
     }
+    this.endpoints[endpoint.provider || "other"][endpoint.name] = addEndpointData;
   }
 
   //DBなど内部から参照されるような処理を追加する
   async addTask(task: AddTaskData) {
     const addTaskData = {
       name: task.name,
-      extensionManifesto: task.extensionManifesto,
+      provider: task.provider,
       function: task.function,
     };
-    if (task.extensionManifesto.queryPath) {
-      if (!this.tasks[task.extensionManifesto.queryPath]) {
-        this.tasks[task.extensionManifesto.queryPath] = {};
-      }
-      this.tasks[task.extensionManifesto.queryPath][task.name] = addTaskData;
-    } else {
-      if (!this.tasks[task.extensionManifesto.name]) {
-        this.tasks[task.extensionManifesto.name] = {};
-      }
-      this.tasks[task.extensionManifesto.name][task.name] = addTaskData;
+    if (!this.tasks[task.provider || "other"]) {
+      this.tasks[task.provider || "other"] = {};
     }
+    this.tasks[task.provider || "other"][task.name] = addTaskData;
   }
 
   // taskとendpoint両方を追加する
   async addTaskAndEndpoint(taskAndEndpoint: AddTaskAndEndpointData) {
     this.addTask({
       name: taskAndEndpoint.name,
-      extensionManifesto: taskAndEndpoint.extensionManifesto,
+      provider: taskAndEndpoint.provider,
       function: taskAndEndpoint.function,
     });
     this.addEndpoint({
       name: taskAndEndpoint.name,
-      extensionManifesto: taskAndEndpoint.extensionManifesto,
+      provider: taskAndEndpoint.provider,
       function: taskAndEndpoint.function,
     });
   }
