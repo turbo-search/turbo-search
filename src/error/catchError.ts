@@ -10,7 +10,9 @@ const errorType = [
   "crawler",
   "indexer",
   "adder",
-  "extensionValidation"
+  "extensionValidation",
+  "taskValidation",
+  "endpointValidation",
 ];
 
 export const catchError = (type: ErrorType, message: string[]) => {

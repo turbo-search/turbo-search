@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const extensionSchema = z.object({
+export const addExtensionSchema = z.object({
     manifesto: z.object({
         name: z.string(),
         dependence: z.record(z.string()).default({}),

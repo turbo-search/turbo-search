@@ -1,12 +1,11 @@
-import { catchError } from "../error/catchError.js";
+import { catchError } from "../../error/catchError.js";
 import {
-  Extension,
   TurboSearchCoreOptions,
   TurboSearchKit,
-} from "../indexType.js";
-import { compareDependenceVersion } from "../utils/compareDependenceVersion.js";
-import { ExtensionManager } from "./extensionManagerType.js";
-import { extensionSchema } from "./extensionSchema.js";
+} from "../../indexType.js";
+import { compareDependenceVersion } from "../../utils/compareDependenceVersion.js";
+import { Extension, ExtensionManager } from "./extensionManagerType.js";
+import { addExtensionSchema } from "./extensionSchema.js";
 
 export class extensionManager implements ExtensionManager {
   private _error;
@@ -30,7 +29,7 @@ export class extensionManager implements ExtensionManager {
   validate() {
     this._extensions.forEach((extension, index) => {
       //zodでバリデーション
-      const result = extensionSchema.safeParse(extension);
+      const result = addExtensionSchema.safeParse(extension);
       if (!result.success) {
         catchError("extensionValidation", [
           "extension validation error",

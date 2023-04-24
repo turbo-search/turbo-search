@@ -1,5 +1,5 @@
-import { catchError } from '../error/catchError.js';
-import { Adder, TurboSearchKit } from '../indexType.js';
+import { catchError } from '../../error/catchError.js';
+import { Adder, TurboSearchKit } from '../../indexType.js';
 import type { AdderManager, Ran } from './adderManagerType.js';
 import type Z from 'zod';
 
@@ -134,8 +134,14 @@ export class adderManager implements AdderManager {
             const inputSchema = adder.inputSchema;
             //zodでinputのスキーマをチェック
             const inputSchemaCheckResult = inputSchema.safeParse(input);
-            if (inputSchemaCheckResult.success) {
-                //@ts-ignore
+            if (!inputSchemaCheckResult.success) {
+                return {
+                    success: false,
+                    message: "The input does not match the input schema of adder:" + adderName + ".",
+                    error: inputSchemaCheckResult.error,
+                    ran: []
+                } as { success: false, message: string, error: Z.ZodError<any>, ran: Ran[] }
+            } else {
                 const safeInput = inputSchemaCheckResult.data;
                 const ranList: Ran[] = [];
 
@@ -165,29 +171,21 @@ export class adderManager implements AdderManager {
                 const outputSchema = adder.outputSchema;
                 //zodでoutputのスキーマをチェック
                 const outputSchemaCheckResult = outputSchema.safeParse(toCore);
-                if (outputSchemaCheckResult.success) {
-                    //@ts-ignore
-                    const safeOutput = outputSchemaCheckResult.data;
-                    return {
-                        success: true,
-                        output: safeOutput,
-                        ran: ranList
-                    } as { success: true, output: object, ran: Ran[] }
-                } else {
+                if (!outputSchemaCheckResult.success) {
                     return {
                         success: false,
                         message: "The output does not match the output schema of adder:" + adderName + ".",
                         error: outputSchemaCheckResult.error,
                         ran: ranList
                     } as { success: false, message: string, error: Z.ZodError<any>, ran: Ran[] }
+                } else {
+                    const safeOutput = outputSchemaCheckResult.data;
+                    return {
+                        success: true,
+                        output: safeOutput,
+                        ran: ranList
+                    } as { success: true, output: object, ran: Ran[] }
                 }
-            } else {
-                return {
-                    success: false,
-                    message: "The input does not match the input schema of adder:" + adderName + ".",
-                    error: inputSchemaCheckResult.error,
-                    ran: []
-                } as { success: false, message: string, error: Z.ZodError<any>, ran: Ran[] }
             }
         } else {
             return {
@@ -213,8 +211,14 @@ export class adderManager implements AdderManager {
 
                 //スキーマをチェック
                 const schemaCheckResult = pipe.inputSchema.safeParse(output);
-                if (schemaCheckResult.success) {
-                    //@ts-ignore 実行する
+                if (!schemaCheckResult.success) {
+                    output = {
+                        success: false,
+                        message: "The output does not match the input schema of pipe:" + pipe.name + ".",
+                        error: schemaCheckResult.error
+                    }
+                } else {
+                    // 実行する
                     const ranData = await pipe.process(schemaCheckResult.data, this._turboSearchKit);
                     if (ranData.success) {
                         output = {
@@ -227,12 +231,6 @@ export class adderManager implements AdderManager {
                             message: ranData.message,
                             error: ranData.error
                         }
-                    }
-                } else {
-                    output = {
-                        success: false,
-                        message: "The output does not match the input schema of pipe:" + pipe.name + ".",
-                        error: schemaCheckResult.error
                     }
                 }
             }
@@ -255,8 +253,14 @@ export class adderManager implements AdderManager {
 
                 //スキーマをチェック
                 const schemaCheckResult = pipe.inputSchema.safeParse(output);
-                if (schemaCheckResult.success) {
-                    //@ts-ignore 実行する
+                if (!schemaCheckResult.success) {
+                    output = {
+                        success: false,
+                        message: "The output does not match the input schema of pipe:" + pipe.name + ".",
+                        error: schemaCheckResult.error
+                    }
+                } else {
+                    //実行する
                     const ranData = await pipe.process(schemaCheckResult.data, this._turboSearchKit);
                     if (ranData.success) {
                         output = {
@@ -269,12 +273,6 @@ export class adderManager implements AdderManager {
                             message: ranData.message,
                             error: ranData.error
                         }
-                    }
-                } else {
-                    output = {
-                        success: false,
-                        message: "The output does not match the input schema of pipe:" + pipe.name + ".",
-                        error: schemaCheckResult.error
                     }
                 }
             }
@@ -297,8 +295,14 @@ export class adderManager implements AdderManager {
 
                 //スキーマをチェック
                 const schemaCheckResult = pipe.inputSchema.safeParse(output);
-                if (schemaCheckResult.success) {
-                    //@ts-ignore 実行する
+                if (!schemaCheckResult.success) {
+                    output = {
+                        success: false,
+                        message: "The output does not match the input schema of pipe:" + pipe.name + ".",
+                        error: schemaCheckResult.error
+                    }
+                } else {
+                    // 実行する
                     const ranData = await pipe.process(schemaCheckResult.data, this._turboSearchKit);
                     if (ranData.success) {
                         output = {
@@ -311,12 +315,6 @@ export class adderManager implements AdderManager {
                             message: ranData.message,
                             error: ranData.error
                         }
-                    }
-                } else {
-                    output = {
-                        success: false,
-                        message: "The output does not match the input schema of pipe:" + pipe.name + ".",
-                        error: schemaCheckResult.error
                     }
                 }
             }
@@ -334,8 +332,14 @@ export class adderManager implements AdderManager {
             let output: { success: true, data: object } | { success: false, message: string, error: Z.ZodError<any> } = { success: true, data: input };
             //スキーマをチェック
             const schemaCheckResult = crawler.inputSchema.safeParse(output);
-            if (schemaCheckResult.success) {
-                //@ts-ignore 実行する
+            if (!schemaCheckResult.success) {
+                output = {
+                    success: false,
+                    message: "The output does not match the input schema of pipe:" + crawler.name + ".",
+                    error: schemaCheckResult.error
+                }
+            } else {
+                // 実行する
                 const ranData = await crawler.process(schemaCheckResult.data, this._turboSearchKit);
                 if (ranData.success) {
                     output = {
@@ -348,12 +352,6 @@ export class adderManager implements AdderManager {
                         message: ranData.message,
                         error: ranData.error
                     }
-                }
-            } else {
-                output = {
-                    success: false,
-                    message: "The output does not match the input schema of pipe:" + crawler.name + ".",
-                    error: schemaCheckResult.error
                 }
             }
             return output;
@@ -370,8 +368,14 @@ export class adderManager implements AdderManager {
             let output: { success: true, data: object } | { success: false, message: string, error: Z.ZodError<any> } = { success: true, data: input };
             //スキーマをチェック
             const schemaCheckResult = indexer.inputSchema.safeParse(output);
-            if (schemaCheckResult.success) {
-                //@ts-ignore 実行する
+            if (!schemaCheckResult.success) {
+                output = {
+                    success: false,
+                    message: "The output does not match the input schema of pipe:" + indexer.name + ".",
+                    error: schemaCheckResult.error
+                }
+            } else {
+                // 実行する
                 const ranData = await indexer.process(schemaCheckResult.data, this._turboSearchKit);
                 if (ranData.success) {
                     output = {
@@ -384,12 +388,6 @@ export class adderManager implements AdderManager {
                         message: ranData.message,
                         error: ranData.error
                     }
-                }
-            } else {
-                output = {
-                    success: false,
-                    message: "The output does not match the input schema of pipe:" + indexer.name + ".",
-                    error: schemaCheckResult.error
                 }
             }
             return output;

@@ -1,6 +1,9 @@
 import { Jobs } from "./jobs/jobs.base";
 import { z } from "zod";
 import type Z from "zod";
+import { AddTaskData, Tasks } from "./manager/taskManager/taskManagerType";
+import { Extension } from "./manager/extensionManager/extensionManagerType";
+import { AddEndpointData, Endpoints } from "./manager/endpointManager/endpointManagerType";
 
 //拡張機能にturbo-searchへのアクセスを提供するもの
 export type TurboSearchKit = {
@@ -12,57 +15,11 @@ export type TurboSearchKit = {
   job: Jobs;
 };
 
-export type Endpoints = {
-  [provider: string]: { [endpointName: string]: Endpoint };
-};
-export type Tasks = { [provider: string]: { [taskName: string]: Task } };
-
-//タスクを追加するときのデータ
-export type AddTaskData = {
-  name: string;
-  provider: "core" | string;
-  function: () => void;
-};
-
-//タスクのデータ
-export type Task = {
-  name: string;
-  provider: "core" | string;
-  function: () => void;
-};
-
-//エンドポイントを追加するときのデータ
-export type AddEndpointData = {
-  name: string;
-  provider: "core" | string;
-  function: () => void;
-};
-
-//エンドポイントのデータ
-export type Endpoint = {
-  name: string;
-  provider: "core" | string;
-  function: () => void;
-};
-
 //タスクとエンドポイントを追加するときのデータ
 export type AddTaskAndEndpointData = {
   name: string;
   provider: "core" | string;
   function: () => void;
-};
-
-export type ExtensionManifesto = {
-  name: string;
-  dependence?: { [extensionName: string]: string };
-  coreDependence?: string;
-  version: string;
-};
-
-export type Extension = {
-  init?: (turboSearchKit?: TurboSearchKit) => void;
-  available?: () => { success: false; message: string } | { success: true };
-  manifesto: ExtensionManifesto;
 };
 
 export type Crawler = {
@@ -132,12 +89,6 @@ export type TurboSearchCoreOptions = {
 
 export type TurboSearchCore = {
   version: string;
-  endpoints: Endpoints;
-  tasks: Tasks;
-
-  addEndpoint: (endpoint: AddEndpointData) => Promise<void>;
-
-  addTask: (task: AddTaskData) => Promise<void>;
 
   addTaskAndEndpoint: (
     addTaskAndEndpoint: AddTaskAndEndpointData

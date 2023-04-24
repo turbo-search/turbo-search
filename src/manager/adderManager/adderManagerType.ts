@@ -1,4 +1,4 @@
-import { Adder } from "../indexType";
+import { Adder } from "../../indexType";
 import type Z from "zod";
 
 export type Ran =

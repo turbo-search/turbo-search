@@ -7,4 +7,6 @@ export type ErrorType =
   | "crawler"
   | "indexer"
   | "adder"
-  | "extensionValidation";
+  | "extensionValidation"
+  | "taskValidation"
+  | "endpointValidation";
