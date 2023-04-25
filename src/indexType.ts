@@ -16,7 +16,14 @@ export type TurboSearchKit = {
 };
 
 //Databaseへのアクセスを提供するもの
-export type DatabaseKit = {};
+export type DataManagementKit = {
+  fileHandling: {
+
+  },
+  database: {
+
+  }
+};
 
 //タスクとエンドポイントを追加するときのデータ
 export type AddTaskAndEndpointData = {

@@ -1,5 +1,5 @@
 import Z from "zod";
-import { DatabaseKit } from "../../../indexType";
+import { DataManagementKit } from "../../../indexType";
 
 //class
 export type addMiddlewareData = {
@@ -7,7 +7,7 @@ export type addMiddlewareData = {
     outputSchema: Z.Schema;
     process: (
         inputData: Z.infer<addMiddlewareData["inputSchema"]>,
-        databaseKit: DatabaseKit
+        dataManagementKit: DataManagementKit
     ) => Promise<{
         success: false;
         message: string;
