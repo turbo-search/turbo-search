@@ -90,7 +90,6 @@ export type Database = {};
 export type TurboSearchCoreOptions = {
   adders: Adder[];
   database: Database;
-  jobs?: Jobs;
   extensions: Extension[];
   error: {
     strictAvailable?: boolean;

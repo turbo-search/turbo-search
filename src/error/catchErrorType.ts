@@ -9,4 +9,5 @@ export type ErrorType =
   | "adder"
   | "extensionValidation"
   | "taskValidation"
-  | "endpointValidation";
+  | "endpointValidation"
+  | "jobValidation";

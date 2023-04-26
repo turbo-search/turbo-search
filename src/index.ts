@@ -9,13 +9,15 @@ import { jobs } from "./jobs/jobs.js";
 import { version } from "./version.js";
 import { taskManager } from "./manager/taskManager/taskManager.js";
 import { endpointManager } from "./manager/endpointManager/endpointManager.js";
+import { memoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManager.js";
 
 export class turboSearchCore implements TurboSearchCore {
   public version = version;
   private _taskManager;
   private _endpointManager;
-  private _job;
   private _extensionManager;
+  private _memoryStoreManager;
+  private _jobManager;
 
   constructor(options: TurboSearchCoreOptions) {
     //setup extensions
@@ -33,8 +35,11 @@ export class turboSearchCore implements TurboSearchCore {
     //setup endpoints
     this._endpointManager = new endpointManager();
 
-    //setup jobs
-    this._job = options.jobs || new jobs();
+    //setup memoryStore
+    this._memoryStoreManager = new memoryStoreManager();
+
+    //setup job
+    this._jobManager = new jobManager(this._memoryStoreManager);
   }
 
   // taskとendpoint両方を追加する

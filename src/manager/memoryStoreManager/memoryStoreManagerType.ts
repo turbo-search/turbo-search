@@ -8,6 +8,9 @@ export type MemoryStoreManager = {
     // メモリストアからデータを取得する
     find: (table: string, key: string, value: any) => Promise<any[]>;
 
+    // メモリストアからデータを全件取得する
+    findAll: (table: string) => Promise<any[]>;
+
     // メモリストアからデータをアップデートする
     update: (table: string, key: string, value: any, _data: any) => Promise<void>;
 

@@ -13,6 +13,7 @@ const errorType = [
   "extensionValidation",
   "taskValidation",
   "endpointValidation",
+  "jobValidation",
 ];
 
 export const catchError = (type: ErrorType, message: string[]) => {
