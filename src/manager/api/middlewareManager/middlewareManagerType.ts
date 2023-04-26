@@ -1,10 +1,19 @@
 import Z from "zod";
 import { DataManagementKit } from "../../../indexType";
 
+export type middlewareManifesto = {
+    name: string;
+    coreDependence?: string;
+    version: string;
+
+}
+
 //class
 export type addMiddlewareData = {
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
+    middlewareManifesto: middlewareManifesto;
+    init?: (dataManagementKit: DataManagementKit) => Promise<void>;
     process: (
         inputData: Z.infer<addMiddlewareData["inputSchema"]>,
         dataManagementKit: DataManagementKit
