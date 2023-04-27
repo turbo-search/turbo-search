@@ -13,4 +13,5 @@ export type ErrorType =
   | "jobValidation"
   | "jobSubscribeValidation"
   | "jobsSubscribeValidation"
-  | "middlewareValidation";
+  | "middlewareValidation"
+  | "pipeValidation";
