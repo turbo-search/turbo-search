@@ -2,6 +2,8 @@ import { DataManagementKit } from "../../../indexType";
 import { Middleware, MiddlewareManager, addMiddlewareData } from "./middlewareManagerType";
 import { addMiddlewareDataSchema } from "./middlewareManagerSchema";
 import { catchError } from "../../../error/catchError";
+import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
+import { version } from "../../../version";
 
 export class middlewareManager implements MiddlewareManager {
 
@@ -45,6 +47,32 @@ export class middlewareManager implements MiddlewareManager {
         });
 
     }
+
+    async checkDependence() {
+
+        this._middlewareList.forEach((middleware, index) => {
+            const dependence = middleware.middlewareManifesto.coreDependence;
+            if (dependence && dependence != "") {
+                if (!compareDependenceVersion(
+                    version,
+                    dependence
+                )) {
+                    catchError("middlewareValidation", [
+                        "middleware validation error",
+                        `middleware ${middleware.middlewareManifesto.name} coreDependence is not equal to core version`
+                    ])
+                }
+            }
+        });
+
+    }
+
+
+    async setup() {
+        await this.init();
+        await this.checkSchema();
+        await this.checkDependence();
+    };
 
     async processAll(inputData: any) {
 

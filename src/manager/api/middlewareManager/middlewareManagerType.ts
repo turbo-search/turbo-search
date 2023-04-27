@@ -49,6 +49,12 @@ export type MiddlewareManager = {
 
     init: () => Promise<void>;
 
+    checkSchema: () => Promise<void>;
+
+    checkDependence: () => Promise<void>;
+
+    setup: () => Promise<void>;
+
     processAll: (inputData: any) => Promise<{
         success: false;
         message: string;
@@ -57,8 +63,6 @@ export type MiddlewareManager = {
         success: true;
         output: any;
     }>;
-
-    checkSchema: () => Promise<void>;
 
     process: (
         inputData: any,

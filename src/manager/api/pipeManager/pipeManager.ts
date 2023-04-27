@@ -2,6 +2,8 @@ import { DataManagementKit } from "../../../indexType";
 import { Pipe, PipeManager, addPipeData } from "./pipeManagerType";
 import { addPipeDataSchema } from "./pipeManagerSchema";
 import { catchError } from "../../../error/catchError";
+import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
+import { version } from "../../../version";
 
 export class pipeManager implements PipeManager {
 
@@ -45,6 +47,32 @@ export class pipeManager implements PipeManager {
         });
 
     }
+
+    async checkDependence() {
+
+        this._pipeList.forEach((pipe, index) => {
+            const dependence = pipe.pipeManifesto.coreDependence;
+            if (dependence && dependence != "") {
+                if (!compareDependenceVersion(
+                    version,
+                    dependence
+                )) {
+                    catchError("pipeValidation", [
+                        "pipe validation error",
+                        `pipe ${pipe.pipeManifesto.name} coreDependence is not equal to core version`
+                    ])
+                }
+            }
+        });
+
+    }
+
+
+    async setup() {
+        await this.init();
+        await this.checkSchema();
+        await this.checkDependence();
+    };
 
     async processAll(inputData: any) {
 
