@@ -44,9 +44,16 @@ export class memoryStoreManager implements MemoryStoreManager {
         if (!this.data[table]) {
             this.data[table] = [];
         }
+
+        const deletedData = this.data[table].filter((data) => {
+            return data[key] === value;
+        });
+
         this.data[table] = this.data[table].filter((data) => {
             return data[key] !== value;
         });
+
+        return deletedData;
     }
 
 }

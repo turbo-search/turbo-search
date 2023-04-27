@@ -1,9 +1,9 @@
-import { Jobs } from "./jobs/jobs.base";
 import { z } from "zod";
 import type Z from "zod";
 import { AddTaskData, Tasks } from "./manager/taskManager/taskManagerType";
 import { Extension } from "./manager/extensionManager/extensionManagerType";
 import { AddEndpointData, Endpoints } from "./manager/endpointManager/endpointManagerType";
+import { Job, JobManager } from "./manager/jobManager/jobManagerType";
 
 //拡張機能にturbo-searchへのアクセスを提供するもの
 export type TurboSearchKit = {
@@ -12,7 +12,7 @@ export type TurboSearchKit = {
   addTaskAndEndpoint: (addTaskAndEndpoint: AddTaskAndEndpointData) => void;
   endpoints: Endpoints;
   tasks: Tasks;
-  job: Jobs;
+  jobManager: JobManager;
 };
 
 //Databaseへのアクセスを提供するもの

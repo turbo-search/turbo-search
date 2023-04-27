@@ -45,7 +45,7 @@ export type JobManager = {
 
     addJob(job: Job): Promise<Job | void>;
 
-    updateJob(id: string, job: Partial<Job>): Promise<void>;
+    updateJob(id: string, job: Job): Promise<void>;
 
     deleteJob(id: string): Promise<void>;
 
@@ -53,7 +53,7 @@ export type JobManager = {
 
     subscribeJob(
         id: string,
-        subscribeId: string,
+        jobId: string,
         callback: SubscribeJobCallback
     ): Promise<void>;
 
@@ -62,5 +62,7 @@ export type JobManager = {
     subscribeJobs(subscribeId: string, callback: SubscribeJobCallback): Promise<void>;
 
     unsubscribeJobs(subscribeId: string): Promise<void>;
+
+    checkSubscribe(job: Job, status: JobStatus): Promise<void>;
 
 }

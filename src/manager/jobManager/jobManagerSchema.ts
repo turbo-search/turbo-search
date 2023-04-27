@@ -18,3 +18,14 @@ export const addJobDataSchema = z.object({
     point: z.enum(["core", "extension", "search", "crawler", "indexer", "pipe", "middleware"]),
     performer: z.string()
 });
+
+export const addSubscribeJobDataSchema = z.object({
+    id: z.string(),
+    jobId: z.string(),
+    callback: z.function()
+});
+
+export const addSubscribeJobsDataSchema = z.object({
+    id: z.string(),
+    callback: z.function()
+});

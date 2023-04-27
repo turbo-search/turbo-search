@@ -10,4 +10,6 @@ export type ErrorType =
   | "extensionValidation"
   | "taskValidation"
   | "endpointValidation"
-  | "jobValidation";
+  | "jobValidation"
+  | "jobSubscribeValidation"
+  | "jobsSubscribeValidation";

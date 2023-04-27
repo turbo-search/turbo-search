@@ -10,6 +10,7 @@ import { version } from "./version.js";
 import { taskManager } from "./manager/taskManager/taskManager.js";
 import { endpointManager } from "./manager/endpointManager/endpointManager.js";
 import { memoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManager.js";
+import { jobManager } from "./manager/jobManager/jobManager.js";
 
 export class turboSearchCore implements TurboSearchCore {
   public version = version;
@@ -55,7 +56,7 @@ export class turboSearchCore implements TurboSearchCore {
       addTaskAndEndpoint: this.addTaskAndEndpoint,
       endpoints: this._endpointManager.endpoints,
       tasks: this._taskManager.tasks,
-      job: this._job,
+      jobManager: this._jobManager,
     };
   }
 }

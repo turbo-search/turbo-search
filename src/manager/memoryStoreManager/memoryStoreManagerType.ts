@@ -15,5 +15,5 @@ export type MemoryStoreManager = {
     update: (table: string, key: string, value: any, _data: any) => Promise<void>;
 
     // メモリストアからデータを削除する
-    delete: (table: string, key: string, value: any) => Promise<void>;
+    delete: (table: string, key: string, value: any) => Promise<any[]>;
 }

@@ -14,6 +14,8 @@ const errorType = [
   "taskValidation",
   "endpointValidation",
   "jobValidation",
+  "jobSubscribeValidation",
+  "jobsSubscribeValidation",
 ];
 
 export const catchError = (type: ErrorType, message: string[]) => {
