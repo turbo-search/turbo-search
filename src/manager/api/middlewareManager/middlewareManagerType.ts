@@ -27,6 +27,24 @@ export type addMiddlewareData = {
     }>
 }
 
-export type middleware = {
+export type Middleware = {
+    inputSchema: Z.Schema;
+    outputSchema: Z.Schema;
+    middlewareManifesto: middlewareManifesto;
+    init?: (dataManagementKit: DataManagementKit) => Promise<void>;
+    process: (
+        inputData: Z.infer<addMiddlewareData["inputSchema"]>,
+        dataManagementKit: DataManagementKit
+    ) => Promise<{
+        success: false;
+        message: string;
+        error: any;
+    } | {
+        success: true;
+        output: Z.infer<addMiddlewareData["outputSchema"]>;
+    }>
+}
+
+export type MiddlewareManager = {
 
 }

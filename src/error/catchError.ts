@@ -16,6 +16,7 @@ const errorType = [
   "jobValidation",
   "jobSubscribeValidation",
   "jobsSubscribeValidation",
+  "middlewareValidation",
 ];
 
 export const catchError = (type: ErrorType, message: string[]) => {

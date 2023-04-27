@@ -12,4 +12,5 @@ export type ErrorType =
   | "endpointValidation"
   | "jobValidation"
   | "jobSubscribeValidation"
-  | "jobsSubscribeValidation";
+  | "jobsSubscribeValidation"
+  | "middlewareValidation";

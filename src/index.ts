@@ -5,7 +5,6 @@ import {
   TurboSearchCoreOptions,
   TurboSearchKit,
 } from "./indexType.js";
-import { jobs } from "./jobs/jobs.js";
 import { version } from "./version.js";
 import { taskManager } from "./manager/taskManager/taskManager.js";
 import { endpointManager } from "./manager/endpointManager/endpointManager.js";
