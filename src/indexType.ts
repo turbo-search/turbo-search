@@ -4,6 +4,7 @@ import { AddTaskData, Tasks } from "./manager/taskManager/taskManagerType";
 import { Extension } from "./manager/extensionManager/extensionManagerType";
 import { AddEndpointData, Endpoints } from "./manager/endpointManager/endpointManagerType";
 import { Job, JobManager } from "./manager/jobManager/jobManagerType";
+import { MemoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManagerType";
 
 //拡張機能にturbo-searchへのアクセスを提供するもの
 export type TurboSearchKit = {
@@ -22,7 +23,8 @@ export type DataManagementKit = {
   },
   database: {
 
-  }
+  },
+  memoryStore: MemoryStoreManager
 };
 
 //タスクとエンドポイントを追加するときのデータ

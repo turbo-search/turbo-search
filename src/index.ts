@@ -58,4 +58,10 @@ export class turboSearchCore implements TurboSearchCore {
       jobManager: this._jobManager,
     };
   }
+
+  dataManagementKit() {
+    return {
+      memoryStore: this._memoryStoreManager,
+    };
+  }
 }
