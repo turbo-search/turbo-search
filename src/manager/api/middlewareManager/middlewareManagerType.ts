@@ -47,4 +47,29 @@ export type Middleware = {
 
 export type MiddlewareManager = {
 
+    init: () => Promise<void>;
+
+    processAll: (inputData: any) => Promise<{
+        success: false;
+        message: string;
+        error: any;
+    } | {
+        success: true;
+        output: any;
+    }>;
+
+    checkSchema: () => Promise<void>;
+
+    process: (
+        inputData: any,
+        middleware: Middleware
+    ) => Promise<{
+        success: false;
+        message: string;
+        error: any;
+    } | {
+        success: true;
+        output: any;
+    }>;
+
 }

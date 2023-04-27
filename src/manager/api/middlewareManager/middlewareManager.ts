@@ -20,4 +20,70 @@ export class middlewareManager implements MiddlewareManager {
         this._dataManagementKit = dataManagementKit;
     }
 
+    async init() {
+        for (const middleware of this._middlewareList) {
+            if (middleware.init) {
+                await middleware.init(this._dataManagementKit);
+            }
+        }
+    }
+
+    async checkSchema() {
+
+        this._middlewareList.forEach((middleware, index) => {
+            if (index === this._middlewareList.length - 2) {
+                return;
+            }
+            if (middleware.outputSchema !== this._middlewareList[index + 1].inputSchema) {
+
+                catchError("middlewareValidation", [
+                    "middleware validation error",
+                    `middleware ${middleware.middlewareManifesto.name} outputSchema is not equal to middleware ${this._middlewareList[index + 1].middlewareManifesto.name} inputSchema`
+                ])
+
+            }
+        });
+
+    }
+
+    async processAll(inputData: any) {
+
+        let outputData: any = {
+            success: true,
+            output: inputData
+        };
+
+        for (const middleware of this._middlewareList) {
+
+            if (outputData.success === false) return;
+
+            const result = await this.process(outputData, middleware);
+            if (result.success) {
+                outputData = result.output;
+            } else {
+                return result;
+            }
+        }
+
+        return outputData;
+    }
+
+    async process(inputData: any, middleware: Middleware) {
+        const safeInput = middleware.inputSchema.safeParse(inputData);
+        if (!safeInput.success) {
+            return {
+                success: false,
+                message: "input data validation error",
+                error: safeInput.error
+            } as {
+                success: false;
+                message: string;
+                error: any;
+            }
+        } else {
+            const result = await middleware.process(safeInput.data, this._dataManagementKit);
+            return result;
+        }
+    }
+
 }
