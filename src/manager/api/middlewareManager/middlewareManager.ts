@@ -1,16 +1,19 @@
-import { DataManagementKit } from "../../../indexType";
+import { DataManagementKit, SchemaCheck } from "../../../indexType";
 import { Middleware, MiddlewareManager, addMiddlewareData } from "./middlewareManagerType";
 import { addMiddlewareDataSchema } from "./middlewareManagerSchema";
 import { catchError } from "../../../error/catchError";
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
+import { compareZodSchemas } from "../../../utils/compareZodSchemas";
 
 export class middlewareManager implements MiddlewareManager {
 
     private _middlewareList: Middleware[] = [];
     private _dataManagementKit: DataManagementKit;
+    private _schemaCheck: SchemaCheck;
 
-    constructor(_addMiddlewareDataList: addMiddlewareData[], dataManagementKit: DataManagementKit) {
+
+    constructor(_addMiddlewareDataList: addMiddlewareData[], dataManagementKit: DataManagementKit, schemaCheck: SchemaCheck) {
 
         const result = addMiddlewareDataSchema.safeParse(_addMiddlewareDataList);
         if (!result.success) {
@@ -20,6 +23,18 @@ export class middlewareManager implements MiddlewareManager {
         }
 
         this._dataManagementKit = dataManagementKit;
+
+        this._schemaCheck = schemaCheck;
+    }
+
+    get inputSchema() {
+        if (this._middlewareList.length === 0) return undefined;
+        return this._middlewareList[0].inputSchema;
+    }
+
+    get outputSchema() {
+        if (this._middlewareList.length === 0) return undefined;
+        return this._middlewareList[this._middlewareList.length - 1].outputSchema;
     }
 
     async init() {
@@ -36,11 +51,25 @@ export class middlewareManager implements MiddlewareManager {
             if (index === this._middlewareList.length - 2) {
                 return;
             }
-            if (middleware.outputSchema !== this._middlewareList[index + 1].inputSchema) {
+
+            // SchemaCheck == match
+
+            if (this._schemaCheck == "match" && middleware.outputSchema !== this._middlewareList[index + 1].inputSchema) {
 
                 catchError("middlewareValidation", [
                     "middleware validation error",
                     `middleware ${middleware.middlewareManifesto.name} outputSchema is not equal to middleware ${this._middlewareList[index + 1].middlewareManifesto.name} inputSchema`
+                ])
+
+            }
+
+            // SchemaCheck == include
+
+            if (this._schemaCheck == "include" && !compareZodSchemas(middleware.outputSchema, this._middlewareList[index + 1].inputSchema)) {
+
+                catchError("middlewareValidation", [
+                    "middleware validation error",
+                    `middleware ${middleware.middlewareManifesto.name} outputSchema is not include to middleware ${this._middlewareList[index + 1].middlewareManifesto.name} inputSchema`
                 ])
 
             }

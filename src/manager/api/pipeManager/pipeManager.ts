@@ -1,16 +1,18 @@
-import { DataManagementKit } from "../../../indexType";
+import { DataManagementKit, SchemaCheck } from "../../../indexType";
 import { Pipe, PipeManager, addPipeData } from "./pipeManagerType";
 import { addPipeDataSchema } from "./pipeManagerSchema";
 import { catchError } from "../../../error/catchError";
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
+import { compareZodSchemas } from "../../../utils/compareZodSchemas";
 
 export class pipeManager implements PipeManager {
 
     private _pipeList: Pipe[] = [];
     private _dataManagementKit: DataManagementKit;
+    private _schemaCheck: SchemaCheck;
 
-    constructor(_addPipeDataList: addPipeData[], dataManagementKit: DataManagementKit) {
+    constructor(_addPipeDataList: addPipeData[], dataManagementKit: DataManagementKit, schemaCheck: SchemaCheck) {
 
         const result = addPipeDataSchema.safeParse(_addPipeDataList);
         if (!result.success) {
@@ -20,6 +22,18 @@ export class pipeManager implements PipeManager {
         }
 
         this._dataManagementKit = dataManagementKit;
+
+        this._schemaCheck = schemaCheck;
+    }
+
+    get inputSchema() {
+        if (this._pipeList.length === 0) return undefined;
+        return this._pipeList[0].inputSchema;
+    }
+
+    get outputSchema() {
+        if (this._pipeList.length === 0) return undefined;
+        return this._pipeList[this._pipeList.length - 1].outputSchema;
     }
 
     async init() {
@@ -36,13 +50,26 @@ export class pipeManager implements PipeManager {
             if (index === this._pipeList.length - 2) {
                 return;
             }
-            if (pipe.outputSchema !== this._pipeList[index + 1].inputSchema) {
+
+            // SchemaCheck == match
+
+            if (this._schemaCheck == "match" && pipe.outputSchema !== this._pipeList[index + 1].inputSchema) {
 
                 catchError("pipeValidation", [
                     "pipe validation error",
                     `pipe ${pipe.pipeManifesto.name} outputSchema is not equal to pipe ${this._pipeList[index + 1].pipeManifesto.name} inputSchema`
                 ])
 
+            }
+
+            // SchemaCheck == include
+
+            if (this._schemaCheck == "include" && compareZodSchemas(pipe.outputSchema, this._pipeList[index + 1].inputSchema)) {
+
+                catchError("pipeValidation", [
+                    "pipe validation error",
+                    `pipe ${pipe.pipeManifesto.name} outputSchema is not include pipe ${this._pipeList[index + 1].pipeManifesto.name} inputSchema`
+                ])
             }
         });
 

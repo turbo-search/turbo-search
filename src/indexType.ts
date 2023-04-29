@@ -90,3 +90,8 @@ export type TurboSearchCore = {
     addTaskAndEndpoint: AddTaskAndEndpointData
   ) => Promise<void>;
 };
+
+export type SchemaCheck =
+  "match" //スキーマは完全に一致する必要がある if(schema === schema)
+  | "include" //スキーマは含まれている必要がある if(schema.includes(schema))
+  | false;

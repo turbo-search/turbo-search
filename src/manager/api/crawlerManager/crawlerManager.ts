@@ -28,6 +28,14 @@ export class crawlerManager implements CrawlerManager {
         }
     }
 
+    get inputSchema() {
+        return this._crawler!.inputSchema;
+    }
+
+    get outputSchema() {
+        return this._crawler!.outputSchema;
+    }
+
     async checkDependence() {
         const dependence = this._crawler!.crawlerManifesto.coreDependence;
         if (dependence && dependence != "") {

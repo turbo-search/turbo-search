@@ -76,4 +76,7 @@ export type PipeManager = {
         output: any;
     }>;
 
+    inputSchema: Z.Schema | undefined;
+    outputSchema: Z.Schema | undefined;
+
 }

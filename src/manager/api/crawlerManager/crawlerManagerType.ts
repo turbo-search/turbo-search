@@ -64,4 +64,7 @@ export type CrawlerManager = {
         output: any;
     }>;
 
+    inputSchema: Z.Schema;
+    outputSchema: Z.Schema;
+
 }
