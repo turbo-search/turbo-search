@@ -1,6 +1,7 @@
 import { extensionManager } from "./manager/extensionManager/extensionManager.js";
 import {
   AddTaskAndEndpointData,
+  DataManagementKit,
   TurboSearchCore,
   TurboSearchCoreOptions,
   TurboSearchKit,
@@ -64,7 +65,7 @@ export class turboSearchCore implements TurboSearchCore {
     };
   }
 
-  dataManagementKit() {
+  dataManagementKit(): DataManagementKit {
     return {
       database: this._database,
       memoryStore: this._memoryStoreManager,

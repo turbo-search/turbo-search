@@ -1,12 +1,11 @@
-import { z } from "zod";
 import type Z from "zod";
 import { AddTaskData, Tasks } from "./manager/taskManager/taskManagerType";
 import { Extension } from "./manager/extensionManager/extensionManagerType";
 import { AddEndpointData, Endpoints } from "./manager/endpointManager/endpointManagerType";
-import { Job, JobManager } from "./manager/jobManager/jobManagerType";
+import { JobManager } from "./manager/jobManager/jobManagerType";
 import { MemoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManagerType";
 import { Pipe } from "./manager/api/pipeManager/pipeManagerType";
-import { AddDatabaseData, Database } from "./manager/databaseManager/databaseManagerType";
+import { AddDatabaseData, DatabaseManager } from "./manager/databaseManager/databaseManagerType";
 import { Crawler } from "./manager/api/crawlerManager/crawlerManagerType";
 import { Indexer } from "./manager/api/indexerManager/indexerManagerType";
 
@@ -22,7 +21,7 @@ export type TurboSearchKit = {
 
 //Databaseへのアクセスを提供するもの
 export type DataManagementKit = {
-  database: Database,
+  database: DatabaseManager,
   memoryStore: MemoryStoreManager
 };
 
