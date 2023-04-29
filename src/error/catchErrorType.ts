@@ -14,4 +14,6 @@ export type ErrorType =
   | "jobSubscribeValidation"
   | "jobsSubscribeValidation"
   | "middlewareValidation"
-  | "pipeValidation";
+  | "pipeValidation"
+  | "crawlerValidation"
+  | "indexerValidation";

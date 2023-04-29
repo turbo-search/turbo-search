@@ -18,6 +18,8 @@ const errorType = [
   "jobsSubscribeValidation",
   "middlewareValidation",
   "pipeValidation",
+  "crawlerValidation",
+  "indexerValidation",
 ];
 
 export const catchError = (type: ErrorType, message: string[]) => {
@@ -33,4 +35,6 @@ export const catchError = (type: ErrorType, message: string[]) => {
   } else {
     exit(typeIndex + 2);
   }
+
+  exit(1);
 };

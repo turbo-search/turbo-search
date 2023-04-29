@@ -5,6 +5,7 @@ import { Extension } from "./manager/extensionManager/extensionManagerType";
 import { AddEndpointData, Endpoints } from "./manager/endpointManager/endpointManagerType";
 import { Job, JobManager } from "./manager/jobManager/jobManagerType";
 import { MemoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManagerType";
+import { Pipe } from "./manager/api/pipeManager/pipeManagerType";
 
 //拡張機能にturbo-searchへのアクセスを提供するもの
 export type TurboSearchKit = {
@@ -18,9 +19,6 @@ export type TurboSearchKit = {
 
 //Databaseへのアクセスを提供するもの
 export type DataManagementKit = {
-  fileHandling: {
-
-  },
   database: {
 
   },
@@ -57,19 +55,6 @@ export type Indexer = {
   ) => Promise<
     | { success: false; message: string; error: any }
     | { success: true; output: Z.infer<Indexer["outputSchema"]> }
-  >;
-};
-
-export type Pipe = {
-  name: string;
-  inputSchema: Z.Schema;
-  outputSchema: Z.Schema;
-  process: (
-    inputData: Z.infer<Pipe["inputSchema"]>,
-    turboSearchKit: TurboSearchKit
-  ) => Promise<
-    | { success: false; message: string; error: any }
-    | { success: true; output: Z.infer<Pipe["outputSchema"]> }
   >;
 };
 
