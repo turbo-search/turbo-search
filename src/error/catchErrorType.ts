@@ -7,6 +7,7 @@ export type ErrorType =
   | "crawler"
   | "indexer"
   | "adder"
+  | "database"
   | "extensionValidation"
   | "taskValidation"
   | "endpointValidation"
@@ -16,4 +17,5 @@ export type ErrorType =
   | "middlewareValidation"
   | "pipeValidation"
   | "crawlerValidation"
-  | "indexerValidation";
+  | "indexerValidation"
+  | "databaseValidation";

@@ -23,21 +23,21 @@ export class crawlerManager implements CrawlerManager {
     }
 
     async init() {
-        if (this._crawler!.init) {
-            await this._crawler!.init(this._dataManagementKit);
+        if (this._crawler.init) {
+            await this._crawler.init(this._dataManagementKit);
         }
     }
 
     get inputSchema() {
-        return this._crawler!.inputSchema;
+        return this._crawler.inputSchema;
     }
 
     get outputSchema() {
-        return this._crawler!.outputSchema;
+        return this._crawler.outputSchema;
     }
 
     async checkDependence() {
-        const dependence = this._crawler!.crawlerManifesto.coreDependence;
+        const dependence = this._crawler.crawlerManifesto.coreDependence;
         if (dependence && dependence != "") {
             if (!compareDependenceVersion(
                 version,
@@ -45,7 +45,7 @@ export class crawlerManager implements CrawlerManager {
             )) {
                 catchError("crawlerValidation", [
                     "crawler validation error",
-                    `crawler ${this._crawler!.crawlerManifesto.name} version is not equal to core version`
+                    `crawler ${this._crawler.crawlerManifesto.name} version is not equal to core version`
                 ])
             }
         }
@@ -57,7 +57,7 @@ export class crawlerManager implements CrawlerManager {
     }
 
     async process(inputData: any) {
-        const safeInput = this._crawler!.inputSchema.safeParse(inputData);
+        const safeInput = this._crawler.inputSchema.safeParse(inputData);
         if (!safeInput.success) {
             return {
                 success: false,
@@ -69,7 +69,7 @@ export class crawlerManager implements CrawlerManager {
                 error: any;
             }
         } else {
-            const result = await this._crawler!.process(safeInput.data, this._dataManagementKit);
+            const result = await this._crawler.process(safeInput.data, this._dataManagementKit);
             return result;
         }
     }

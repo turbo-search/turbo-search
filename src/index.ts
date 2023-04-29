@@ -20,14 +20,7 @@ export class turboSearchCore implements TurboSearchCore {
   private _jobManager;
 
   constructor(options: TurboSearchCoreOptions) {
-    //setup extensions
-    this._extensionManager = new extensionManager(
-      options.extensions,
-      options.error ? options.error : {},
-      this.version,
-      this.turboSearchKit()
-    );
-    this._extensionManager.setupExtensions();
+
 
     //setup tasks
     this._taskManager = new taskManager();
@@ -40,6 +33,15 @@ export class turboSearchCore implements TurboSearchCore {
 
     //setup job
     this._jobManager = new jobManager(this._memoryStoreManager);
+
+    //setup extensions
+    this._extensionManager = new extensionManager(
+      options.extensions,
+      options.error ? options.error : {},
+      this.version,
+      this.turboSearchKit()
+    );
+    this._extensionManager.setupExtensions();
   }
 
   // taskとendpoint両方を追加する
