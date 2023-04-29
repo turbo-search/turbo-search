@@ -18,4 +18,6 @@ export type ErrorType =
   | "pipeValidation"
   | "crawlerValidation"
   | "indexerValidation"
-  | "databaseValidation";
+  | "databaseValidation"
+  | "rankingValidation"
+  | "interceptorValidation";
