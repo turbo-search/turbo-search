@@ -23,7 +23,7 @@ export class turboSearchCore implements TurboSearchCore {
     //setup extensions
     this._extensionManager = new extensionManager(
       options.extensions,
-      options.error,
+      options.error ? options.error : {},
       this.version,
       this.turboSearchKit()
     );

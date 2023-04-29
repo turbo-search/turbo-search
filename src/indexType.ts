@@ -78,9 +78,14 @@ export type TurboSearchCoreOptions = {
   adders: Adder[];
   database: Database;
   extensions: Extension[];
-  error: {
+  error?: {
     strictAvailable?: boolean;
   };
+  schemaCheck?: {
+    crawler?: SchemaCheck;
+    indexer?: SchemaCheck;
+    pipe?: SchemaCheck;
+  } | SchemaCheck;
 };
 
 export type TurboSearchCore = {
