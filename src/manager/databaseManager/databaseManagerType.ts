@@ -1,4 +1,3 @@
-import Z from "zod";
 
 export type databaseManifesto = {
     name: string;

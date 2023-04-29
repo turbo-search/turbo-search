@@ -6,6 +6,9 @@ import { AddEndpointData, Endpoints } from "./manager/endpointManager/endpointMa
 import { Job, JobManager } from "./manager/jobManager/jobManagerType";
 import { MemoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManagerType";
 import { Pipe } from "./manager/api/pipeManager/pipeManagerType";
+import { AddDatabaseData, Database } from "./manager/databaseManager/databaseManagerType";
+import { Crawler } from "./manager/api/crawlerManager/crawlerManagerType";
+import { Indexer } from "./manager/api/indexerManager/indexerManagerType";
 
 //拡張機能にturbo-searchへのアクセスを提供するもの
 export type TurboSearchKit = {
@@ -19,9 +22,7 @@ export type TurboSearchKit = {
 
 //Databaseへのアクセスを提供するもの
 export type DataManagementKit = {
-  database: {
-
-  },
+  database: Database,
   memoryStore: MemoryStoreManager
 };
 
@@ -32,31 +33,6 @@ export type AddTaskAndEndpointData = {
   function: () => void;
 };
 
-export type Crawler = {
-  name: string;
-  inputSchema: Z.Schema;
-  outputSchema: Z.Schema;
-  process: (
-    inputData: Z.infer<Pipe["inputSchema"]>,
-    turboSearchKit: TurboSearchKit
-  ) => Promise<
-    | { success: false; message: string; error: any }
-    | { success: true; output: Z.infer<Crawler["outputSchema"]> }
-  >;
-};
-
-export type Indexer = {
-  name: string;
-  inputSchema: Z.Schema;
-  outputSchema: Z.Schema;
-  process: (
-    inputData: Z.infer<Pipe["inputSchema"]>,
-    turboSearchKit: TurboSearchKit
-  ) => Promise<
-    | { success: false; message: string; error: any }
-    | { success: true; output: Z.infer<Indexer["outputSchema"]> }
-  >;
-};
 
 export type Adder = {
   name: string;
@@ -72,11 +48,10 @@ export type Adder = {
   outputSchema: Z.Schema;
 };
 
-export type Database = {};
 
 export type TurboSearchCoreOptions = {
   adders: Adder[];
-  database: Database;
+  database: AddDatabaseData;
   extensions: Extension[];
   error?: {
     strictAvailable?: boolean;

@@ -10,9 +10,11 @@ import { taskManager } from "./manager/taskManager/taskManager.js";
 import { endpointManager } from "./manager/endpointManager/endpointManager.js";
 import { memoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManager.js";
 import { jobManager } from "./manager/jobManager/jobManager.js";
+import { databaseManager } from "./manager/databaseManager/databaseManager.js";
 
 export class turboSearchCore implements TurboSearchCore {
   public version = version;
+  private _database;
   private _taskManager;
   private _endpointManager;
   private _extensionManager;
@@ -20,7 +22,8 @@ export class turboSearchCore implements TurboSearchCore {
   private _jobManager;
 
   constructor(options: TurboSearchCoreOptions) {
-
+    //setup database
+    this._database = new databaseManager(options.database);
 
     //setup tasks
     this._taskManager = new taskManager();
@@ -63,6 +66,7 @@ export class turboSearchCore implements TurboSearchCore {
 
   dataManagementKit() {
     return {
+      database: this._database,
       memoryStore: this._memoryStoreManager,
     };
   }
