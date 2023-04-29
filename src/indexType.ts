@@ -81,11 +81,7 @@ export type TurboSearchCoreOptions = {
   error?: {
     strictAvailable?: boolean;
   };
-  schemaCheck?: {
-    crawler?: SchemaCheck;
-    indexer?: SchemaCheck;
-    pipe?: SchemaCheck;
-  } | SchemaCheck;
+  schemaCheck?: SchemaCheck;
 };
 
 export type TurboSearchCore = {
