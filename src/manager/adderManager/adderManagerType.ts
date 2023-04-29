@@ -1,5 +1,9 @@
-import { Adder } from "../../indexType";
 import type Z from "zod";
+import { Crawler } from "../api/crawlerManager/crawlerManagerType";
+import { Indexer } from "../api/indexerManager/indexerManagerType";
+import { Pipe } from "../api/pipeManager/pipeManagerType";
+import { Middleware } from "../api/middlewareManager/middlewareManagerType";
+import { DataManagementKit } from "../../indexType";
 
 export type Ran =
   | "coreToCrawler"
@@ -8,13 +12,47 @@ export type Ran =
   | "indexer"
   | "indexerToCore";
 
+export type AdderManifesto = {
+  name: string;
+  coreDependence?: string;
+  version: string;
+}
+
+export type AddAdderData = {
+  adderManifesto: AdderManifesto,
+  init?: (dataManagementKit: DataManagementKit) => Promise<void>;
+  middleware: Middleware[];
+  crawler: Crawler;
+  pipe: Pipe[];
+  indexer: Indexer;
+  inputSchema: Z.Schema;
+  outputSchema: Z.Schema;
+};
+
+export type Adder = {
+  adderManifesto: AdderManifesto,
+  init?: (dataManagementKit: DataManagementKit) => Promise<void>;
+  middleware: Middleware[];
+  crawler: Crawler;
+  pipe: Pipe[];
+  indexer: Indexer;
+  inputSchema: Z.Schema;
+  outputSchema: Z.Schema;
+}
+
 export type AdderManager = {
-  //スキーマによるチェック
+  // スキーマによるチェック
   checkSchema: () => void;
 
+  init: () => Promise<void>;
+
+  checkDependence: () => Promise<void>;
+
+  // setup
+  setup: () => Promise<void>;
+
   //実行
-  run: (
-    adderName: Adder["name"],
+  process: (
     input: object
   ) => Promise<
     | { success: false; message: string; ran: Ran[] }
@@ -22,48 +60,4 @@ export type AdderManager = {
     | { success: true; output: object; ran: Ran[] }
   >;
 
-  //coreToCrawlerを実行する
-  runCoreToCrawler: (
-    adder: Adder,
-    input: object
-  ) => Promise<
-    | { success: true; data: object }
-    | { success: false; message: string; error: any }
-  >;
-
-  //crawlerを実行する
-  runCrawler: (
-    adder: Adder,
-    input: object
-  ) => Promise<
-    | { success: true; data: object }
-    | { success: false; message: string; error: any }
-  >;
-
-  //crawlerToIndexerを実行する
-  runCrawlerToIndexer: (
-    adder: Adder,
-    input: object
-  ) => Promise<
-    | { success: true; data: object }
-    | { success: false; message: string; error: any }
-  >;
-
-  //indexerを実行する
-  runIndexer: (
-    adder: Adder,
-    input: object
-  ) => Promise<
-    | { success: true; data: object }
-    | { success: false; message: string; error: any }
-  >;
-
-  //indexerToCoreを実行する
-  runIndexerToCore: (
-    adder: Adder,
-    input: object
-  ) => Promise<
-    | { success: true; data: object }
-    | { success: false; message: string; error: any }
-  >;
 };
