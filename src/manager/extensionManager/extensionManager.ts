@@ -1,28 +1,27 @@
 import { catchError } from "../../error/catchError.js";
 import {
+  ExtensionSetupKit,
   TurboSearchCoreOptions,
   TurboSearchKit,
 } from "../../indexType.js";
 import { compareDependenceVersion } from "../../utils/compareDependenceVersion.js";
+import { version } from "../../version.js";
 import { Extension } from "./extensionManagerType.js";
 import { addExtensionSchema } from "./extensionSchema.js";
 
 export class ExtensionManager {
   private _error;
-  private _coreVersion;
   private _extensions;
-  private _turboSearchKit;
+  private _extensionSetupKit;
 
   constructor(
     extensions: Extension[],
     error: TurboSearchCoreOptions["error"],
-    coreVersion: string,
-    turboSearchKit: TurboSearchKit
+    extensionSetupKit: ExtensionSetupKit
   ) {
     this._error = error;
-    this._coreVersion = coreVersion;
     this._extensions = extensions;
-    this._turboSearchKit = turboSearchKit;
+    this._extensionSetupKit = extensionSetupKit;
   }
 
   //extensionのバリデーション
@@ -101,14 +100,14 @@ export class ExtensionManager {
         if (
           extension.manifesto.coreDependence !== "" &&
           !compareDependenceVersion(
-            this._coreVersion,
+            version,
             extension.manifesto.coreDependence
           )
         ) {
           catchError("dependence", [
             extension.manifesto.name + " coreDependence is not match",
             "Requested Version : " + extension.manifesto.coreDependence,
-            "Current version : " + this._coreVersion,
+            "Current version : " + version,
           ]);
         }
       }
@@ -173,7 +172,7 @@ export class ExtensionManager {
   load() {
     this._extensions.forEach((extension) => {
       if (typeof extension.init === "function") {
-        extension.init(this._turboSearchKit);
+        extension.init(this._extensionSetupKit);
       }
     });
   }
@@ -191,6 +190,5 @@ export class ExtensionManager {
     this.checkAvailable();
     this.checkDependence();
     this.load();
-    return this.getExtensions();
   }
 }

@@ -2,6 +2,7 @@ import { ExtensionManager } from "./manager/extensionManager/extensionManager.js
 import {
   AddTaskAndEndpointData,
   DataManagementKit,
+  ExtensionSetupKit,
   SchemaCheck,
   TurboSearchCoreOptions,
   TurboSearchKit,
@@ -58,8 +59,7 @@ export class TurboSearchCore {
     this._extensionManager = new ExtensionManager(
       options.extensions ? options.extensions : [],
       options.error ? options.error : {},
-      this.version,
-      this.turboSearchKit()
+      this.extensionSetupKit()
     );
     this._extensionManager.setupExtensions();
 
@@ -124,7 +124,22 @@ export class TurboSearchCore {
       tasks: this._taskManager.tasks,
       jobManager: this._jobManager,
       extensions: this._extensionManager.getExtensions(),
+      database: this._database,
+      memoryStore: this._memoryStoreManager,
     };
+  }
+
+  extensionSetupKit(): ExtensionSetupKit {
+    return {
+      addTask: this._taskManager.addTask,
+      addEndpoint: this._endpointManager.addEndpoint,
+      addTaskAndEndpoint: this.addTaskAndEndpoint,
+      endpoints: this._endpointManager.endpoints,
+      tasks: this._taskManager.tasks,
+      jobManager: this._jobManager,
+      database: this._database,
+      memoryStore: this._memoryStoreManager,
+    }
   }
 
   dataManagementKit(): DataManagementKit {

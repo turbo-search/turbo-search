@@ -17,7 +17,20 @@ export type TurboSearchKit = {
   tasks: Tasks;
   jobManager: JobManager;
   extensions: Extension[];
+  database: DatabaseManager;
+  memoryStore: MemoryStoreManager;
 };
+
+export type ExtensionSetupKit = {
+  addTask: (task: AddTaskData) => void;
+  addEndpoint: (endpoint: AddEndpointData) => void;
+  addTaskAndEndpoint: (addTaskAndEndpoint: AddTaskAndEndpointData) => void;
+  endpoints: Endpoints;
+  tasks: Tasks;
+  jobManager: JobManager;
+  database: DatabaseManager,
+  memoryStore: MemoryStoreManager,
+}
 
 //Databaseへのアクセスを提供するもの
 export type DataManagementKit = {
@@ -33,10 +46,10 @@ export type AddTaskAndEndpointData = {
 };
 
 export type TurboSearchCoreOptions = {
-  adders: AddAdderData[];
-  searcher: AddSearcherData;
+  adders?: AddAdderData[];
+  searcher?: AddSearcherData;
   database: AddDatabaseData;
-  extensions: Extension[];
+  extensions?: Extension[];
   error?: {
     strictAvailable?: boolean;
   };
