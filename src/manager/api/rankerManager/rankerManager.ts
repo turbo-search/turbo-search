@@ -1,51 +1,51 @@
 import { catchError } from "../../../error/catchError";
 import { DataManagementKit } from "../../../indexType";
-import { addRankingDataSchema } from "./rankingManagerSchema";
-import { RankingManager, AddRankingData } from "./rankingManagerType"
+import { addRankerDataSchema } from "./rankerManagerSchema";
+import { RankerManager, AddRankerData } from "./rankerManagerType"
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
 
-export class rankingManager implements RankingManager {
+export class rankerManager implements RankerManager {
 
-    private _ranking;
+    private _ranker;
     private _dataManagementKit: DataManagementKit;
 
-    constructor(addRankingData: AddRankingData, dataManagementKit: DataManagementKit) {
-        const result = addRankingDataSchema.safeParse(addRankingData);
+    constructor(addRankerData: AddRankerData, dataManagementKit: DataManagementKit) {
+        const result = addRankerDataSchema.safeParse(addRankerData);
         if (!result.success) {
-            catchError("rankingValidation", ["ranking validation error", result.error.message]);
+            catchError("rankerValidation", ["ranker validation error", result.error.message]);
             //exit
         } else {
-            this._ranking = result.data as unknown as AddRankingData;
+            this._ranker = result.data as unknown as AddRankerData;
         }
 
         this._dataManagementKit = dataManagementKit;
     }
 
     async init() {
-        if (this._ranking.init) {
-            await this._ranking.init(this._dataManagementKit);
+        if (this._ranker.init) {
+            await this._ranker.init(this._dataManagementKit);
         }
     }
 
     get requestSchema() {
-        return this._ranking.requestSchema;
+        return this._ranker.requestSchema;
     }
 
     get outputSchema() {
-        return this._ranking.outputSchema;
+        return this._ranker.outputSchema;
     }
 
     async checkDependence() {
-        const dependence = this._ranking.rankingManifesto.coreDependence;
+        const dependence = this._ranker.rankerManifesto.coreDependence;
         if (dependence && dependence != "") {
             if (!compareDependenceVersion(
                 version,
                 dependence
             )) {
-                catchError("rankingValidation", [
-                    "ranking validation error",
-                    `ranking ${this._ranking.rankingManifesto.name} version is not equal to core version`
+                catchError("rankerValidation", [
+                    "ranker validation error",
+                    `ranker ${this._ranker.rankerManifesto.name} version is not equal to core version`
                 ])
             }
         }
@@ -57,7 +57,7 @@ export class rankingManager implements RankingManager {
     }
 
     async process(requestData: any) {
-        const safeRequest = this._ranking.requestSchema.safeParse(requestData);
+        const safeRequest = this._ranker.requestSchema.safeParse(requestData);
         if (!safeRequest.success) {
             return {
                 success: false,
@@ -69,7 +69,7 @@ export class rankingManager implements RankingManager {
                 error: any;
             }
         } else {
-            const result = await this._ranking.process(safeRequest.data, this._dataManagementKit);
+            const result = await this._ranker.process(safeRequest.data, this._dataManagementKit);
             return result;
         }
     }

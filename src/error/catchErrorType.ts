@@ -7,6 +7,7 @@ export type ErrorType =
   | "crawler"
   | "indexer"
   | "adder"
+  | "searcher"
   | "database"
   | "extensionValidation"
   | "taskValidation"
@@ -19,5 +20,5 @@ export type ErrorType =
   | "crawlerValidation"
   | "indexerValidation"
   | "databaseValidation"
-  | "rankingValidation"
+  | "rankerValidation"
   | "interceptorValidation";

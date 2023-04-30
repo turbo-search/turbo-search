@@ -1,7 +1,7 @@
 import Z from "zod";
 import { DataManagementKit } from "../../../indexType";
 
-export type RankingManifesto = {
+export type RankerManifesto = {
     name: string;
     coreDependence?: string;
     version: string;
@@ -9,13 +9,13 @@ export type RankingManifesto = {
 }
 
 //class
-export type AddRankingData = {
+export type AddRankerData = {
     requestSchema: Z.Schema;
     outputSchema: Z.Schema;
-    rankingManifesto: RankingManifesto;
+    rankerManifesto: RankerManifesto;
     init?: (dataManagementKit: DataManagementKit) => Promise<void>;
     process: (
-        requestData: Z.infer<AddRankingData["requestSchema"]>,
+        requestData: Z.infer<AddRankerData["requestSchema"]>,
         dataManagementKit: DataManagementKit
     ) => Promise<{
         success: false;
@@ -23,17 +23,17 @@ export type AddRankingData = {
         error: any;
     } | {
         success: true;
-        output: Z.infer<AddRankingData["outputSchema"]>;
+        output: Z.infer<AddRankerData["outputSchema"]>;
     }>
 }
 
-export type Ranking = {
+export type Ranker = {
     requestSchema: Z.Schema;
     outputSchema: Z.Schema;
-    rankingManifesto: RankingManifesto;
+    rankerManifesto: RankerManifesto;
     init?: (dataManagementKit: DataManagementKit) => Promise<void>;
     process: (
-        requestData: Z.infer<Ranking["requestSchema"]>,
+        requestData: Z.infer<Ranker["requestSchema"]>,
         dataManagementKit: DataManagementKit
     ) => Promise<{
         success: false;
@@ -41,11 +41,11 @@ export type Ranking = {
         error: any;
     } | {
         success: true;
-        output: Z.infer<AddRankingData["outputSchema"]>;
+        output: Z.infer<AddRankerData["outputSchema"]>;
     }>
 }
 
-export type RankingManager = {
+export type RankerManager = {
 
     init: () => Promise<void>;
 

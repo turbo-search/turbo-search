@@ -13,7 +13,6 @@ import { pipeManager } from '../api/pipeManager/pipeManager.js';
 import { PipeManager } from '../api/pipeManager/pipeManagerType.js';
 import { addAdderDataSchema } from './adderManagerSchema.js';
 import type { AddAdderData, Adder, AdderManager, Ran } from './adderManagerType.js';
-import type Z from 'zod';
 import { compareZodSchemas } from '../../utils/compareZodSchemas.js';
 
 export class adderManager implements AdderManager {
@@ -52,19 +51,6 @@ export class adderManager implements AdderManager {
     }
 
     async checkSchema() {
-
-        const requestCrawlerSchema = this._crawlerManager.requestSchema;
-        const requestPipeSchema = this._pipeManager.requestSchema;
-        const requestIndexerSchema = this._indexerManager.requestSchema;
-
-        const requestSchema = requestPipeSchema ? z.object({
-            crawler: requestCrawlerSchema,
-            pipe: requestPipeSchema,
-            indexer: requestIndexerSchema
-        }) : z.object({
-            crawler: requestCrawlerSchema,
-            indexer: requestIndexerSchema
-        })
 
         const outputCrawlerSchema = this._crawlerManager.outputSchema;
         const inputPipeSchema = this._pipeManager.inputSchema;
