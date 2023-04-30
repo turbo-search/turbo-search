@@ -8,7 +8,6 @@ export const compareDependenceVersion = (
   currentVersion = normalizeVersion(currentVersion);
   // requiredVersionを正規化する
   requiredVersion = normalizeVersionObj(requiredVersion);
-
   // semverパッケージを使用して、現在のバージョンと必要なバージョンを比較する
   return semver.satisfies(currentVersion, requiredVersion);
 };
@@ -24,7 +23,7 @@ function normalizeVersionObj(version: string) {
   const versionParts = version.match(/^(>=|>|<=|<)?(.*)$/);
 
   return (
-    (versionParts ? versionParts[1] : "") + semver.valid(semver.coerce(version))
+    (versionParts && (versionParts[1] == ">=" || versionParts[1] == ">" || versionParts[1] == "<" || versionParts[1] == "<=") ? versionParts[1] + version : ("=" + semver.valid(semver.coerce(version))))
   );
 }
 

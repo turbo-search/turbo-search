@@ -10,6 +10,11 @@ export const addAdderDataSchema = z.object({
         queryPath: z.string().optional(),
         version: z.string(),
         coreDependence: z.string().optional(),
+        databaseDependence: z.array(z.object({
+            name: z.string(),
+            version: z.string(),
+        })).optional(),
+        extensionDependence: z.record(z.string()).optional(),
     }),
     middleware: z.array(addMiddlewareDataSchema),
     crawler: addCrawlerDataSchema,
