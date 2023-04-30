@@ -11,13 +11,13 @@ export class MiddlewareManager {
     private _dataManagementKit: DataManagementKit;
 
 
-    constructor(_addMiddlewareDataList: AddMiddlewareData[], dataManagementKit: DataManagementKit) {
+    constructor(addMiddlewareDataList: AddMiddlewareData[], dataManagementKit: DataManagementKit) {
 
-        const result = addMiddlewareDataSchema.safeParse(_addMiddlewareDataList);
+        const result = addMiddlewareDataSchema.safeParse(addMiddlewareDataList);
         if (!result.success) {
             catchError("middlewareValidation", ["middleware validation error", result.error.message]);
         } else {
-            this._middlewareList = result.data as unknown as AddMiddlewareData[];
+            this._middlewareList = addMiddlewareDataList;
         }
 
         this._dataManagementKit = dataManagementKit;

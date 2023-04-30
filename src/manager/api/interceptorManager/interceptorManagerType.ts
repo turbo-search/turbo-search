@@ -8,27 +8,6 @@ export type InterceptorManifesto = {
 
 }
 
-//class
-export type AddInterceptorData = {
-    requestSchema: Z.Schema;
-    inputSchema: Z.Schema;
-    outputSchema: Z.Schema;
-    interceptorManifesto: InterceptorManifesto;
-    init?: (dataManagementKit: DataManagementKit) => Promise<void>;
-    process: (
-        requestData: Z.infer<AddInterceptorData["requestSchema"]>,
-        inputData: Z.infer<AddInterceptorData["inputSchema"]>,
-        dataManagementKit: DataManagementKit
-    ) => Promise<{
-        success: false;
-        message: string;
-        error: any;
-    } | {
-        success: true;
-        output: Z.infer<AddInterceptorData["outputSchema"]>;
-    }>
-}
-
 export type Interceptor = {
     requestSchema: Z.Schema;
     inputSchema: Z.Schema;
@@ -48,3 +27,5 @@ export type Interceptor = {
         output: Z.infer<Interceptor["outputSchema"]>;
     }>
 }
+
+export type AddInterceptorData = Interceptor;

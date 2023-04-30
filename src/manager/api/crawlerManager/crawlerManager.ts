@@ -16,7 +16,7 @@ export class CrawlerManager {
             catchError("crawlerValidation", ["crawler validation error", result.error.message]);
             //exit
         } else {
-            this._crawler = result.data as unknown as AddCrawlerData;
+            this._crawler = addCrawlerData;
         }
 
         this._dataManagementKit = dataManagementKit;

@@ -13,13 +13,13 @@ export class PipeManager {
     private _dataManagementKit: DataManagementKit;
     private _schemaCheck: SchemaCheck;
 
-    constructor(_addPipeDataList: AddPipeData[], dataManagementKit: DataManagementKit, schemaCheck: SchemaCheck) {
+    constructor(addPipeDataList: AddPipeData[], dataManagementKit: DataManagementKit, schemaCheck: SchemaCheck) {
 
-        const result = addPipeDataSchema.safeParse(_addPipeDataList);
+        const result = addPipeDataSchema.safeParse(addPipeDataList);
         if (!result.success) {
             catchError("pipeValidation", ["pipe validation error", result.error.message]);
         } else {
-            this._pipeList = result.data as unknown as AddPipeData[];
+            this._pipeList = addPipeDataList;
         }
 
         this._dataManagementKit = dataManagementKit;

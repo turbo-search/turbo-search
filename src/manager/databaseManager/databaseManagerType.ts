@@ -6,16 +6,6 @@ export type databaseManifesto = {
 
 }
 
-//class
-export type AddDatabaseData = {
-    databaseManifesto: databaseManifesto;
-    init?: () => Promise<void>;
-    addData: (data: any) => Promise<void | any>;
-    getAllData?: () => Promise<any>;
-    fullTextSearch?: (query: string) => Promise<any>;
-    vectorSearch?: (query: string) => Promise<any>;
-}
-
 export type Database = {
     databaseManifesto: databaseManifesto;
     init?: () => Promise<void>;
@@ -26,3 +16,5 @@ export type Database = {
     fullTextSearch?: (query: string) => Promise<any>;
     vectorSearch?: (query: string) => Promise<any>;
 }
+
+export type AddDatabaseData = Database;

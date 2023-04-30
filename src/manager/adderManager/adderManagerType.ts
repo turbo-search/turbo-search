@@ -17,15 +17,6 @@ export type AdderManifesto = {
   version: string;
 }
 
-export type AddAdderData = {
-  adderManifesto: AdderManifesto,
-  init?: (dataManagementKit: DataManagementKit) => Promise<void>;
-  middleware: Middleware[];
-  crawler: Crawler;
-  pipe: Pipe[];
-  indexer: Indexer;
-};
-
 export type Adder = {
   adderManifesto: AdderManifesto,
   init?: (dataManagementKit: DataManagementKit) => Promise<void>;
@@ -34,3 +25,5 @@ export type Adder = {
   pipe: Pipe[];
   indexer: Indexer;
 }
+
+export type AddAdderData = Adder;

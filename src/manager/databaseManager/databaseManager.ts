@@ -13,7 +13,7 @@ export class DatabaseManager {
         if (!result.success) {
             catchError("databaseValidation", ["database validation error", result.error.message]);
         } else {
-            this._databases = result.data as unknown as Database;
+            this._databases = addDatabaseData;
         }
     }
 
@@ -81,6 +81,10 @@ export class DatabaseManager {
     }
 
     async fullTextSearch(query: string) {
+        //@ts-ignore
+        console.log(this._databases.data)
+        console.log(this._databases.getAllData!())
+
         if (this._databases.fullTextSearch) {
             return await this._databases.fullTextSearch(query);
         } else {

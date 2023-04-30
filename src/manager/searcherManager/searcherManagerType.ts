@@ -17,15 +17,6 @@ export type SearcherManifesto = {
   version: string;
 }
 
-export type AddSearcherData = {
-  searcherManifesto: SearcherManifesto,
-  init?: (dataManagementKit: DataManagementKit) => Promise<void>;
-  middleware: Middleware[];
-  ranker: Ranker;
-  pipe: Pipe[];
-  interceptor: Interceptor;
-};
-
 export type Searcher = {
   searcherManifesto: SearcherManifesto,
   init?: (dataManagementKit: DataManagementKit) => Promise<void>;
@@ -35,26 +26,4 @@ export type Searcher = {
   interceptor: Interceptor;
 }
 
-export type SearcherManager = {
-  // スキーマによるチェック
-  checkSchema: () => void;
-
-  init: () => Promise<void>;
-
-  checkDependence: () => Promise<void>;
-
-  addEndpoint: () => Promise<void>;
-
-  // setup
-  setup: () => Promise<void>;
-
-  //実行
-  process: (
-    request: any
-  ) => Promise<
-    | { success: false; message: string; ran: Ran[] }
-    | { success: false; message: string; error: any; ran: Ran[] }
-    | { success: true; output: any; ran: Ran[] }
-  >;
-
-};
+export type AddSearcherData = Searcher;

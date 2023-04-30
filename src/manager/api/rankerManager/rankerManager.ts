@@ -16,7 +16,7 @@ export class RankerManager {
             catchError("rankerValidation", ["ranker validation error", result.error.message]);
             //exit
         } else {
-            this._ranker = result.data as unknown as AddRankerData;
+            this._ranker = addRankerData;
         }
 
         this._dataManagementKit = dataManagementKit;

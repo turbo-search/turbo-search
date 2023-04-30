@@ -8,25 +8,6 @@ export type CrawlerManifesto = {
 
 }
 
-//class
-export type AddCrawlerData = {
-    requestSchema: Z.Schema;
-    outputSchema: Z.Schema;
-    crawlerManifesto: CrawlerManifesto;
-    init?: (dataManagementKit: DataManagementKit) => Promise<void>;
-    process: (
-        requestData: Z.infer<AddCrawlerData["requestSchema"]>,
-        dataManagementKit: DataManagementKit
-    ) => Promise<{
-        success: false;
-        message: string;
-        error: any;
-    } | {
-        success: true;
-        output: Z.infer<AddCrawlerData["outputSchema"]>;
-    }>
-}
-
 export type Crawler = {
     requestSchema: Z.Schema;
     outputSchema: Z.Schema;
@@ -44,3 +25,5 @@ export type Crawler = {
         output: Z.infer<AddCrawlerData["outputSchema"]>;
     }>
 }
+
+export type AddCrawlerData = Crawler;

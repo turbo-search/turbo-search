@@ -16,7 +16,7 @@ export class IndexerManager {
             catchError("indexerValidation", ["indexer validation error", result.error.message]);
             //exit
         } else {
-            this._indexer = result.data as unknown as AddIndexerData;
+            this._indexer = addIndexerData;
         }
 
         this._dataManagementKit = dataManagementKit;

@@ -8,27 +8,6 @@ export type PipeManifesto = {
 
 }
 
-//class
-export type AddPipeData = {
-    requestSchema: Z.Schema;
-    inputSchema: Z.Schema;
-    outputSchema: Z.Schema;
-    pipeManifesto: PipeManifesto;
-    init?: (dataManagementKit: DataManagementKit) => Promise<void>;
-    process: (
-        requestData: Z.infer<Pipe["requestSchema"]>,
-        inputData: Z.infer<AddPipeData["inputSchema"]>,
-        dataManagementKit: DataManagementKit
-    ) => Promise<{
-        success: false;
-        message: string;
-        error: any;
-    } | {
-        success: true;
-        output: Z.infer<AddPipeData["outputSchema"]>;
-    }>
-}
-
 export type Pipe = {
     requestSchema: Z.Schema;
     inputSchema: Z.Schema;
@@ -48,3 +27,5 @@ export type Pipe = {
         output: Z.infer<Pipe["outputSchema"]>;
     }>
 }
+
+export type AddPipeData = Pipe;

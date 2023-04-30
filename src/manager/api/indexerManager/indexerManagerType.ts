@@ -8,27 +8,6 @@ export type IndexerManifesto = {
 
 }
 
-//class
-export type AddIndexerData = {
-    requestSchema: Z.Schema;
-    inputSchema: Z.Schema;
-    outputSchema: Z.Schema;
-    indexerManifesto: IndexerManifesto;
-    init?: (dataManagementKit: DataManagementKit) => Promise<void>;
-    process: (
-        requestData: Z.infer<AddIndexerData["requestSchema"]>,
-        inputData: Z.infer<AddIndexerData["inputSchema"]>,
-        dataManagementKit: DataManagementKit
-    ) => Promise<{
-        success: false;
-        message: string;
-        error: any;
-    } | {
-        success: true;
-        output: Z.infer<AddIndexerData["outputSchema"]>;
-    }>
-}
-
 export type Indexer = {
     requestSchema: Z.Schema;
     inputSchema: Z.Schema;
@@ -48,3 +27,5 @@ export type Indexer = {
         output: Z.infer<Indexer["outputSchema"]>;
     }>
 }
+
+export type AddIndexerData = Indexer;

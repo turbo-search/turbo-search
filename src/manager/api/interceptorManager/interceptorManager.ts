@@ -16,7 +16,7 @@ export class InterceptorManager {
             catchError("interceptorValidation", ["interceptor validation error", result.error.message]);
             //exit
         } else {
-            this._interceptor = result.data as unknown as AddInterceptorData;
+            this._interceptor = addInterceptorData;
         }
 
         this._dataManagementKit = dataManagementKit;
