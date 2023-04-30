@@ -2,6 +2,7 @@ import { extensionManager } from "./manager/extensionManager/extensionManager.js
 import {
   AddTaskAndEndpointData,
   DataManagementKit,
+  SchemaCheck,
   TurboSearchCore,
   TurboSearchCoreOptions,
   TurboSearchKit,
@@ -12,17 +13,29 @@ import { endpointManager } from "./manager/endpointManager/endpointManager.js";
 import { memoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManager.js";
 import { jobManager } from "./manager/jobManager/jobManager.js";
 import { databaseManager } from "./manager/databaseManager/databaseManager.js";
+import { searcherManager } from "./manager/searcherManager/searcherManager.js";
+import { adderManager } from "./manager/adderManager/adderManager.js";
 
 export class turboSearchCore implements TurboSearchCore {
   public version = version;
+  private _schemaCheck: SchemaCheck;
   private _database;
   private _taskManager;
   private _endpointManager;
   private _extensionManager;
   private _memoryStoreManager;
   private _jobManager;
+  private _searcherManager;
+  private _adderManagerList;
 
   constructor(options: TurboSearchCoreOptions) {
+
+    if (options.schemaCheck) {
+      this._schemaCheck = options.schemaCheck;
+    } else {
+      this._schemaCheck = "match";
+    }
+
     //setup database
     this._database = new databaseManager(options.database);
 
@@ -46,6 +59,24 @@ export class turboSearchCore implements TurboSearchCore {
       this.turboSearchKit()
     );
     this._extensionManager.setupExtensions();
+
+    //setup searcher
+    this._searcherManager = new searcherManager(
+      options.searcher,
+      this.dataManagementKit(),
+      this.turboSearchKit(),
+      this._schemaCheck
+    );
+
+    //setup adder
+    this._adderManagerList = options.adders.map((adder) => {
+      return new adderManager(
+        adder,
+        this.dataManagementKit(),
+        this.turboSearchKit(),
+        this._schemaCheck
+      )
+    });
   }
 
   // taskとendpoint両方を追加する
@@ -53,6 +84,8 @@ export class turboSearchCore implements TurboSearchCore {
     await this._taskManager.addTask(taskAndEndpoint);
     await this._endpointManager.addEndpoint(taskAndEndpoint);
   }
+
+
 
   turboSearchKit(): TurboSearchKit {
     return {
