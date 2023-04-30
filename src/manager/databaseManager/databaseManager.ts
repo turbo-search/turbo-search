@@ -81,10 +81,6 @@ export class DatabaseManager {
     }
 
     async fullTextSearch(query: string) {
-        //@ts-ignore
-        console.log(this._databases.data)
-        console.log(this._databases.getAllData!())
-
         if (this._databases.fullTextSearch) {
             return await this._databases.fullTextSearch(query);
         } else {
