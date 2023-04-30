@@ -43,10 +43,12 @@ export type TurboSearchCoreOptions = {
 
 export type TurboSearchCore = {
   version: string;
+  endpoint: Endpoints;
 
   addTaskAndEndpoint: (
     addTaskAndEndpoint: AddTaskAndEndpointData
   ) => Promise<void>;
+
 };
 
 export type SchemaCheck =

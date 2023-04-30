@@ -104,4 +104,9 @@ export class turboSearchCore implements TurboSearchCore {
       memoryStore: this._memoryStoreManager,
     };
   }
+
+  get endpoint() {
+    return this._endpointManager.endpoints;
+  }
+
 }
