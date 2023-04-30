@@ -2,20 +2,16 @@ import { catchError } from '../../error/catchError.js';
 import { DataManagementKit, SchemaCheck, TurboSearchKit } from '../../indexType.js';
 import { compareDependenceVersion } from '../../utils/compareDependenceVersion.js';
 import { version } from '../../version.js';
-import { rankerManager } from '../api/rankerManager/rankerManager.js';
-import { RankerManager } from '../api/rankerManager/rankerManagerType.js';
-import { interceptorManager } from '../api/interceptorManager/interceptorManager.js';
-import { InterceptorManager } from '../api/interceptorManager/interceptorManagerType.js';
-import { middlewareManager } from '../api/middlewareManager/middlewareManager.js';
-import { MiddlewareManager } from '../api/middlewareManager/middlewareManagerType.js';
-import { pipeManager } from '../api/pipeManager/pipeManager.js';
-import { PipeManager } from '../api/pipeManager/pipeManagerType.js';
+import { RankerManager } from '../api/rankerManager/rankerManager.js';
+import { InterceptorManager } from '../api/interceptorManager/interceptorManager.js';
+import { MiddlewareManager } from '../api/middlewareManager/middlewareManager.js';
+import { PipeManager } from '../api/pipeManager/pipeManager.js';
 import { addSearcherDataSchema } from './searcherManagerSchema.js';
-import type { AddSearcherData, Searcher, SearcherManager, Ran } from './searcherManagerType.js';
+import type { AddSearcherData, Searcher, Ran } from './searcherManagerType.js';
 import { compareZodSchemas } from '../../utils/compareZodSchemas.js';
 import { deepEqualZodSchema } from '../../utils/deepEqualZodSchema.js';
 
-export class searcherManager implements SearcherManager {
+export class SearcherManager {
 
     private _searcher: Searcher;
     private _dataManagementKit: DataManagementKit;
@@ -41,13 +37,13 @@ export class searcherManager implements SearcherManager {
 
         this._schemaCheck = schemaCheck;
 
-        this._middlewareManager = new middlewareManager(this._searcher.middleware, this._dataManagementKit);
+        this._middlewareManager = new MiddlewareManager(this._searcher.middleware, this._dataManagementKit);
 
-        this._rankerManager = new rankerManager(this._searcher.ranker, this._dataManagementKit);
+        this._rankerManager = new RankerManager(this._searcher.ranker, this._dataManagementKit);
 
-        this._pipeManager = new pipeManager(this._searcher.pipe, this._dataManagementKit, this._schemaCheck);
+        this._pipeManager = new PipeManager(this._searcher.pipe, this._dataManagementKit, this._schemaCheck);
 
-        this._interceptorManager = new interceptorManager(this._searcher.interceptor, this._dataManagementKit);
+        this._interceptorManager = new InterceptorManager(this._searcher.interceptor, this._dataManagementKit);
 
         this._turboSearchKit = turboSearchKit;
 

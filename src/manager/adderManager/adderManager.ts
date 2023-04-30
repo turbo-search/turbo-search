@@ -2,20 +2,16 @@ import { catchError } from '../../error/catchError.js';
 import { DataManagementKit, SchemaCheck, TurboSearchKit } from '../../indexType.js';
 import { compareDependenceVersion } from '../../utils/compareDependenceVersion.js';
 import { version } from '../../version.js';
-import { crawlerManager } from '../api/crawlerManager/crawlerManager.js';
-import { CrawlerManager } from '../api/crawlerManager/crawlerManagerType.js';
-import { indexerManager } from '../api/indexerManager/indexerManager.js';
-import { IndexerManager } from '../api/indexerManager/indexerManagerType.js';
-import { middlewareManager } from '../api/middlewareManager/middlewareManager.js';
-import { MiddlewareManager } from '../api/middlewareManager/middlewareManagerType.js';
-import { pipeManager } from '../api/pipeManager/pipeManager.js';
-import { PipeManager } from '../api/pipeManager/pipeManagerType.js';
+import { CrawlerManager } from '../api/crawlerManager/crawlerManager.js';
+import { IndexerManager } from '../api/indexerManager/indexerManager.js';
+import { MiddlewareManager } from '../api/middlewareManager/middlewareManager.js';
+import { PipeManager } from '../api/pipeManager/pipeManager.js';
 import { addAdderDataSchema } from './adderManagerSchema.js';
-import type { AddAdderData, Adder, AdderManager, Ran } from './adderManagerType.js';
+import type { AddAdderData, Adder, Ran } from './adderManagerType.js';
 import { compareZodSchemas } from '../../utils/compareZodSchemas.js';
 import { deepEqualZodSchema } from '../../utils/deepEqualZodSchema.js';
 
-export class adderManager implements AdderManager {
+export class AdderManager {
 
     private _adder: Adder;
     private _dataManagementKit: DataManagementKit;
@@ -41,13 +37,13 @@ export class adderManager implements AdderManager {
 
         this._schemaCheck = schemaCheck;
 
-        this._middlewareManager = new middlewareManager(this._adder.middleware, this._dataManagementKit);
+        this._middlewareManager = new MiddlewareManager(this._adder.middleware, this._dataManagementKit);
 
-        this._crawlerManager = new crawlerManager(this._adder.crawler, this._dataManagementKit);
+        this._crawlerManager = new CrawlerManager(this._adder.crawler, this._dataManagementKit);
 
-        this._pipeManager = new pipeManager(this._adder.pipe, this._dataManagementKit, this._schemaCheck);
+        this._pipeManager = new PipeManager(this._adder.pipe, this._dataManagementKit, this._schemaCheck);
 
-        this._indexerManager = new indexerManager(this._adder.indexer, this._dataManagementKit);
+        this._indexerManager = new IndexerManager(this._adder.indexer, this._dataManagementKit);
 
         this._turboSearchKit = turboSearchKit;
 

@@ -4,10 +4,10 @@ import {
   TurboSearchKit,
 } from "../../indexType.js";
 import { compareDependenceVersion } from "../../utils/compareDependenceVersion.js";
-import { Extension, ExtensionManager } from "./extensionManagerType.js";
+import { Extension } from "./extensionManagerType.js";
 import { addExtensionSchema } from "./extensionSchema.js";
 
-export class extensionManager implements ExtensionManager {
+export class ExtensionManager {
   private _error;
   private _coreVersion;
   private _extensions;

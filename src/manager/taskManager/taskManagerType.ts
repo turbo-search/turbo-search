@@ -14,8 +14,3 @@ export type Task = {
 };
 
 export type Tasks = { [provider: string]: { [taskName: string]: Task } };
-
-export type TaskManager = {
-    addTask: (task: AddTaskData) => Promise<void>;
-    tasks: Tasks;
-}

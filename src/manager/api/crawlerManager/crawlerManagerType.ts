@@ -44,27 +44,3 @@ export type Crawler = {
         output: Z.infer<AddCrawlerData["outputSchema"]>;
     }>
 }
-
-export type CrawlerManager = {
-
-    init: () => Promise<void>;
-
-    checkDependence: () => Promise<void>;
-
-    setup: () => Promise<void>;
-
-    process: (
-        requestData: any,
-    ) => Promise<{
-        success: false;
-        message: string;
-        error: any;
-    } | {
-        success: true;
-        output: any;
-    }>;
-
-    requestSchema: Z.Schema;
-    outputSchema: Z.Schema;
-
-}

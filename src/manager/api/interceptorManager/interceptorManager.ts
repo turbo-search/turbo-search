@@ -1,11 +1,11 @@
 import { catchError } from "../../../error/catchError";
 import { DataManagementKit } from "../../../indexType";
 import { addInterceptorDataSchema } from "./interceptorManagerSchema";
-import { InterceptorManager, AddInterceptorData } from "./interceptorManagerType"
+import { AddInterceptorData } from "./interceptorManagerType"
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
 
-export class interceptorManager implements InterceptorManager {
+export class InterceptorManager {
 
     private _interceptor;
     private _dataManagementKit: DataManagementKit;

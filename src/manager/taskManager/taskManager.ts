@@ -1,8 +1,8 @@
 import { catchError } from '../../error/catchError.js';
-import { AddTaskData, TaskManager, Tasks } from './taskManagerType.js';
+import { AddTaskData, Tasks } from './taskManagerType.js';
 import { addTaskSchema } from "./taskSchema.js";
 
-export class taskManager implements TaskManager {
+export class TaskManager {
 
     private _tasks: Tasks = {};
 

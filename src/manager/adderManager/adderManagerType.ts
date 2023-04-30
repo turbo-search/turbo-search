@@ -1,4 +1,3 @@
-import type Z from "zod";
 import { Crawler } from "../api/crawlerManager/crawlerManagerType";
 import { Indexer } from "../api/indexerManager/indexerManagerType";
 import { Pipe } from "../api/pipeManager/pipeManagerType";
@@ -35,27 +34,3 @@ export type Adder = {
   pipe: Pipe[];
   indexer: Indexer;
 }
-
-export type AdderManager = {
-  // スキーマによるチェック
-  checkSchema: () => void;
-
-  init: () => Promise<void>;
-
-  checkDependence: () => Promise<void>;
-
-  addEndpoint: () => Promise<void>;
-
-  // setup
-  setup: () => Promise<void>;
-
-  //実行
-  process: (
-    request: any
-  ) => Promise<
-    | { success: false; message: string; ran: Ran[] }
-    | { success: false; message: string; error: any; ran: Ran[] }
-    | { success: true; output: any; ran: Ran[] }
-  >;
-
-};

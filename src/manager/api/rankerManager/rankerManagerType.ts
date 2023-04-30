@@ -44,27 +44,3 @@ export type Ranker = {
         output: Z.infer<AddRankerData["outputSchema"]>;
     }>
 }
-
-export type RankerManager = {
-
-    init: () => Promise<void>;
-
-    checkDependence: () => Promise<void>;
-
-    setup: () => Promise<void>;
-
-    process: (
-        requestData: any,
-    ) => Promise<{
-        success: false;
-        message: string;
-        error: any;
-    } | {
-        success: true;
-        output: any;
-    }>;
-
-    requestSchema: Z.Schema;
-    outputSchema: Z.Schema;
-
-}

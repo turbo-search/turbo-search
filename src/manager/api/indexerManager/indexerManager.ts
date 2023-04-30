@@ -1,11 +1,11 @@
 import { catchError } from "../../../error/catchError";
 import { DataManagementKit } from "../../../indexType";
 import { addIndexerDataSchema } from "./indexerManagerSchema";
-import { IndexerManager, AddIndexerData } from "./indexerManagerType"
+import { AddIndexerData } from "./indexerManagerType"
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
 
-export class indexerManager implements IndexerManager {
+export class IndexerManager {
 
     private _indexer;
     private _dataManagementKit: DataManagementKit;

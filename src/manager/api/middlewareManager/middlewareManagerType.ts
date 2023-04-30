@@ -8,7 +8,7 @@ export type middlewareManifesto = {
 }
 
 //class
-export type addMiddlewareData = {
+export type AddMiddlewareData = {
     middlewareManifesto: middlewareManifesto;
     init?: (dataManagementKit: DataManagementKit) => Promise<void>;
     process: (
@@ -38,35 +38,4 @@ export type Middleware = {
         success: true;
         output: any;
     }>
-}
-
-export type MiddlewareManager = {
-
-    init: () => Promise<void>;
-
-    checkDependence: () => Promise<void>;
-
-    setup: () => Promise<void>;
-
-    processAll: (inputData: any) => Promise<{
-        success: false;
-        message: string;
-        error: any;
-    } | {
-        success: true;
-        output: any;
-    }>;
-
-    process: (
-        inputData: any,
-        middleware: Middleware
-    ) => Promise<{
-        success: false;
-        message: string;
-        error: any;
-    } | {
-        success: true;
-        output: any;
-    }>;
-
 }

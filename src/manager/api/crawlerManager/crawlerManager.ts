@@ -1,11 +1,11 @@
 import { catchError } from "../../../error/catchError";
 import { DataManagementKit } from "../../../indexType";
 import { addCrawlerDataSchema } from "./crawlerManagerSchema";
-import { CrawlerManager, AddCrawlerData } from "./crawlerManagerType"
+import { AddCrawlerData } from "./crawlerManagerType"
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
 
-export class crawlerManager implements CrawlerManager {
+export class CrawlerManager {
 
     private _crawler;
     private _dataManagementKit: DataManagementKit;

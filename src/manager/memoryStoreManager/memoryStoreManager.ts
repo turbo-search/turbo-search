@@ -1,6 +1,4 @@
-import { MemoryStoreManager } from "./memoryStoreManagerType";
-
-export class memoryStoreManager implements MemoryStoreManager {
+export class MemoryStoreManager {
 
     public data: { [table: string]: any[] } = {};
 

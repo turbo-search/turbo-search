@@ -2,9 +2,9 @@ import { catchError } from "../../error/catchError";
 import { compareDependenceVersion } from "../../utils/compareDependenceVersion";
 import { version } from "../../version";
 import { addDatabaseDataSchema } from "./databaseManagerSchema";
-import { AddDatabaseData, Database, DatabaseManager } from "./databaseManagerType";
+import { AddDatabaseData, Database } from "./databaseManagerType";
 
-export class databaseManager implements DatabaseManager {
+export class DatabaseManager {
 
     private _databases;
 

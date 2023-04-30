@@ -16,8 +16,3 @@ export type Endpoint = {
 export type Endpoints = {
     [provider: string]: { [endpointName: string]: Endpoint };
 };
-
-export type EndpointManager = {
-    addEndpoint: (endpoint: AddEndpointData) => Promise<void>;
-    endpoints: Endpoints;
-}

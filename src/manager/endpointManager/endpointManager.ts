@@ -1,8 +1,8 @@
 import { catchError } from "../../error/catchError";
-import { AddEndpointData, EndpointManager, Endpoints } from "./endpointManagerType";
+import { AddEndpointData, Endpoints } from "./endpointManagerType";
 import { addEndpointSchema } from "./endpointSchema.js"
 
-export class endpointManager implements EndpointManager {
+export class EndpointManager {
 
     private _endpoints: Endpoints = {};
 
@@ -17,6 +17,7 @@ export class endpointManager implements EndpointManager {
                 addEndpointData.error.message,
             ]);
         } else {
+            console.log(this._endpoints)
             if (!this._endpoints[endpoint.provider || "other"]) {
                 this._endpoints[endpoint.provider || "other"] = {};
             }

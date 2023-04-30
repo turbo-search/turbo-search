@@ -1,11 +1,11 @@
 import { catchError } from "../../../error/catchError";
 import { DataManagementKit } from "../../../indexType";
 import { addRankerDataSchema } from "./rankerManagerSchema";
-import { RankerManager, AddRankerData } from "./rankerManagerType"
+import { AddRankerData } from "./rankerManagerType"
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
 
-export class rankerManager implements RankerManager {
+export class RankerManager {
 
     private _ranker;
     private _dataManagementKit: DataManagementKit;

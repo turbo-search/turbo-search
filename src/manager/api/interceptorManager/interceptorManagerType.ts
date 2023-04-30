@@ -48,29 +48,3 @@ export type Interceptor = {
         output: Z.infer<Interceptor["outputSchema"]>;
     }>
 }
-
-export type InterceptorManager = {
-
-    init: () => Promise<void>;
-
-    checkDependence: () => Promise<void>;
-
-    setup: () => Promise<void>;
-
-    process: (
-        requestData: Z.infer<AddInterceptorData["requestSchema"]>,
-        inputData: any,
-    ) => Promise<{
-        success: false;
-        message: string;
-        error: any;
-    } | {
-        success: true;
-        output: any;
-    }>;
-
-    requestSchema: Z.Schema;
-    inputSchema: Z.Schema;
-    outputSchema: Z.Schema;
-
-}

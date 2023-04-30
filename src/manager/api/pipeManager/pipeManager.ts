@@ -1,5 +1,5 @@
 import { DataManagementKit, SchemaCheck } from "../../../indexType";
-import { Pipe, PipeManager, AddPipeData } from "./pipeManagerType";
+import { Pipe, AddPipeData } from "./pipeManagerType";
 import { addPipeDataSchema } from "./pipeManagerSchema";
 import { catchError } from "../../../error/catchError";
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
@@ -7,7 +7,7 @@ import { version } from "../../../version";
 import { compareZodSchemas } from "../../../utils/compareZodSchemas";
 import { deepEqualZodSchema } from "../../../utils/deepEqualZodSchema";
 
-export class pipeManager implements PipeManager {
+export class PipeManager {
 
     private _pipeList: Pipe[] = [];
     private _dataManagementKit: DataManagementKit;

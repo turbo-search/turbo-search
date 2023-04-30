@@ -48,29 +48,3 @@ export type Indexer = {
         output: Z.infer<Indexer["outputSchema"]>;
     }>
 }
-
-export type IndexerManager = {
-
-    init: () => Promise<void>;
-
-    checkDependence: () => Promise<void>;
-
-    setup: () => Promise<void>;
-
-    process: (
-        requestData: Z.infer<AddIndexerData["requestSchema"]>,
-        inputData: any,
-    ) => Promise<{
-        success: false;
-        message: string;
-        error: any;
-    } | {
-        success: true;
-        output: any;
-    }>;
-
-    requestSchema: Z.Schema;
-    inputSchema: Z.Schema;
-    outputSchema: Z.Schema;
-
-}

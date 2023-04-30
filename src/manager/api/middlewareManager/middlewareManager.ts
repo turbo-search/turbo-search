@@ -1,23 +1,23 @@
 import { DataManagementKit } from "../../../indexType";
-import { Middleware, MiddlewareManager, addMiddlewareData } from "./middlewareManagerType";
+import { Middleware, AddMiddlewareData } from "./middlewareManagerType";
 import { addMiddlewareDataSchema } from "./middlewareManagerSchema";
 import { catchError } from "../../../error/catchError";
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
 
-export class middlewareManager implements MiddlewareManager {
+export class MiddlewareManager {
 
     private _middlewareList: Middleware[] = [];
     private _dataManagementKit: DataManagementKit;
 
 
-    constructor(_addMiddlewareDataList: addMiddlewareData[], dataManagementKit: DataManagementKit) {
+    constructor(_addMiddlewareDataList: AddMiddlewareData[], dataManagementKit: DataManagementKit) {
 
         const result = addMiddlewareDataSchema.safeParse(_addMiddlewareDataList);
         if (!result.success) {
             catchError("middlewareValidation", ["middleware validation error", result.error.message]);
         } else {
-            this._middlewareList = result.data as unknown as addMiddlewareData[];
+            this._middlewareList = result.data as unknown as AddMiddlewareData[];
         }
 
         this._dataManagementKit = dataManagementKit;
