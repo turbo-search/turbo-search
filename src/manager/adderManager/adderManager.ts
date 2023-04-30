@@ -165,6 +165,8 @@ export class AdderManager {
 
         const middlewareResult = await this._middlewareManager.processAll(request);
 
+        //TODO:エラー処理をzodに書き換える
+
         if (middlewareResult.success) {
 
             const crawlerResult = await this._crawlerManager.process(middlewareResult.output);
@@ -180,19 +182,57 @@ export class AdderManager {
                     if (indexerResult.success) {
                         return { ...indexerResult, ran: ["middleware", "crawler", "pipe", "indexer"] as Ran[] };
                     } else {
-                        return { ...pipeResult, ran: ["middleware", "crawler", "pipe"] as Ran[] };
+                        if (indexerResult.success == false && indexerResult.message) {
+                            return { ...indexerResult, ran: [] as Ran[] };
+                        } else {
+                            if (indexerResult.error) {
+                                return { success: false, message: "middleware error", error: indexerResult.error, ran: ["middleware", "crawler", "pipe",] as Ran[] }
+                            } else {
+                                return { success: false, message: "middleware error", ran: ["middleware", "crawler", "pipe",] as Ran[] }
+                            }
+                        }
                     }
 
                 } else {
-                    return { ...pipeResult, ran: ["middleware", "crawler"] as Ran[] };
+
+                    if (pipeResult.success == false && pipeResult.message) {
+                        return { ...pipeResult, ran: [] as Ran[] };
+                    } else {
+                        if (pipeResult.error) {
+                            return { success: false, message: "middleware error", error: pipeResult.error, ran: ["middleware", "crawler"] as Ran[] }
+                        } else {
+                            return { success: false, message: "middleware error", ran: ["middleware", "crawler"] as Ran[] }
+                        }
+                    }
+
                 }
 
             } else {
-                return { ...crawlerResult, ran: ["middleware"] as Ran[] };
+
+                if (crawlerResult.success == false && crawlerResult.message) {
+                    return { ...crawlerResult, ran: [] as Ran[] };
+                } else {
+                    if (crawlerResult.error) {
+                        return { success: false, message: "middleware error", error: crawlerResult.error, ran: ["middleware"] as Ran[] }
+                    } else {
+                        return { success: false, message: "middleware error", ran: ["middleware"] as Ran[] }
+                    }
+                }
+
             }
 
         } else {
-            return { ...middlewareResult, ran: [] as Ran[] };
+
+            if (middlewareResult.success == false && middlewareResult.message) {
+                return { ...middlewareResult, ran: [] as Ran[] };
+            } else {
+                if (middlewareResult.error) {
+                    return { success: false, message: "middleware error", error: middlewareResult.error, ran: [] as Ran[] }
+                } else {
+                    return { success: false, message: "middleware error", ran: [] as Ran[] }
+                }
+            }
+
         }
 
     }
