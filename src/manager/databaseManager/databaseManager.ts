@@ -47,6 +47,28 @@ export class databaseManager implements DatabaseManager {
         await this._databases.addData(data);
     }
 
+    async deleteData(data: any) {
+        if (this._databases.deleteData) {
+            await this._databases.deleteData(data);
+        } else {
+            catchError("database", [
+                "database error",
+                `database ${this._databases.databaseManifesto.name} does not support deleteData method`
+            ])
+        }
+    }
+
+    async updateData(data: any) {
+        if (this._databases.updateData) {
+            await this._databases.updateData(data);
+        } else {
+            catchError("database", [
+                "database error",
+                `database ${this._databases.databaseManifesto.name} does not support updateData method`
+            ])
+        }
+    }
+
     async getAllData() {
         if (this._databases.getAllData) {
             return await this._databases.getAllData();
@@ -82,6 +104,9 @@ export class databaseManager implements DatabaseManager {
 
     get methods() {
         return {
+            addData: true,
+            deleteData: this._databases.deleteData ? true : false,
+            updateData: this._databases.updateData ? true : false,
             getAllData: this._databases.getAllData ? true : false,
             fullTextSearch: this._databases.fullTextSearch ? true : false,
             vectorSearch: this._databases.vectorSearch ? true : false,
