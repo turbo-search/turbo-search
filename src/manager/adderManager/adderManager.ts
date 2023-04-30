@@ -1,6 +1,6 @@
 import z from 'zod';
 import { catchError } from '../../error/catchError.js';
-import { DataManagementKit, SchemaCheck } from '../../indexType.js';
+import { DataManagementKit, SchemaCheck, TurboSearchKit } from '../../indexType.js';
 import { compareDependenceVersion } from '../../utils/compareDependenceVersion.js';
 import { version } from '../../version.js';
 import { crawlerManager } from '../api/crawlerManager/crawlerManager.js';
@@ -24,9 +24,10 @@ export class adderManager implements AdderManager {
     private _crawlerManager: CrawlerManager;
     private _pipeManager: PipeManager;
     private _indexerManager: IndexerManager;
+    private _turboSearchKit: TurboSearchKit;
 
 
-    constructor(addAdderData: AddAdderData, dataManagementKit: DataManagementKit, schemaCheck: SchemaCheck) {
+    constructor(addAdderData: AddAdderData, dataManagementKit: DataManagementKit, turboSearchKit: TurboSearchKit, schemaCheck: SchemaCheck) {
 
         const result = addAdderDataSchema.safeParse(addAdderData);
 
@@ -47,6 +48,8 @@ export class adderManager implements AdderManager {
         this._pipeManager = new pipeManager(this._adder.pipe, this._dataManagementKit, this._schemaCheck);
 
         this._indexerManager = new indexerManager(this._adder.indexer, this._dataManagementKit);
+
+        this._turboSearchKit = turboSearchKit;
 
     }
 
@@ -142,11 +145,24 @@ export class adderManager implements AdderManager {
         }
     }
 
+    async addEndpoint() {
+
+        this._turboSearchKit.addEndpoint({
+            name: "adder/" + (this._adder.adderManifesto.queryPath || this._adder.adderManifesto.name),
+            provider: "core",
+            function: async (request: any) => {
+                return await this.process(request);
+            }
+        });
+
+    }
+
 
     async setup() {
         await this.init();
         await this.checkSchema();
         await this.checkDependence();
+        await this.addEndpoint();
     }
 
     async process(request: any) {

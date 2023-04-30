@@ -7,6 +7,7 @@ import { addMiddlewareDataSchema } from "../api/middlewareManager/middlewareMana
 export const addAdderDataSchema = z.object({
     adderManifesto: z.object({
         name: z.string(),
+        queryPath: z.string().optional(),
         version: z.string(),
         coreDependence: z.string().optional(),
     }),

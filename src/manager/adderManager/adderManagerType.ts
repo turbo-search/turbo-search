@@ -13,6 +13,7 @@ export type Ran =
 
 export type AdderManifesto = {
   name: string;
+  queryPath?: string;
   coreDependence?: string;
   version: string;
 }
@@ -46,6 +47,8 @@ export type AdderManager = {
   init: () => Promise<void>;
 
   checkDependence: () => Promise<void>;
+
+  addEndpoint: () => Promise<void>;
 
   // setup
   setup: () => Promise<void>;
