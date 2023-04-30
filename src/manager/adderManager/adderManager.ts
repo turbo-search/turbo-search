@@ -12,7 +12,7 @@ import { MiddlewareManager } from '../api/middlewareManager/middlewareManagerTyp
 import { pipeManager } from '../api/pipeManager/pipeManager.js';
 import { PipeManager } from '../api/pipeManager/pipeManagerType.js';
 import { addAdderDataSchema } from './adderManagerSchema.js';
-import type { AddAdderData, Adder, AdderManager } from './adderManagerType.js';
+import type { AddAdderData, Adder, AdderManager, Ran } from './adderManagerType.js';
 import type Z from 'zod';
 import { compareZodSchemas } from '../../utils/compareZodSchemas.js';
 
@@ -183,7 +183,39 @@ export class adderManager implements AdderManager {
         await this.checkDependence();
     }
 
-    async process(input: object) {
+    async process(request: any) {
+
+        const middlewareResult = await this._middlewareManager.processAll(request);
+
+        if (middlewareResult.success) {
+
+            const crawlerResult = await this._crawlerManager.process(middlewareResult.output);
+
+            if (crawlerResult.success) {
+
+                const pipeResult = await this._pipeManager.processAll(middlewareResult.output, crawlerResult.output);
+
+                if (pipeResult.success) {
+
+                    const indexerResult = await this._indexerManager.process(middlewareResult.output, pipeResult.output);
+
+                    if (indexerResult.success) {
+                        return { ...indexerResult, ran: ["middleware", "crawler", "pipe", "indexer"] as Ran[] };
+                    } else {
+                        return { ...pipeResult, ran: ["middleware", "crawler", "pipe"] as Ran[] };
+                    }
+
+                } else {
+                    return { ...pipeResult, ran: ["middleware", "crawler"] as Ran[] };
+                }
+
+            } else {
+                return { ...crawlerResult, ran: ["middleware"] as Ran[] };
+            }
+
+        } else {
+            return { ...middlewareResult, ran: [] as Ran[] };
+        }
 
     }
 

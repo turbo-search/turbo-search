@@ -27,8 +27,16 @@ export class pipeManager implements PipeManager {
     }
 
     get requestSchema() {
-        if (this._pipeList.length === 0) return undefined;
-        return this._pipeList[0].requestSchema;
+        const requestSchema: { [pipeName: string]: any } = {};
+
+        this._pipeList.forEach((pipe) => {
+            requestSchema[pipe.pipeManifesto.name] = pipe.requestSchema;
+        });
+
+        const zodSchemaList = Object.values(requestSchema);
+        const zodSchema = zodSchemaList.reduce((a, b) => a.and(b));
+
+        return zodSchema;
     }
 
     get inputSchema() {

@@ -6,11 +6,10 @@ import { Middleware } from "../api/middlewareManager/middlewareManagerType";
 import { DataManagementKit } from "../../indexType";
 
 export type Ran =
-  | "coreToCrawler"
+  | "middleware"
   | "crawler"
-  | "crawlerToIndexer"
-  | "indexer"
-  | "indexerToCore";
+  | "pipe"
+  | "indexer";
 
 export type AdderManifesto = {
   name: string;
@@ -53,11 +52,11 @@ export type AdderManager = {
 
   //実行
   process: (
-    input: object
+    request: any
   ) => Promise<
     | { success: false; message: string; ran: Ran[] }
-    | { success: false; message: string; error: Z.ZodError<any>; ran: Ran[] }
-    | { success: true; output: object; ran: Ran[] }
+    | { success: false; message: string; error: any; ran: Ran[] }
+    | { success: true; output: any; ran: Ran[] }
   >;
 
 };
