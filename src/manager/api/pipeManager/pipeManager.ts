@@ -117,21 +117,24 @@ export class PipeManager {
 
     async processAll(requestData: any, inputData: any) {
 
-        let outputData: any = {
+        let outputData: {
+            success: false;
+            message: string;
+            error: any;
+        } | {
+            success: true;
+            output: any;
+        } = {
             success: true,
             output: inputData
         };
 
         for (const pipe of this._pipeList) {
 
-            if (outputData.success === false) return;
+            if (outputData.success === false) continue;
 
-            const result = await this.process(requestData, outputData, pipe);
-            if (result.success) {
-                outputData = result.output;
-            } else {
-                return result;
-            }
+            outputData = await this.process(requestData, outputData, pipe);
+
         }
 
         return outputData;

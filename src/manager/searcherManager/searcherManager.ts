@@ -181,19 +181,57 @@ export class SearcherManager {
                     if (interceptorResult.success) {
                         return { ...interceptorResult, ran: ["middleware", "ranker", "pipe", "interceptor"] as Ran[] };
                     } else {
-                        return { ...pipeResult, ran: ["middleware", "ranker", "pipe"] as Ran[] };
+                        if (interceptorResult.success == false && interceptorResult.message) {
+                            return { ...interceptorResult, ran: [] as Ran[] };
+                        } else {
+                            if (interceptorResult.error) {
+                                return { success: false, message: "middleware error", error: interceptorResult.error, ran: ["middleware", "ranker", "pipe",] as Ran[] }
+                            } else {
+                                return { success: false, message: "middleware error", ran: ["middleware", "ranker", "pipe",] as Ran[] }
+                            }
+                        }
                     }
 
                 } else {
-                    return { ...pipeResult, ran: ["middleware", "ranker"] as Ran[] };
+
+                    if (pipeResult.success == false && pipeResult.message) {
+                        return { ...pipeResult, ran: [] as Ran[] };
+                    } else {
+                        if (pipeResult.error) {
+                            return { success: false, message: "middleware error", error: pipeResult.error, ran: ["middleware", "ranker"] as Ran[] }
+                        } else {
+                            return { success: false, message: "middleware error", ran: ["middleware", "ranker"] as Ran[] }
+                        }
+                    }
+
                 }
 
             } else {
-                return { ...rankerResult, ran: ["middleware"] as Ran[] };
+
+                if (rankerResult.success == false && rankerResult.message) {
+                    return { ...rankerResult, ran: [] as Ran[] };
+                } else {
+                    if (rankerResult.error) {
+                        return { success: false, message: "middleware error", error: rankerResult.error, ran: ["middleware"] as Ran[] }
+                    } else {
+                        return { success: false, message: "middleware error", ran: ["middleware"] as Ran[] }
+                    }
+                }
+
             }
 
         } else {
-            return { ...middlewareResult, ran: [] as Ran[] };
+
+            if (middlewareResult.success == false && middlewareResult.message) {
+                return { ...middlewareResult, ran: [] as Ran[] };
+            } else {
+                if (middlewareResult.error) {
+                    return { success: false, message: "middleware error", error: middlewareResult.error, ran: [] as Ran[] }
+                } else {
+                    return { success: false, message: "middleware error", ran: [] as Ran[] }
+                }
+            }
+
         }
 
     }
