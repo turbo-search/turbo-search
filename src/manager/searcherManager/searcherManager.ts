@@ -166,6 +166,8 @@ export class SearcherManager {
 
         const middlewareResult = await this._middlewareManager.processAll(request);
 
+        //TODO:エラー処理をzodに書き換える
+
         if (middlewareResult.success) {
 
             const rankerResult = await this._rankerManager.process(middlewareResult.output);
