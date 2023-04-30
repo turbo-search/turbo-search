@@ -42,18 +42,6 @@ export type TurboSearchCoreOptions = {
   schemaCheck?: SchemaCheck;
 };
 
-export type TurboSearchCore = {
-  version: string;
-  endpoint: Endpoints;
-
-  addTaskAndEndpoint: (
-    addTaskAndEndpoint: AddTaskAndEndpointData
-  ) => Promise<void>;
-
-  turbo(): void;
-
-};
-
 export type SchemaCheck =
   "match" //スキーマは完全に一致する必要がある if(schema === schema)
   | "include" //スキーマは含まれている必要がある if(schema.includes(schema))

@@ -129,7 +129,7 @@ export class SearcherManager {
 
     async addEndpoint() {
 
-        this._turboSearchKit.addEndpoint({
+        await this._turboSearchKit.addEndpoint({
             name: "searcher",
             provider: "core",
             function: async (request: any) => {

@@ -3,7 +3,6 @@ import {
   AddTaskAndEndpointData,
   DataManagementKit,
   SchemaCheck,
-  TurboSearchCore,
   TurboSearchCoreOptions,
   TurboSearchKit,
 } from "./indexType.js";
@@ -16,7 +15,7 @@ import { DatabaseManager } from "./manager/databaseManager/databaseManager.js";
 import { SearcherManager } from "./manager/searcherManager/searcherManager.js";
 import { AdderManager } from "./manager/adderManager/adderManager.js";
 
-export class turboSearchCore implements TurboSearchCore {
+export class TurboSearchCore {
   public version = version;
   private _schemaCheck: SchemaCheck;
   private _database;
@@ -25,10 +24,13 @@ export class turboSearchCore implements TurboSearchCore {
   private _extensionManager;
   private _memoryStoreManager;
   private _jobManager;
-  private _searcherManager;
-  private _adderManagerList;
+  private _searcherManager: SearcherManager | undefined = undefined;
+  private _adderManagerList: AdderManager[] = [];
+  private _options;
 
   constructor(options: TurboSearchCoreOptions) {
+
+    this._options = options;
 
     if (options.schemaCheck) {
       this._schemaCheck = options.schemaCheck;
@@ -60,17 +62,24 @@ export class turboSearchCore implements TurboSearchCore {
     );
     this._extensionManager.setupExtensions();
 
+  }
+
+  async searcherSetup() {
+
+    if (typeof this._options.searcher === "undefined") return
     //setup searcher
-    this._searcherManager = new SearcherManager(
-      options.searcher,
+    this._searcherManager = await new SearcherManager(
+      this._options.searcher,
       this.dataManagementKit(),
       this.turboSearchKit(),
       this._schemaCheck
     );
-    this._searcherManager.setup()
+    await this._searcherManager.setup()
+  }
 
+  async adderSetup() {
     //setup adder
-    this._adderManagerList = options.adders.map((adder) => {
+    this._adderManagerList = await this._options.adders.map((adder) => {
       return new AdderManager(
         adder,
         this.dataManagementKit(),
@@ -79,9 +88,15 @@ export class turboSearchCore implements TurboSearchCore {
       )
     });
 
-    this._adderManagerList.forEach((adderManager) => {
-      adderManager.setup()
+    this._adderManagerList.forEach(async (adderManager) => {
+      await adderManager.setup()
     })
+  }
+
+  async setup() {
+
+    await this.searcherSetup()
+    await this.adderSetup()
 
   }
 
@@ -111,7 +126,7 @@ export class turboSearchCore implements TurboSearchCore {
     };
   }
 
-  get endpoint() {
+  get endpoints() {
     return this._endpointManager.endpoints;
   }
 

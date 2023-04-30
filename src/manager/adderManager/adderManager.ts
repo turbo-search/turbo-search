@@ -143,7 +143,7 @@ export class AdderManager {
 
     async addEndpoint() {
 
-        this._turboSearchKit.addEndpoint({
+        await this._turboSearchKit.addEndpoint({
             name: "adder/" + (this._adder.adderManifesto.queryPath || this._adder.adderManifesto.name),
             provider: "core",
             function: async (request: any) => {

@@ -9,6 +9,10 @@ export class TaskManager {
     //DBなど内部から参照されるような処理を追加する
     async addTask(task: AddTaskData) {
 
+        if (typeof this._tasks == "undefined") {
+            this._tasks = {};
+        }
+
         //バリデーションする
         const addTaskData = addTaskSchema.safeParse(task);
         if (!addTaskData.success) {

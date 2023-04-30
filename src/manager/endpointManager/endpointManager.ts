@@ -9,6 +9,10 @@ export class EndpointManager {
     // APIなど外部から参照されるような処理を追加する
     async addEndpoint(endpoint: AddEndpointData) {
 
+        if (typeof this._endpoints == "undefined") {
+            this._endpoints = {};
+        }
+
         //バリデーションする
         const addEndpointData = addEndpointSchema.safeParse(endpoint);
         if (!addEndpointData.success) {
@@ -17,7 +21,6 @@ export class EndpointManager {
                 addEndpointData.error.message,
             ]);
         } else {
-            console.log(this._endpoints)
             if (!this._endpoints[endpoint.provider || "other"]) {
                 this._endpoints[endpoint.provider || "other"] = {};
             }
@@ -31,6 +34,8 @@ export class EndpointManager {
                 ]);
             }
         }
+
+
     }
 
     get endpoints() {
