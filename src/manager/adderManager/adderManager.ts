@@ -1,3 +1,4 @@
+import z from 'zod';
 import { catchError } from '../../error/catchError.js';
 import { DataManagementKit, SchemaCheck } from '../../indexType.js';
 import { compareDependenceVersion } from '../../utils/compareDependenceVersion.js';
@@ -13,6 +14,7 @@ import { PipeManager } from '../api/pipeManager/pipeManagerType.js';
 import { addAdderDataSchema } from './adderManagerSchema.js';
 import type { AddAdderData, Adder, AdderManager } from './adderManagerType.js';
 import type Z from 'zod';
+import { compareZodSchemas } from '../../utils/compareZodSchemas.js';
 
 export class adderManager implements AdderManager {
 
@@ -51,23 +53,102 @@ export class adderManager implements AdderManager {
 
     async checkSchema() {
 
+        const outputMiddlewareSchema = this._middlewareManager.outputSchema;
+
+        const requestCrawlerSchema = this._crawlerManager.requestSchema;
+        const requestPipeSchema = this._pipeManager.requestSchema;
+        const requestIndexerSchema = this._indexerManager.requestSchema;
+
+        const requestSchema = requestPipeSchema ? z.object({
+            crawler: requestCrawlerSchema,
+            pipe: requestPipeSchema,
+            indexer: requestIndexerSchema
+        }) : z.object({
+            crawler: requestCrawlerSchema,
+            indexer: requestIndexerSchema
+        })
+
+        const outputCrawlerSchema = this._crawlerManager.outputSchema;
+        const inputPipeSchema = this._pipeManager.inputSchema;
+        const outputPipeSchema = this._pipeManager.outputSchema;
+        const inputIndexerSchema = this._indexerManager.inputSchema;
+
         if (this._schemaCheck == "match") {
 
-            const middlewareOutputSchema = this._middlewareManager.outputSchema;
-            const crawlerInputSchema = this._crawlerManager.inputSchema;
-            if (middlewareOutputSchema != undefined) {
-                if (middlewareOutputSchema != crawlerInputSchema) {
-                    catchError("adder", ["adder name : " + this._adder.adderManifesto.name, "crawler input schema does not match middleware output schema"]);
-                }
+            if (outputMiddlewareSchema && outputMiddlewareSchema != requestSchema) {
+
+                catchError("adder", [
+                    "adder schema error",
+                    `adder ${this._adder.adderManifesto.name} outputMiddlewareSchema is not equal to requestSchema`
+                ])
+
             }
 
-            const crawlerOutputSchema = this._crawlerManager.outputSchema;
-            const pipeInputSchema = this._pipeManager.inputSchema;
+            if (inputPipeSchema && outputPipeSchema) {
 
-            if (pipeInputSchema != undefined) {
-                if (crawlerOutputSchema != pipeInputSchema) {
-                    catchError("adder", ["adder name : " + this._adder.adderManifesto.name, "pipe input schema does not match crawler output schema"]);
+                if (outputCrawlerSchema != inputPipeSchema) {
+                    catchError("adder", [
+                        "adder schema error",
+                        `adder ${this._adder.adderManifesto.name} outputCrawlerSchema is not equal to inputPipeSchema`
+                    ])
                 }
+
+                if (outputPipeSchema != inputIndexerSchema) {
+                    catchError("adder", [
+                        "adder schema error",
+                        `adder ${this._adder.adderManifesto.name} outputPipeSchema is not equal to inputIndexerSchema`
+                    ])
+                }
+
+            } else {
+
+                if (outputCrawlerSchema != inputIndexerSchema) {
+                    catchError("adder", [
+                        "adder schema error",
+                        `adder ${this._adder.adderManifesto.name} outputCrawlerSchema is not equal to inputIndexerSchema`
+                    ])
+                }
+
+            }
+
+        }
+
+        if (this._schemaCheck == "include") {
+
+            if (outputMiddlewareSchema && compareZodSchemas(requestSchema, outputMiddlewareSchema)) {
+
+                catchError("adder", [
+                    "adder schema error",
+                    `adder ${this._adder.adderManifesto.name} outputMiddlewareSchema is not equal to requestSchema`
+                ])
+
+            }
+
+            if (inputPipeSchema && outputPipeSchema) {
+
+                if (compareZodSchemas(inputPipeSchema, outputCrawlerSchema)) {
+                    catchError("adder", [
+                        "adder schema error",
+                        `adder ${this._adder.adderManifesto.name} outputCrawlerSchema is not equal to inputPipeSchema`
+                    ])
+                }
+
+                if (compareZodSchemas(inputIndexerSchema, outputPipeSchema)) {
+                    catchError("adder", [
+                        "adder schema error",
+                        `adder ${this._adder.adderManifesto.name} outputPipeSchema is not equal to inputIndexerSchema`
+                    ])
+                }
+
+            } else {
+
+                if (compareZodSchemas(inputIndexerSchema, outputCrawlerSchema)) {
+                    catchError("adder", [
+                        "adder schema error",
+                        `adder ${this._adder.adderManifesto.name} outputCrawlerSchema is not equal to inputIndexerSchema`
+                    ])
+                }
+
             }
 
         }
