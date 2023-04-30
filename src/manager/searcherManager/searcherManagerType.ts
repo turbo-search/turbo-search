@@ -47,6 +47,8 @@ export type SearcherManager = {
 
   checkDependence: () => Promise<void>;
 
+  addEndpoint: () => Promise<void>;
+
   // setup
   setup: () => Promise<void>;
 

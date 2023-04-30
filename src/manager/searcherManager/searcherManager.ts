@@ -1,6 +1,6 @@
 import z from 'zod';
 import { catchError } from '../../error/catchError.js';
-import { DataManagementKit, SchemaCheck } from '../../indexType.js';
+import { DataManagementKit, SchemaCheck, TurboSearchKit } from '../../indexType.js';
 import { compareDependenceVersion } from '../../utils/compareDependenceVersion.js';
 import { version } from '../../version.js';
 import { rankerManager } from '../api/rankerManager/rankerManager.js';
@@ -24,9 +24,10 @@ export class searcherManager implements SearcherManager {
     private _rankerManager: RankerManager;
     private _pipeManager: PipeManager;
     private _interceptorManager: InterceptorManager;
+    private _turboSearchKit: TurboSearchKit;
 
 
-    constructor(addSearcherData: AddSearcherData, dataManagementKit: DataManagementKit, schemaCheck: SchemaCheck) {
+    constructor(addSearcherData: AddSearcherData, dataManagementKit: DataManagementKit, turboSearchKit: TurboSearchKit, schemaCheck: SchemaCheck) {
 
         const result = addSearcherDataSchema.safeParse(addSearcherData);
 
@@ -47,6 +48,8 @@ export class searcherManager implements SearcherManager {
         this._pipeManager = new pipeManager(this._searcher.pipe, this._dataManagementKit, this._schemaCheck);
 
         this._interceptorManager = new interceptorManager(this._searcher.interceptor, this._dataManagementKit);
+
+        this._turboSearchKit = turboSearchKit;
 
     }
 
@@ -125,6 +128,19 @@ export class searcherManager implements SearcherManager {
         if (this._searcher.init) {
             await this._searcher.init(this._dataManagementKit);
         }
+
+    }
+
+    async addEndpoint() {
+
+        this._turboSearchKit.addEndpoint({
+            name: "searcher",
+            provider: "core",
+            function: async (request: any) => {
+                return await this.process(request);
+            }
+        })
+
     }
 
     async checkDependence() {
@@ -147,6 +163,7 @@ export class searcherManager implements SearcherManager {
         await this.init();
         await this.checkSchema();
         await this.checkDependence();
+        await this.addEndpoint();
     }
 
     async process(request: any) {
