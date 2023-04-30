@@ -1,9 +1,8 @@
-import type Z from "zod";
-import z from "zod";
+import { z } from "zod";
 
-export const compareZodSchemas = (
-    outputSchema: Z.ZodType<any>,
-    inputSchema: Z.ZodType<any>
+export const deepEqualZodSchema = (
+    outputSchema: z.ZodType<any>,
+    inputSchema: z.ZodType<any>
 ): boolean => {
     if (outputSchema.constructor !== inputSchema.constructor) {
         return false;
@@ -13,7 +12,12 @@ export const compareZodSchemas = (
         const outputShape = outputSchema.shape;
         const inputShape = inputSchema.shape;
 
+        const outputKeys = Object.keys(outputShape);
         const inputKeys = Object.keys(inputShape);
+
+        if (outputKeys.length !== inputKeys.length) {
+            return false;
+        }
 
         for (const key of inputKeys) {
             if (!outputShape.hasOwnProperty(key)) {
@@ -23,12 +27,12 @@ export const compareZodSchemas = (
             const outputFieldType = outputShape[key];
             const inputFieldType = inputShape[key];
 
-            if (!compareZodSchemas(outputFieldType, inputFieldType)) {
+            if (!deepEqualZodSchema(outputFieldType, inputFieldType)) {
                 return false;
             }
         }
     } else if (outputSchema instanceof z.ZodArray && inputSchema instanceof z.ZodArray) {
-        return compareZodSchemas(outputSchema.element, inputSchema.element);
+        return deepEqualZodSchema(outputSchema.element, inputSchema.element);
     }
 
     return true;

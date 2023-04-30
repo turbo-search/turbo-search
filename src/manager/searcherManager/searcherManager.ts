@@ -13,7 +13,7 @@ import { PipeManager } from '../api/pipeManager/pipeManagerType.js';
 import { addSearcherDataSchema } from './searcherManagerSchema.js';
 import type { AddSearcherData, Searcher, SearcherManager, Ran } from './searcherManagerType.js';
 import { compareZodSchemas } from '../../utils/compareZodSchemas.js';
-import { deepEqual } from '../../utils/deepEqual.js';
+import { deepEqualZodSchema } from '../../utils/deepEqualZodSchema.js';
 
 export class searcherManager implements SearcherManager {
 
@@ -64,14 +64,14 @@ export class searcherManager implements SearcherManager {
 
             if (inputPipeSchema && outputPipeSchema) {
 
-                if (!deepEqual(outputRankerSchema, inputPipeSchema)) {
+                if (!deepEqualZodSchema(outputRankerSchema, inputPipeSchema)) {
                     catchError("searcher", [
                         "searcher schema error",
                         `searcher ${this._searcher.searcherManifesto.name} outputRankerSchema is not equal to inputPipeSchema`
                     ])
                 }
 
-                if (!deepEqual(outputPipeSchema, inputInterceptorSchema)) {
+                if (!deepEqualZodSchema(outputPipeSchema, inputInterceptorSchema)) {
                     catchError("searcher", [
                         "searcher schema error",
                         `searcher ${this._searcher.searcherManifesto.name} outputPipeSchema is not equal to inputInterceptorSchema`
@@ -80,7 +80,7 @@ export class searcherManager implements SearcherManager {
 
             } else {
 
-                if (!deepEqual(outputRankerSchema, inputInterceptorSchema)) {
+                if (!deepEqualZodSchema(outputRankerSchema, inputInterceptorSchema)) {
                     catchError("searcher", [
                         "searcher schema error",
                         `searcher ${this._searcher.searcherManifesto.name} outputRankerSchema is not equal to inputInterceptorSchema`
