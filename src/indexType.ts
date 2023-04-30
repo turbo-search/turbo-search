@@ -49,6 +49,8 @@ export type TurboSearchCore = {
     addTaskAndEndpoint: AddTaskAndEndpointData
   ) => Promise<void>;
 
+  turbo(): void;
+
 };
 
 export type SchemaCheck =

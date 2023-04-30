@@ -67,6 +67,7 @@ export class turboSearchCore implements TurboSearchCore {
       this.turboSearchKit(),
       this._schemaCheck
     );
+    this._searcherManager.setup()
 
     //setup adder
     this._adderManagerList = options.adders.map((adder) => {
@@ -77,6 +78,11 @@ export class turboSearchCore implements TurboSearchCore {
         this._schemaCheck
       )
     });
+
+    this._adderManagerList.forEach((adderManager) => {
+      adderManager.setup()
+    })
+
   }
 
   // taskとendpoint両方を追加する
@@ -109,4 +115,7 @@ export class turboSearchCore implements TurboSearchCore {
     return this._endpointManager.endpoints;
   }
 
+  turbo(): void {
+    console.log("⚡turbo")
+  }
 }
