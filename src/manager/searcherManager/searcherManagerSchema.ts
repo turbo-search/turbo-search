@@ -14,6 +14,4 @@ export const addSearcherDataSchema = z.object({
     ranker: addRankerDataSchema,
     pipe: z.array(addPipeDataSchema),
     interceptor: addInterceptorDataSchema,
-    inputSchema: z.any(),
-    outputSchema: z.any(),
 });

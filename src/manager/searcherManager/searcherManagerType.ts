@@ -24,8 +24,6 @@ export type AddSearcherData = {
   ranker: Ranker;
   pipe: Pipe[];
   interceptor: Interceptor;
-  inputSchema: Z.Schema;
-  outputSchema: Z.Schema;
 };
 
 export type Searcher = {
@@ -35,8 +33,6 @@ export type Searcher = {
   ranker: Ranker;
   pipe: Pipe[];
   interceptor: Interceptor;
-  inputSchema: Z.Schema;
-  outputSchema: Z.Schema;
 }
 
 export type SearcherManager = {

@@ -15,6 +15,4 @@ export const addAdderDataSchema = z.object({
     crawler: addCrawlerDataSchema,
     pipe: z.array(addPipeDataSchema),
     indexer: addIndexerDataSchema,
-    inputSchema: z.any(),
-    outputSchema: z.any(),
 });

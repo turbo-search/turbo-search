@@ -25,8 +25,6 @@ export type AddAdderData = {
   crawler: Crawler;
   pipe: Pipe[];
   indexer: Indexer;
-  inputSchema: Z.Schema;
-  outputSchema: Z.Schema;
 };
 
 export type Adder = {
@@ -36,8 +34,6 @@ export type Adder = {
   crawler: Crawler;
   pipe: Pipe[];
   indexer: Indexer;
-  inputSchema: Z.Schema;
-  outputSchema: Z.Schema;
 }
 
 export type AdderManager = {
