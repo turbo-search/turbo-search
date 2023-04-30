@@ -37,15 +37,15 @@ export class SearcherManager {
 
         this._schemaCheck = schemaCheck;
 
-        this._middlewareManager = new MiddlewareManager(this._searcher.middleware, this._dataManagementKit);
-
-        this._rankerManager = new RankerManager(this._searcher.ranker, this._dataManagementKit);
-
-        this._pipeManager = new PipeManager(this._searcher.pipe, this._dataManagementKit, this._schemaCheck);
-
-        this._interceptorManager = new InterceptorManager(this._searcher.interceptor, this._dataManagementKit);
-
         this._turboSearchKit = turboSearchKit;
+
+        this._middlewareManager = new MiddlewareManager(this._searcher.middleware, this._dataManagementKit, this._turboSearchKit);
+
+        this._rankerManager = new RankerManager(this._searcher.ranker, this._dataManagementKit, this._turboSearchKit);
+
+        this._pipeManager = new PipeManager(this._searcher.pipe, this._dataManagementKit, this._schemaCheck, this._turboSearchKit);
+
+        this._interceptorManager = new InterceptorManager(this._searcher.interceptor, this._dataManagementKit, this._turboSearchKit);
 
     }
 
@@ -168,14 +168,14 @@ export class SearcherManager {
                     databaseDependenceVersion
                 )) {
                     catchError("adder", [
-                        "adder database dependence error",
-                        `adder ${this._searcher.searcherManifesto.name} request database version is not equal to database version`
+                        "searcher database dependence error",
+                        `searcher ${this._searcher.searcherManifesto.name} request database version is not equal to database version`
                     ])
                 }
             } else {
                 catchError("adder", [
-                    "adder database dependence error",
-                    `adder ${this._searcher.searcherManifesto.name} request database version is not equal to database version`
+                    "searcher database dependence error",
+                    `searcher ${this._searcher.searcherManifesto.name} request database version is not equal to database version`
                 ])
             }
 
@@ -197,7 +197,7 @@ export class SearcherManager {
                     );
                     if (!dependenceExtension) {
                         catchError("dependence", [
-                            "adder is dependent on " +
+                            "searcher is dependent on " +
                             dependenceExtensionName,
                             "The following solutions are available",
                             "Add the extension : " + dependenceExtensionName,
@@ -214,7 +214,7 @@ export class SearcherManager {
                                 )
                             ) {
                                 catchError("dependence", [
-                                    "adder specifies " +
+                                    "searcher specifies " +
                                     dependenceExtensionName +
                                     " version " +
                                     extensionDependence[dependenceExtensionName] +

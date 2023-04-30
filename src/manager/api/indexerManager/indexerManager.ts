@@ -1,5 +1,5 @@
 import { catchError } from "../../../error/catchError";
-import { DataManagementKit } from "../../../indexType";
+import { DataManagementKit, TurboSearchKit } from "../../../indexType";
 import { addIndexerDataSchema } from "./indexerManagerSchema";
 import { AddIndexerData } from "./indexerManagerType"
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
@@ -9,8 +9,9 @@ export class IndexerManager {
 
     private _indexer;
     private _dataManagementKit: DataManagementKit;
+    private _turboSearchKit: TurboSearchKit;
 
-    constructor(addIndexerData: AddIndexerData, dataManagementKit: DataManagementKit) {
+    constructor(addIndexerData: AddIndexerData, dataManagementKit: DataManagementKit, turboSearchKit: TurboSearchKit) {
         const result = addIndexerDataSchema.safeParse(addIndexerData);
         if (!result.success) {
             catchError("indexerValidation", ["indexer validation error", result.error.message]);
@@ -20,6 +21,8 @@ export class IndexerManager {
         }
 
         this._dataManagementKit = dataManagementKit;
+
+        this._turboSearchKit = turboSearchKit;
     }
 
     async init() {
@@ -53,6 +56,86 @@ export class IndexerManager {
                 ])
             }
         }
+
+        const databaseDependence = this._indexer.indexerManifesto.databaseDependence;
+        if (databaseDependence && databaseDependence.length > 0) {
+
+            const databaseName = await this._dataManagementKit.database.getDatabase().databaseManifesto.name;
+
+            const databaseDependenceVersion = databaseDependence.find((dependence) => {
+                return dependence.name == databaseName;
+            })?.version;
+
+            if (databaseDependenceVersion && databaseDependenceVersion != "") {
+                if (!compareDependenceVersion(
+                    await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
+                    databaseDependenceVersion
+                )) {
+                    catchError("adder", [
+                        "indexer database dependence error",
+                        `indexer ${this._indexer.indexerManifesto.name} request database version is not equal to database version`
+                    ])
+                }
+            } else {
+                catchError("adder", [
+                    "indexer database dependence error",
+                    `indexer ${this._indexer.indexerManifesto.name} request database version is not equal to database version`
+                ])
+            }
+
+        }
+
+        const extensionDependence = this._indexer.indexerManifesto.extensionDependence;
+        //依存している拡張機能があるかチェック
+        if (
+            extensionDependence &&
+            typeof extensionDependence !== "undefined" &&
+            Object.keys(extensionDependence).length > 0
+        ) {
+            Object.keys(extensionDependence).forEach(
+                (dependenceExtensionName) => {
+                    // 依存している拡張機能の情報
+                    const dependenceExtension = this._turboSearchKit.extensions.find(
+                        (extension) =>
+                            extension.manifesto.name === dependenceExtensionName
+                    );
+                    if (!dependenceExtension) {
+                        catchError("dependence", [
+                            "indexer is dependent on " +
+                            dependenceExtensionName,
+                            "The following solutions are available",
+                            "Add the extension : " + dependenceExtensionName,
+                        ]);
+                    } else {
+                        // 依存関係のバージョンチェック
+                        if (extensionDependence) {
+                            if (
+                                extensionDependence[dependenceExtensionName] !==
+                                "" &&
+                                !compareDependenceVersion(
+                                    dependenceExtension.manifesto.version,
+                                    extensionDependence[dependenceExtensionName]
+                                )
+                            ) {
+                                catchError("dependence", [
+                                    "indexer specifies " +
+                                    dependenceExtensionName +
+                                    " version " +
+                                    extensionDependence[dependenceExtensionName] +
+                                    ".",
+                                    "The current version of " +
+                                    dependenceExtensionName +
+                                    " is " +
+                                    dependenceExtension.manifesto.version +
+                                    ".",
+                                ]);
+                            }
+                        }
+                    }
+                }
+            );
+        }
+
     }
 
     async setup() {

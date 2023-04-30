@@ -37,15 +37,15 @@ export class AdderManager {
 
         this._schemaCheck = schemaCheck;
 
-        this._middlewareManager = new MiddlewareManager(this._adder.middleware, this._dataManagementKit);
-
-        this._crawlerManager = new CrawlerManager(this._adder.crawler, this._dataManagementKit);
-
-        this._pipeManager = new PipeManager(this._adder.pipe, this._dataManagementKit, this._schemaCheck);
-
-        this._indexerManager = new IndexerManager(this._adder.indexer, this._dataManagementKit);
-
         this._turboSearchKit = turboSearchKit;
+
+        this._middlewareManager = new MiddlewareManager(this._adder.middleware, this._dataManagementKit, this._turboSearchKit);
+
+        this._crawlerManager = new CrawlerManager(this._adder.crawler, this._dataManagementKit, this._turboSearchKit);
+
+        this._pipeManager = new PipeManager(this._adder.pipe, this._dataManagementKit, this._schemaCheck, this._turboSearchKit);
+
+        this._indexerManager = new IndexerManager(this._adder.indexer, this._dataManagementKit, this._turboSearchKit);
 
     }
 

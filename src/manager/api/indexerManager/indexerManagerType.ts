@@ -4,8 +4,12 @@ import { DataManagementKit } from "../../../indexType";
 export type IndexerManifesto = {
     name: string;
     coreDependence?: string;
+    databaseDependence?: {
+        name: string;
+        version: string;
+    }[];
+    extensionDependence?: { [extensionName: string]: string };
     version: string;
-
 }
 
 export type Indexer = {
