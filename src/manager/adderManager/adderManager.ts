@@ -41,7 +41,7 @@ export class adderManager implements AdderManager {
 
         this._schemaCheck = schemaCheck;
 
-        this._middlewareManager = new middlewareManager(this._adder.middleware, this._dataManagementKit, this._schemaCheck);
+        this._middlewareManager = new middlewareManager(this._adder.middleware, this._dataManagementKit);
 
         this._crawlerManager = new crawlerManager(this._adder.crawler, this._dataManagementKit);
 
@@ -52,8 +52,6 @@ export class adderManager implements AdderManager {
     }
 
     async checkSchema() {
-
-        const outputMiddlewareSchema = this._middlewareManager.outputSchema;
 
         const requestCrawlerSchema = this._crawlerManager.requestSchema;
         const requestPipeSchema = this._pipeManager.requestSchema;
@@ -74,15 +72,6 @@ export class adderManager implements AdderManager {
         const inputIndexerSchema = this._indexerManager.inputSchema;
 
         if (this._schemaCheck == "match") {
-
-            if (outputMiddlewareSchema && outputMiddlewareSchema != requestSchema) {
-
-                catchError("adder", [
-                    "adder schema error",
-                    `adder ${this._adder.adderManifesto.name} outputMiddlewareSchema is not equal to requestSchema`
-                ])
-
-            }
 
             if (inputPipeSchema && outputPipeSchema) {
 
@@ -114,15 +103,6 @@ export class adderManager implements AdderManager {
         }
 
         if (this._schemaCheck == "include") {
-
-            if (outputMiddlewareSchema && compareZodSchemas(requestSchema, outputMiddlewareSchema)) {
-
-                catchError("adder", [
-                    "adder schema error",
-                    `adder ${this._adder.adderManifesto.name} outputMiddlewareSchema is not equal to requestSchema`
-                ])
-
-            }
 
             if (inputPipeSchema && outputPipeSchema) {
 
