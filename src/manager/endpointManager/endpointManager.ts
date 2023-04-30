@@ -4,13 +4,17 @@ import { addEndpointSchema } from "./endpointSchema.js"
 
 export class EndpointManager {
 
-    private _endpoints: Endpoints = {};
+    endpoints: Endpoints;
+
+    constructor() {
+        this.endpoints = {};
+    }
 
     // APIなど外部から参照されるような処理を追加する
     async addEndpoint(endpoint: AddEndpointData) {
 
-        if (typeof this._endpoints == "undefined") {
-            this._endpoints = {};
+        if (typeof this.endpoints == "undefined") {
+            this.endpoints = {};
         }
 
         //バリデーションする
@@ -21,24 +25,21 @@ export class EndpointManager {
                 addEndpointData.error.message,
             ]);
         } else {
-            if (!this._endpoints[endpoint.provider || "other"]) {
-                this._endpoints[endpoint.provider || "other"] = {};
+            if (!this.endpoints[endpoint.provider || "other"]) {
+                this.endpoints[endpoint.provider || "other"] = {};
             }
             //すでに存在するか確かめる
-            if (!this._endpoints[endpoint.provider || "other"][endpoint.name] || addEndpointData.data.forcedAssignment) {
-                this._endpoints[endpoint.provider || "other"][endpoint.name] = addEndpointData.data;
+            if (!this.endpoints[endpoint.provider || "other"][endpoint.name] || addEndpointData.data.forcedAssignment) {
+                this.endpoints[endpoint.provider || "other"][endpoint.name] = addEndpointData.data;
             } else {
                 catchError("endpointValidation", [
                     `Failed to add ${endpoint.name} endpoint`,
                     `The endpoint name ${endpoint.name} is already in use`,
                 ]);
             }
+
         }
 
-
     }
 
-    get endpoints() {
-        return this._endpoints;
-    }
 }

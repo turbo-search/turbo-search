@@ -4,13 +4,17 @@ import { addTaskSchema } from "./taskSchema.js";
 
 export class TaskManager {
 
-    private _tasks: Tasks = {};
+    tasks: Tasks;
+
+    constructor() {
+        this.tasks = {};
+    }
 
     //DBなど内部から参照されるような処理を追加する
     async addTask(task: AddTaskData) {
 
-        if (typeof this._tasks == "undefined") {
-            this._tasks = {};
+        if (typeof this.tasks == "undefined") {
+            this.tasks = {};
         }
 
         //バリデーションする
@@ -21,12 +25,12 @@ export class TaskManager {
                 addTaskData.error.message,
             ]);
         } else {
-            if (!this._tasks[task.provider || "other"]) {
-                this._tasks[task.provider || "other"] = {};
+            if (!this.tasks[task.provider || "other"]) {
+                this.tasks[task.provider || "other"] = {};
             }
             //すでに存在するか確かめる
-            if (!this._tasks[task.provider || "other"][task.name] || addTaskData.data.forcedAssignment) {
-                this._tasks[task.provider || "other"][task.name] = addTaskData.data;
+            if (!this.tasks[task.provider || "other"][task.name] || addTaskData.data.forcedAssignment) {
+                this.tasks[task.provider || "other"][task.name] = addTaskData.data;
             } else {
                 catchError("taskValidation", [
                     `Failed to add ${task.name} task`,
@@ -36,7 +40,4 @@ export class TaskManager {
         }
     }
 
-    get tasks() {
-        return this._tasks;
-    }
 }

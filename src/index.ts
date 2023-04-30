@@ -126,7 +126,7 @@ export class TurboSearchCore {
     };
   }
 
-  get endpoints() {
+  getEndpoints() {
     return this._endpointManager.endpoints;
   }
 
