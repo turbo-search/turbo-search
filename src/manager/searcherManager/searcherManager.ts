@@ -13,6 +13,7 @@ import { PipeManager } from '../api/pipeManager/pipeManagerType.js';
 import { addSearcherDataSchema } from './searcherManagerSchema.js';
 import type { AddSearcherData, Searcher, SearcherManager, Ran } from './searcherManagerType.js';
 import { compareZodSchemas } from '../../utils/compareZodSchemas.js';
+import { deepEqual } from '../../utils/deepEqual.js';
 
 export class searcherManager implements SearcherManager {
 
@@ -63,14 +64,14 @@ export class searcherManager implements SearcherManager {
 
             if (inputPipeSchema && outputPipeSchema) {
 
-                if (outputRankerSchema != inputPipeSchema) {
+                if (!deepEqual(outputRankerSchema, inputPipeSchema)) {
                     catchError("searcher", [
                         "searcher schema error",
                         `searcher ${this._searcher.searcherManifesto.name} outputRankerSchema is not equal to inputPipeSchema`
                     ])
                 }
 
-                if (outputPipeSchema != inputInterceptorSchema) {
+                if (!deepEqual(outputPipeSchema, inputInterceptorSchema)) {
                     catchError("searcher", [
                         "searcher schema error",
                         `searcher ${this._searcher.searcherManifesto.name} outputPipeSchema is not equal to inputInterceptorSchema`
@@ -79,7 +80,7 @@ export class searcherManager implements SearcherManager {
 
             } else {
 
-                if (outputRankerSchema != inputInterceptorSchema) {
+                if (!deepEqual(outputRankerSchema, inputInterceptorSchema)) {
                     catchError("searcher", [
                         "searcher schema error",
                         `searcher ${this._searcher.searcherManifesto.name} outputRankerSchema is not equal to inputInterceptorSchema`
@@ -94,14 +95,14 @@ export class searcherManager implements SearcherManager {
 
             if (inputPipeSchema && outputPipeSchema) {
 
-                if (compareZodSchemas(inputPipeSchema, outputRankerSchema)) {
+                if (!compareZodSchemas(inputPipeSchema, outputRankerSchema)) {
                     catchError("searcher", [
                         "searcher schema error",
                         `searcher ${this._searcher.searcherManifesto.name} outputRankerSchema is not equal to inputPipeSchema`
                     ])
                 }
 
-                if (compareZodSchemas(inputInterceptorSchema, outputPipeSchema)) {
+                if (!compareZodSchemas(inputInterceptorSchema, outputPipeSchema)) {
                     catchError("searcher", [
                         "searcher schema error",
                         `searcher ${this._searcher.searcherManifesto.name} outputPipeSchema is not equal to inputInterceptorSchema`
@@ -110,7 +111,7 @@ export class searcherManager implements SearcherManager {
 
             } else {
 
-                if (compareZodSchemas(inputInterceptorSchema, outputRankerSchema)) {
+                if (!compareZodSchemas(inputInterceptorSchema, outputRankerSchema)) {
                     catchError("searcher", [
                         "searcher schema error",
                         `searcher ${this._searcher.searcherManifesto.name} outputRankerSchema is not equal to inputInterceptorSchema`

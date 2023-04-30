@@ -13,6 +13,7 @@ import { PipeManager } from '../api/pipeManager/pipeManagerType.js';
 import { addAdderDataSchema } from './adderManagerSchema.js';
 import type { AddAdderData, Adder, AdderManager, Ran } from './adderManagerType.js';
 import { compareZodSchemas } from '../../utils/compareZodSchemas.js';
+import { deepEqual } from '../../utils/deepEqual.js';
 
 export class adderManager implements AdderManager {
 
@@ -63,14 +64,14 @@ export class adderManager implements AdderManager {
 
             if (inputPipeSchema && outputPipeSchema) {
 
-                if (outputCrawlerSchema != inputPipeSchema) {
+                if (!deepEqual(outputCrawlerSchema, inputPipeSchema)) {
                     catchError("adder", [
                         "adder schema error",
                         `adder ${this._adder.adderManifesto.name} outputCrawlerSchema is not equal to inputPipeSchema`
                     ])
                 }
 
-                if (outputPipeSchema != inputIndexerSchema) {
+                if (!deepEqual(outputPipeSchema, inputIndexerSchema)) {
                     catchError("adder", [
                         "adder schema error",
                         `adder ${this._adder.adderManifesto.name} outputPipeSchema is not equal to inputIndexerSchema`
@@ -79,7 +80,7 @@ export class adderManager implements AdderManager {
 
             } else {
 
-                if (outputCrawlerSchema != inputIndexerSchema) {
+                if (!deepEqual(outputCrawlerSchema, inputIndexerSchema)) {
                     catchError("adder", [
                         "adder schema error",
                         `adder ${this._adder.adderManifesto.name} outputCrawlerSchema is not equal to inputIndexerSchema`
@@ -94,14 +95,14 @@ export class adderManager implements AdderManager {
 
             if (inputPipeSchema && outputPipeSchema) {
 
-                if (compareZodSchemas(inputPipeSchema, outputCrawlerSchema)) {
+                if (!compareZodSchemas(inputPipeSchema, outputCrawlerSchema)) {
                     catchError("adder", [
                         "adder schema error",
                         `adder ${this._adder.adderManifesto.name} outputCrawlerSchema is not equal to inputPipeSchema`
                     ])
                 }
 
-                if (compareZodSchemas(inputIndexerSchema, outputPipeSchema)) {
+                if (!compareZodSchemas(inputIndexerSchema, outputPipeSchema)) {
                     catchError("adder", [
                         "adder schema error",
                         `adder ${this._adder.adderManifesto.name} outputPipeSchema is not equal to inputIndexerSchema`
@@ -110,7 +111,7 @@ export class adderManager implements AdderManager {
 
             } else {
 
-                if (compareZodSchemas(inputIndexerSchema, outputCrawlerSchema)) {
+                if (!compareZodSchemas(inputIndexerSchema, outputCrawlerSchema)) {
                     catchError("adder", [
                         "adder schema error",
                         `adder ${this._adder.adderManifesto.name} outputCrawlerSchema is not equal to inputIndexerSchema`

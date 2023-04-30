@@ -5,6 +5,7 @@ import { catchError } from "../../../error/catchError";
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
 import { compareZodSchemas } from "../../../utils/compareZodSchemas";
+import { deepEqual } from "../../../utils/deepEqual";
 
 export class pipeManager implements PipeManager {
 
@@ -66,7 +67,7 @@ export class pipeManager implements PipeManager {
 
             // SchemaCheck == match
 
-            if (this._schemaCheck == "match" && pipe.outputSchema !== this._pipeList[index + 1].inputSchema) {
+            if (this._schemaCheck == "match" && !deepEqual(pipe.outputSchema, this._pipeList[index + 1].inputSchema)) {
 
                 catchError("pipeValidation", [
                     "pipe validation error",
@@ -77,7 +78,7 @@ export class pipeManager implements PipeManager {
 
             // SchemaCheck == include
 
-            if (this._schemaCheck == "include" && compareZodSchemas(pipe.outputSchema, this._pipeList[index + 1].inputSchema)) {
+            if (this._schemaCheck == "include" && !compareZodSchemas(pipe.outputSchema, this._pipeList[index + 1].inputSchema)) {
 
                 catchError("pipeValidation", [
                     "pipe validation error",
