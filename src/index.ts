@@ -79,18 +79,22 @@ export class TurboSearchCore {
 
   async adderSetup() {
     //setup adder
-    this._adderManagerList = await this._options.adders.map((adder) => {
-      return new AdderManager(
-        adder,
-        this.dataManagementKit(),
-        this.turboSearchKit(),
-        this._schemaCheck
-      )
-    });
 
-    this._adderManagerList.forEach(async (adderManager) => {
-      await adderManager.setup()
-    })
+    for (let i = 0; i < this._options.adders.length; i++) {
+      this._adderManagerList.push(
+        await new AdderManager(
+          this._options.adders[i],
+          this.dataManagementKit(),
+          this.turboSearchKit(),
+          this._schemaCheck
+        )
+      )
+    }
+
+    for (let i = 0; i < this._adderManagerList.length; i++) {
+      await this._adderManagerList[i].setup()
+    }
+
   }
 
   async setup() {

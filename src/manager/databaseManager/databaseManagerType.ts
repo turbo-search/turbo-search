@@ -10,6 +10,7 @@ export type Database = {
     databaseManifesto: databaseManifesto;
     init?: () => Promise<void>;
     addData: (data: any) => Promise<void | any>;
+    addDataArray?: (data: any[]) => Promise<void | any>;
     deleteData?: (data: any) => Promise<void | any>;
     updateData?: (data: any) => Promise<void | any>;
     getAllData?: () => Promise<any>;

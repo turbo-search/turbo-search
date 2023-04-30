@@ -155,6 +155,11 @@ export class AdderManager {
 
 
     async setup() {
+        await this._middlewareManager.setup();
+        await this._crawlerManager.setup();
+        await this._pipeManager.setup();
+        await this._indexerManager.setup();
+
         await this.init();
         await this.checkSchema();
         await this.checkDependence();

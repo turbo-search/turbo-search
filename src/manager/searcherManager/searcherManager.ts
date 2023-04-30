@@ -156,6 +156,11 @@ export class SearcherManager {
 
 
     async setup() {
+        await this._middlewareManager.setup();
+        await this._rankerManager.setup();
+        await this._pipeManager.setup();
+        await this._interceptorManager.setup();
+
         await this.init();
         await this.checkSchema();
         await this.checkDependence();

@@ -80,6 +80,17 @@ export class DatabaseManager {
         }
     }
 
+    async addDataArray(data: any[]) {
+        if (this._databases.addDataArray) {
+            await this._databases.addDataArray(data);
+        } else {
+            catchError("database", [
+                "database error",
+                `database ${this._databases.databaseManifesto.name} does not support addDataArray method`
+            ])
+        }
+    }
+
     async fullTextSearch(query: string) {
         if (this._databases.fullTextSearch) {
             return await this._databases.fullTextSearch(query);

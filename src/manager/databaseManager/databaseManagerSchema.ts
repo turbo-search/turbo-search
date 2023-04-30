@@ -8,6 +8,7 @@ export const addDatabaseDataSchema = z.object({
     }),
     init: z.function().optional(),
     addData: z.function(),
+    addDataArray: z.function().optional(),
     deleteData: z.function().optional(),
     updateData: z.function().optional(),
     getAllData: z.function().optional(),
