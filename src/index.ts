@@ -56,7 +56,7 @@ export class TurboSearchCore {
 
     //setup extensions
     this._extensionManager = new ExtensionManager(
-      options.extensions,
+      options.extensions ? options.extensions : [],
       options.error ? options.error : {},
       this.version,
       this.turboSearchKit()
@@ -80,6 +80,8 @@ export class TurboSearchCore {
 
   async adderSetup() {
     //setup adder
+
+    if (typeof this._options.adders === "undefined") return
 
     for (let i = 0; i < this._options.adders.length; i++) {
       this._adderManagerList.push(
