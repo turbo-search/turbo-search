@@ -1,4 +1,4 @@
-import { TurboSearchKit } from "../../indexType";
+import { ExtensionSetupKit, TurboSearchKit } from "../../indexType";
 
 export type ExtensionManifesto = {
   name: string;
@@ -8,7 +8,7 @@ export type ExtensionManifesto = {
 };
 
 export type Extension = {
-  init?: (turboSearchKit?: TurboSearchKit) => void;
+  init?: (extensionSetupKit?: ExtensionSetupKit) => void;
   available?: () => { success: false; message: string } | { success: true };
   manifesto: ExtensionManifesto;
 };

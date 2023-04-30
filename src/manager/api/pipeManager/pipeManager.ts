@@ -1,4 +1,4 @@
-import { DataManagementKit, SchemaCheck } from "../../../indexType";
+import { DataManagementKit, SchemaCheck, TurboSearchKit } from "../../../indexType";
 import { Pipe, AddPipeData } from "./pipeManagerType";
 import { addPipeDataSchema } from "./pipeManagerSchema";
 import { catchError } from "../../../error/catchError";
@@ -12,8 +12,9 @@ export class PipeManager {
     private _pipeList: Pipe[] = [];
     private _dataManagementKit: DataManagementKit;
     private _schemaCheck: SchemaCheck;
+    private _turboSearchKit: TurboSearchKit;
 
-    constructor(addPipeDataList: AddPipeData[], dataManagementKit: DataManagementKit, schemaCheck: SchemaCheck) {
+    constructor(addPipeDataList: AddPipeData[], dataManagementKit: DataManagementKit, schemaCheck: SchemaCheck, turboSearchKit: TurboSearchKit) {
 
         const result = addPipeDataSchema.safeParse(addPipeDataList);
         if (!result.success) {
@@ -25,6 +26,8 @@ export class PipeManager {
         this._dataManagementKit = dataManagementKit;
 
         this._schemaCheck = schemaCheck;
+
+        this._turboSearchKit = turboSearchKit;
     }
 
     get requestSchema() {
@@ -103,6 +106,87 @@ export class PipeManager {
                         `pipe ${pipe.pipeManifesto.name} coreDependence is not equal to core version`
                     ])
                 }
+            }
+        });
+
+        await this._pipeList.forEach(async (pipe, index) => {
+            const databaseDependence = pipe.pipeManifesto.databaseDependence;
+            if (databaseDependence && databaseDependence.length > 0) {
+
+                const databaseName = await this._dataManagementKit.database.getDatabase().databaseManifesto.name;
+
+                const databaseDependenceVersion = databaseDependence.find((dependence) => {
+                    return dependence.name == databaseName;
+                })?.version;
+
+                if (databaseDependenceVersion && databaseDependenceVersion != "") {
+                    if (!compareDependenceVersion(
+                        await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
+                        databaseDependenceVersion
+                    )) {
+                        catchError("adder", [
+                            "pipe database dependence error",
+                            `pipe ${pipe.pipeManifesto.name} request database version is not equal to database version`
+                        ])
+                    }
+                } else {
+                    catchError("adder", [
+                        "pipe database dependence error",
+                        `pipe ${pipe.pipeManifesto.name} request database version is not equal to database version`
+                    ])
+                }
+
+            }
+
+            const extensionDependence = pipe.pipeManifesto.extensionDependence;
+            //依存している拡張機能があるかチェック
+            if (
+                extensionDependence &&
+                typeof extensionDependence !== "undefined" &&
+                Object.keys(extensionDependence).length > 0
+            ) {
+                Object.keys(extensionDependence).forEach(
+                    (dependenceExtensionName) => {
+                        // 依存している拡張機能の情報
+                        const dependenceExtension = this._turboSearchKit.extensions.find(
+                            (extension) =>
+                                extension.manifesto.name === dependenceExtensionName
+                        );
+                        if (!dependenceExtension) {
+                            catchError("dependence", [
+                                "pipe is dependent on " +
+                                dependenceExtensionName,
+                                "The following solutions are available",
+                                "Add the extension : " + dependenceExtensionName,
+                            ]);
+                        } else {
+                            // 依存関係のバージョンチェック
+                            if (extensionDependence) {
+                                if (
+                                    extensionDependence[dependenceExtensionName] !==
+                                    "" &&
+                                    !compareDependenceVersion(
+                                        dependenceExtension.manifesto.version,
+                                        extensionDependence[dependenceExtensionName]
+                                    )
+                                ) {
+                                    catchError("dependence", [
+                                        "pipe specifies " +
+                                        dependenceExtensionName +
+                                        " version " +
+                                        extensionDependence[dependenceExtensionName] +
+                                        ".",
+                                        "The current version of " +
+                                        dependenceExtensionName +
+                                        " is " +
+                                        dependenceExtension.manifesto.version +
+                                        ".",
+                                    ]);
+                                }
+                            }
+                        }
+                    }
+                );
             }
         });
 

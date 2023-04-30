@@ -14,6 +14,11 @@ export type AdderManifesto = {
   name: string;
   queryPath?: string;
   coreDependence?: string;
+  databaseDependence?: {
+    name: string;
+    version: string;
+  }[];
+  extensionDependence?: { [extensionName: string]: string };
   version: string;
 }
 
