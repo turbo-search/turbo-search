@@ -1,8 +1,8 @@
-import { MemoryStoreManager } from "../memoryStoreManager/memoryStoreManagerType";
 import { AddJobData, Job, JobStatus, SubscribeJobCallback } from "./jobManagerType";
 import { addJobDataSchema, addSubscribeJobDataSchema, addSubscribeJobsDataSchema } from "./jobManagerSchema";
 import { v4 as uuidv4 } from 'uuid';
 import { catchError } from "../../error/catchError";
+import { MemoryStoreManager } from "../memoryStoreManager/memoryStoreManager";
 
 export class JobManager {
 
