@@ -1,11 +1,12 @@
 import { AddTaskData, Tasks } from "./manager/taskManager/taskManagerType";
 import { Extension } from "./manager/extensionManager/extensionManagerType";
 import { AddEndpointData, Endpoints } from "./manager/endpointManager/endpointManagerType";
-import { JobManager } from "./manager/jobManager/jobManagerType";
-import { MemoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManagerType";
-import { AddDatabaseData, DatabaseManager } from "./manager/databaseManager/databaseManagerType";
+import { AddDatabaseData } from "./manager/databaseManager/databaseManagerType";
 import { AddAdderData } from "./manager/adderManager/adderManagerType";
 import { AddSearcherData } from "./manager/searcherManager/searcherManagerType";
+import { JobManager } from "./manager/jobManager/jobManager";
+import { DatabaseManager } from "./manager/databaseManager/databaseManager";
+import { MemoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManager";
 
 //拡張機能にturbo-searchへのアクセスを提供するもの
 export type TurboSearchKit = {

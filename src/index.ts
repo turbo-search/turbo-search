@@ -1,4 +1,4 @@
-import { extensionManager } from "./manager/extensionManager/extensionManager.js";
+import { ExtensionManager } from "./manager/extensionManager/extensionManager.js";
 import {
   AddTaskAndEndpointData,
   DataManagementKit,
@@ -8,13 +8,13 @@ import {
   TurboSearchKit,
 } from "./indexType.js";
 import { version } from "./version.js";
-import { taskManager } from "./manager/taskManager/taskManager.js";
-import { endpointManager } from "./manager/endpointManager/endpointManager.js";
-import { memoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManager.js";
-import { jobManager } from "./manager/jobManager/jobManager.js";
-import { databaseManager } from "./manager/databaseManager/databaseManager.js";
-import { searcherManager } from "./manager/searcherManager/searcherManager.js";
-import { adderManager } from "./manager/adderManager/adderManager.js";
+import { TaskManager } from "./manager/taskManager/taskManager.js";
+import { EndpointManager } from "./manager/endpointManager/endpointManager.js";
+import { MemoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManager.js";
+import { JobManager } from "./manager/jobManager/jobManager.js";
+import { DatabaseManager } from "./manager/databaseManager/databaseManager.js";
+import { SearcherManager } from "./manager/searcherManager/searcherManager.js";
+import { AdderManager } from "./manager/adderManager/adderManager.js";
 
 export class turboSearchCore implements TurboSearchCore {
   public version = version;
@@ -37,22 +37,22 @@ export class turboSearchCore implements TurboSearchCore {
     }
 
     //setup database
-    this._database = new databaseManager(options.database);
+    this._database = new DatabaseManager(options.database);
 
     //setup tasks
-    this._taskManager = new taskManager();
+    this._taskManager = new TaskManager();
 
     //setup endpoints
-    this._endpointManager = new endpointManager();
+    this._endpointManager = new EndpointManager();
 
     //setup memoryStore
-    this._memoryStoreManager = new memoryStoreManager();
+    this._memoryStoreManager = new MemoryStoreManager();
 
     //setup job
-    this._jobManager = new jobManager(this._memoryStoreManager);
+    this._jobManager = new JobManager(this._memoryStoreManager);
 
     //setup extensions
-    this._extensionManager = new extensionManager(
+    this._extensionManager = new ExtensionManager(
       options.extensions,
       options.error ? options.error : {},
       this.version,
@@ -61,7 +61,7 @@ export class turboSearchCore implements TurboSearchCore {
     this._extensionManager.setupExtensions();
 
     //setup searcher
-    this._searcherManager = new searcherManager(
+    this._searcherManager = new SearcherManager(
       options.searcher,
       this.dataManagementKit(),
       this.turboSearchKit(),
@@ -71,7 +71,7 @@ export class turboSearchCore implements TurboSearchCore {
 
     //setup adder
     this._adderManagerList = options.adders.map((adder) => {
-      return new adderManager(
+      return new AdderManager(
         adder,
         this.dataManagementKit(),
         this.turboSearchKit(),
