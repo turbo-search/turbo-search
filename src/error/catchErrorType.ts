@@ -9,6 +9,7 @@ export type ErrorType =
   | "adder"
   | "searcher"
   | "database"
+  | "endpoint"
   | "extensionValidation"
   | "taskValidation"
   | "endpointValidation"

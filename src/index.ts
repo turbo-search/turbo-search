@@ -14,6 +14,7 @@ import { JobManager } from "./manager/jobManager/jobManager.js";
 import { DatabaseManager } from "./manager/databaseManager/databaseManager.js";
 import { SearcherManager } from "./manager/searcherManager/searcherManager.js";
 import { AdderManager } from "./manager/adderManager/adderManager.js";
+import { catchError } from "./error/catchError.js";
 
 export class TurboSearchCore {
   public version = version;
@@ -132,6 +133,14 @@ export class TurboSearchCore {
 
   getEndpoints() {
     return this._endpointManager.endpoints;
+  }
+
+  processEndpoint(provider: string, endpointName: string, data: any, options?: any) {
+    if (this._endpointManager.endpoints && this._endpointManager.endpoints[provider] && this._endpointManager.endpoints[provider][endpointName]) {
+      return this._endpointManager.endpoints[provider][endpointName].function(data, options);
+    } else {
+      catchError("endpoint", ["endpoint not found", "provider : " + provider, "endpointName : " + endpointName]);
+    }
   }
 
   turbo(): void {
