@@ -1,7 +1,7 @@
 import Z from "zod";
 import { DataManagementKit } from "../../../indexType";
 
-export type crawlerManifesto = {
+export type CrawlerManifesto = {
     name: string;
     coreDependence?: string;
     version: string;
@@ -10,12 +10,12 @@ export type crawlerManifesto = {
 
 //class
 export type AddCrawlerData = {
-    inputSchema: Z.Schema;
+    requestSchema: Z.Schema;
     outputSchema: Z.Schema;
-    crawlerManifesto: crawlerManifesto;
+    crawlerManifesto: CrawlerManifesto;
     init?: (dataManagementKit: DataManagementKit) => Promise<void>;
     process: (
-        inputData: Z.infer<AddCrawlerData["inputSchema"]>,
+        requestData: Z.infer<AddCrawlerData["requestSchema"]>,
         dataManagementKit: DataManagementKit
     ) => Promise<{
         success: false;
@@ -28,12 +28,12 @@ export type AddCrawlerData = {
 }
 
 export type Crawler = {
-    inputSchema: Z.Schema;
+    requestSchema: Z.Schema;
     outputSchema: Z.Schema;
-    crawlerManifesto: crawlerManifesto;
+    crawlerManifesto: CrawlerManifesto;
     init?: (dataManagementKit: DataManagementKit) => Promise<void>;
     process: (
-        inputData: Z.infer<AddCrawlerData["inputSchema"]>,
+        requestData: Z.infer<Crawler["requestSchema"]>,
         dataManagementKit: DataManagementKit
     ) => Promise<{
         success: false;
@@ -54,7 +54,7 @@ export type CrawlerManager = {
     setup: () => Promise<void>;
 
     process: (
-        inputData: any,
+        requestData: any,
     ) => Promise<{
         success: false;
         message: string;
@@ -64,7 +64,7 @@ export type CrawlerManager = {
         output: any;
     }>;
 
-    inputSchema: Z.Schema;
+    requestSchema: Z.Schema;
     outputSchema: Z.Schema;
 
 }

@@ -1,7 +1,7 @@
 import Z from "zod";
 import { DataManagementKit } from "../../../indexType";
 
-export type indexerManifesto = {
+export type IndexerManifesto = {
     name: string;
     coreDependence?: string;
     version: string;
@@ -10,11 +10,13 @@ export type indexerManifesto = {
 
 //class
 export type AddIndexerData = {
+    requestSchema: Z.Schema;
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
-    indexerManifesto: indexerManifesto;
+    indexerManifesto: IndexerManifesto;
     init?: (dataManagementKit: DataManagementKit) => Promise<void>;
     process: (
+        requestData: Z.infer<AddIndexerData["requestSchema"]>,
         inputData: Z.infer<AddIndexerData["inputSchema"]>,
         dataManagementKit: DataManagementKit
     ) => Promise<{
@@ -28,12 +30,14 @@ export type AddIndexerData = {
 }
 
 export type Indexer = {
+    requestSchema: Z.Schema;
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
-    indexerManifesto: indexerManifesto;
+    indexerManifesto: IndexerManifesto;
     init?: (dataManagementKit: DataManagementKit) => Promise<void>;
     process: (
-        inputData: Z.infer<AddIndexerData["inputSchema"]>,
+        requestData: Z.infer<AddIndexerData["requestSchema"]>,
+        inputData: Z.infer<Indexer["inputSchema"]>,
         dataManagementKit: DataManagementKit
     ) => Promise<{
         success: false;
@@ -41,7 +45,7 @@ export type Indexer = {
         error: any;
     } | {
         success: true;
-        output: Z.infer<AddIndexerData["outputSchema"]>;
+        output: Z.infer<Indexer["outputSchema"]>;
     }>
 }
 
@@ -54,6 +58,7 @@ export type IndexerManager = {
     setup: () => Promise<void>;
 
     process: (
+        requestData: Z.infer<AddIndexerData["requestSchema"]>,
         inputData: any,
     ) => Promise<{
         success: false;
@@ -64,6 +69,7 @@ export type IndexerManager = {
         output: any;
     }>;
 
+    requestSchema: Z.Schema;
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
 

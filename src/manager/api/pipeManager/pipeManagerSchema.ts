@@ -3,6 +3,7 @@ import z from "zod";
 export const addPipeDataSchema =
     z.array(
         z.object({
+            requestSchema: z.any(),
             inputSchema: z.any(),
             outputSchema: z.any(),
             pipeManifesto: z.object({

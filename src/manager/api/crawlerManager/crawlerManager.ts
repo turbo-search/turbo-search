@@ -28,8 +28,8 @@ export class crawlerManager implements CrawlerManager {
         }
     }
 
-    get inputSchema() {
-        return this._crawler.inputSchema;
+    get requestSchema() {
+        return this._crawler.requestSchema;
     }
 
     get outputSchema() {
@@ -56,20 +56,20 @@ export class crawlerManager implements CrawlerManager {
         await this.checkDependence();
     }
 
-    async process(inputData: any) {
-        const safeInput = this._crawler.inputSchema.safeParse(inputData);
-        if (!safeInput.success) {
+    async process(requestData: any) {
+        const safeRequest = this._crawler.requestSchema.safeParse(requestData);
+        if (!safeRequest.success) {
             return {
                 success: false,
                 message: "input data validation error",
-                error: safeInput.error
+                error: safeRequest.error
             } as {
                 success: false;
                 message: string;
                 error: any;
             }
         } else {
-            const result = await this._crawler.process(safeInput.data, this._dataManagementKit);
+            const result = await this._crawler.process(safeRequest.data, this._dataManagementKit);
             return result;
         }
     }

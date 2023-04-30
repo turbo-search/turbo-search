@@ -1,5 +1,5 @@
 import { DataManagementKit, SchemaCheck } from "../../../indexType";
-import { Pipe, PipeManager, addPipeData } from "./pipeManagerType";
+import { Pipe, PipeManager, AddPipeData } from "./pipeManagerType";
 import { addPipeDataSchema } from "./pipeManagerSchema";
 import { catchError } from "../../../error/catchError";
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
@@ -12,18 +12,23 @@ export class pipeManager implements PipeManager {
     private _dataManagementKit: DataManagementKit;
     private _schemaCheck: SchemaCheck;
 
-    constructor(_addPipeDataList: addPipeData[], dataManagementKit: DataManagementKit, schemaCheck: SchemaCheck) {
+    constructor(_addPipeDataList: AddPipeData[], dataManagementKit: DataManagementKit, schemaCheck: SchemaCheck) {
 
         const result = addPipeDataSchema.safeParse(_addPipeDataList);
         if (!result.success) {
             catchError("pipeValidation", ["pipe validation error", result.error.message]);
         } else {
-            this._pipeList = result.data as unknown as addPipeData[];
+            this._pipeList = result.data as unknown as AddPipeData[];
         }
 
         this._dataManagementKit = dataManagementKit;
 
         this._schemaCheck = schemaCheck;
+    }
+
+    get requestSchema() {
+        if (this._pipeList.length === 0) return undefined;
+        return this._pipeList[0].requestSchema;
     }
 
     get inputSchema() {
@@ -101,7 +106,7 @@ export class pipeManager implements PipeManager {
         await this.checkDependence();
     };
 
-    async processAll(inputData: any) {
+    async processAll(requestData: any, inputData: any) {
 
         let outputData: any = {
             success: true,
@@ -112,7 +117,7 @@ export class pipeManager implements PipeManager {
 
             if (outputData.success === false) return;
 
-            const result = await this.process(outputData, pipe);
+            const result = await this.process(requestData, outputData, pipe);
             if (result.success) {
                 outputData = result.output;
             } else {
@@ -123,9 +128,20 @@ export class pipeManager implements PipeManager {
         return outputData;
     }
 
-    async process(inputData: any, pipe: Pipe) {
+    async process(requestData: any, inputData: any, pipe: Pipe) {
+        const safeRequest = pipe.requestSchema.safeParse(requestData);
         const safeInput = pipe.inputSchema.safeParse(inputData);
-        if (!safeInput.success) {
+        if (!safeRequest.success) {
+            return {
+                success: false,
+                message: "input data validation error",
+                error: safeRequest.error
+            } as {
+                success: false;
+                message: string;
+                error: any;
+            }
+        } else if (!safeInput.success) {
             return {
                 success: false,
                 message: "input data validation error",
@@ -136,7 +152,7 @@ export class pipeManager implements PipeManager {
                 error: any;
             }
         } else {
-            const result = await pipe.process(safeInput.data, this._dataManagementKit);
+            const result = await pipe.process(safeRequest.data, safeInput.data, this._dataManagementKit);
             return result;
         }
     }

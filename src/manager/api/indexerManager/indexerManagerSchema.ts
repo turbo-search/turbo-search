@@ -1,6 +1,7 @@
 import z from "zod";
 
 export const addIndexerDataSchema = z.object({
+    requestSchema: z.any(),
     inputSchema: z.any(),
     outputSchema: z.any(),
     indexerManifesto: z.object({

@@ -1,7 +1,7 @@
 import Z from "zod";
 import { DataManagementKit } from "../../../indexType";
 
-export type pipeManifesto = {
+export type PipeManifesto = {
     name: string;
     coreDependence?: string;
     version: string;
@@ -9,13 +9,15 @@ export type pipeManifesto = {
 }
 
 //class
-export type addPipeData = {
+export type AddPipeData = {
+    requestSchema: Z.Schema;
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
-    pipeManifesto: pipeManifesto;
+    pipeManifesto: PipeManifesto;
     init?: (dataManagementKit: DataManagementKit) => Promise<void>;
     process: (
-        inputData: Z.infer<addPipeData["inputSchema"]>,
+        requestData: Z.infer<Pipe["requestSchema"]>,
+        inputData: Z.infer<AddPipeData["inputSchema"]>,
         dataManagementKit: DataManagementKit
     ) => Promise<{
         success: false;
@@ -23,17 +25,19 @@ export type addPipeData = {
         error: any;
     } | {
         success: true;
-        output: Z.infer<addPipeData["outputSchema"]>;
+        output: Z.infer<AddPipeData["outputSchema"]>;
     }>
 }
 
 export type Pipe = {
+    requestSchema: Z.Schema;
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
-    pipeManifesto: pipeManifesto;
+    pipeManifesto: PipeManifesto;
     init?: (dataManagementKit: DataManagementKit) => Promise<void>;
     process: (
-        inputData: Z.infer<addPipeData["inputSchema"]>,
+        requestData: Z.infer<Pipe["requestSchema"]>,
+        inputData: Z.infer<Pipe["inputSchema"]>,
         dataManagementKit: DataManagementKit
     ) => Promise<{
         success: false;
@@ -41,7 +45,7 @@ export type Pipe = {
         error: any;
     } | {
         success: true;
-        output: Z.infer<addPipeData["outputSchema"]>;
+        output: Z.infer<Pipe["outputSchema"]>;
     }>
 }
 
@@ -55,7 +59,7 @@ export type PipeManager = {
 
     setup: () => Promise<void>;
 
-    processAll: (inputData: any) => Promise<{
+    processAll: (requestData: any, inputData: any) => Promise<{
         success: false;
         message: string;
         error: any;
@@ -65,6 +69,7 @@ export type PipeManager = {
     }>;
 
     process: (
+        requestData: any,
         inputData: any,
         pipe: Pipe
     ) => Promise<{
@@ -76,6 +81,7 @@ export type PipeManager = {
         output: any;
     }>;
 
+    requestSchema: Z.Schema | undefined;
     inputSchema: Z.Schema | undefined;
     outputSchema: Z.Schema | undefined;
 
