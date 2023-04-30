@@ -4,8 +4,8 @@ import { AddEndpointData, Endpoints } from "./manager/endpointManager/endpointMa
 import { JobManager } from "./manager/jobManager/jobManagerType";
 import { MemoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManagerType";
 import { AddDatabaseData, DatabaseManager } from "./manager/databaseManager/databaseManagerType";
-import { Adder } from "./manager/adderManager/adderManagerType";
-import { Searcher } from "./manager/searcherManager/searcherManagerType";
+import { AddAdderData } from "./manager/adderManager/adderManagerType";
+import { AddSearcherData } from "./manager/searcherManager/searcherManagerType";
 
 //拡張機能にturbo-searchへのアクセスを提供するもの
 export type TurboSearchKit = {
@@ -31,8 +31,8 @@ export type AddTaskAndEndpointData = {
 };
 
 export type TurboSearchCoreOptions = {
-  adders: Adder[];
-  searcher: Searcher;
+  adders: AddAdderData[];
+  searcher: AddSearcherData;
   database: AddDatabaseData;
   extensions: Extension[];
   error?: {
