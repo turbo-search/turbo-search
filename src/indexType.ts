@@ -16,6 +16,7 @@ export type TurboSearchKit = {
   endpoints: Endpoints;
   tasks: Tasks;
   jobManager: JobManager;
+  extensions: Extension[];
 };
 
 //Databaseへのアクセスを提供するもの

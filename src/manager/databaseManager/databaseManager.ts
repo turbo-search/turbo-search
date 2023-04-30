@@ -124,4 +124,8 @@ export class DatabaseManager {
         }
     }
 
+    getDatabase() {
+        return this._databases;
+    }
+
 }

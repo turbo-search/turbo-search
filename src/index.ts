@@ -123,6 +123,7 @@ export class TurboSearchCore {
       endpoints: this._endpointManager.endpoints,
       tasks: this._taskManager.tasks,
       jobManager: this._jobManager,
+      extensions: this._extensionManager.getExtensions(),
     };
   }
 

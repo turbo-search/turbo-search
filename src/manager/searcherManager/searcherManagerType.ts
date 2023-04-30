@@ -14,6 +14,11 @@ export type Ran =
 export type SearcherManifesto = {
   name: string;
   coreDependence?: string;
+  databaseDependence?: {
+    name: string;
+    version: string;
+  }[];
+  extensionDependence?: { [extensionName: string]: string };
   version: string;
 }
 
