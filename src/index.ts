@@ -42,6 +42,7 @@ export class TurboSearchCore {
 
     //setup database
     this._database = new DatabaseManager(options.database);
+    this._database.setup();
 
     //setup tasks
     this._taskManager = new TaskManager();
@@ -146,6 +147,8 @@ export class TurboSearchCore {
     return {
       database: this._database,
       memoryStore: this._memoryStoreManager,
+      endpoints: this._endpointManager.endpoints,
+      tasks: this._taskManager.tasks,
     };
   }
 
@@ -153,9 +156,9 @@ export class TurboSearchCore {
     return this._endpointManager.endpoints;
   }
 
-  processEndpoint(provider: string, endpointName: string, data: any, options?: any) {
+  async processEndpoint(provider: string, endpointName: string, data: any, options?: any) {
     if (this._endpointManager.endpoints && this._endpointManager.endpoints[provider] && this._endpointManager.endpoints[provider][endpointName]) {
-      return this._endpointManager.endpoints[provider][endpointName].function(data, options);
+      return await this._endpointManager.endpoints[provider][endpointName].function(data, options);
     } else {
       catchError("endpoint", ["endpoint not found", "provider : " + provider, "endpointName : " + endpointName]);
     }
@@ -164,4 +167,34 @@ export class TurboSearchCore {
   turbo(): void {
     console.log("⚡turbo")
   }
+
+  async insert(endpointName: string, data: any) {
+    return await this.processEndpoint("core", "adder/" + endpointName, data)
+  }
+
+  async search(data: any) {
+    return await this.processEndpoint("core", "searcher", data)
+  }
+
 }
+
+//出力
+export * from "./indexType.js";
+export * from "./manager/adderManager/adderManagerType.js";
+export * from "./manager/api/crawlerManager/crawlerManagerType.js";
+export * from "./manager/api/indexerManager/indexerManagerType.js";
+export * from "./manager/api/interceptorManager/interceptorManagerType.js";
+export * from "./manager/api/middlewareManager/middlewareManagerType.js";
+export * from "./manager/api/pipeManager/pipeManagerType.js";
+export * from "./manager/api/rankerManager/rankerManagerType.js";
+export * from "./manager/databaseManager/databaseManagerType.js";
+export * from "./manager/endpointManager/endpointManagerType.js";
+export * from "./manager/extensionManager/extensionManagerType.js";
+export * from "./manager/jobManager/jobManagerType.js";
+export * from "./manager/searcherManager/searcherManagerType.js";
+
+export type Ran =
+  | "middleware"
+  | "ranker"
+  | "pipe"
+  | "interceptor";

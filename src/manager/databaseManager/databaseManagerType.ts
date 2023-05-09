@@ -14,8 +14,9 @@ export type Database = {
     deleteData?: (data: any) => Promise<void | any>;
     updateData?: (data: any) => Promise<void | any>;
     getAllData?: () => Promise<any>;
-    fullTextSearch?: (query: string) => Promise<any>;
-    vectorSearch?: (query: string) => Promise<any>;
+    fullTextSearch?: (data: any) => Promise<any>;
+    vectorSearch?: (data: any) => Promise<any>;
+    search?: (order: any, data: any) => Promise<any>;
 }
 
 export type AddDatabaseData = Database;

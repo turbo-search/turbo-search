@@ -35,7 +35,9 @@ export type ExtensionSetupKit = {
 //Databaseへのアクセスを提供するもの
 export type DataManagementKit = {
   database: DatabaseManager,
-  memoryStore: MemoryStoreManager
+  memoryStore: MemoryStoreManager,
+  endpoints: Endpoints;
+  tasks: Tasks;
 };
 
 //タスクとエンドポイントを追加するときのデータ
