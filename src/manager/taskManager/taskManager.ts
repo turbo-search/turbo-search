@@ -11,30 +11,30 @@ export class TaskManager {
     }
 
     //DBなど内部から参照されるような処理を追加する
-    async addTask(task: AddTaskData) {
+    async addTask(addTaskData: AddTaskData) {
 
         if (typeof this.tasks == "undefined") {
             this.tasks = {};
         }
 
         //バリデーションする
-        const addTaskData = addTaskSchema.safeParse(task);
-        if (!addTaskData.success) {
+        const result = addTaskSchema.safeParse(addTaskData);
+        if (!result.success) {
             catchError("taskValidation", [
-                `Failed to add ${task.name} task`,
-                addTaskData.error.message,
+                `Failed to add ${addTaskData.name} task`,
+                result.error.message,
             ]);
         } else {
-            if (!this.tasks[task.provider || "other"]) {
-                this.tasks[task.provider || "other"] = {};
+            if (!this.tasks[addTaskData.provider || "other"]) {
+                this.tasks[addTaskData.provider || "other"] = {};
             }
             //すでに存在するか確かめる
-            if (!this.tasks[task.provider || "other"][task.name] || addTaskData.data.forcedAssignment) {
-                this.tasks[task.provider || "other"][task.name] = addTaskData.data;
+            if (!this.tasks[addTaskData.provider || "other"][addTaskData.name] || addTaskData.forcedAssignment) {
+                this.tasks[addTaskData.provider || "other"][addTaskData.name] = addTaskData;
             } else {
                 catchError("taskValidation", [
-                    `Failed to add ${task.name} task`,
-                    `The task name ${task.name} is already in use`,
+                    `Failed to add ${addTaskData.name} task`,
+                    `The task name ${addTaskData.name} is already in use`,
                 ]);
             }
         }

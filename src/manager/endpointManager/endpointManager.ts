@@ -11,30 +11,30 @@ export class EndpointManager {
     }
 
     // APIなど外部から参照されるような処理を追加する
-    async addEndpoint(endpoint: AddEndpointData) {
+    async addEndpoint(addEndpointData: AddEndpointData) {
 
         if (typeof this.endpoints == "undefined") {
             this.endpoints = {};
         }
 
         //バリデーションする
-        const addEndpointData = addEndpointSchema.safeParse(endpoint);
-        if (!addEndpointData.success) {
+        const result = addEndpointSchema.safeParse(addEndpointData);
+        if (!result.success) {
             catchError("endpointValidation", [
-                `Failed to add ${endpoint.name} endpoint`,
-                addEndpointData.error.message,
+                `Failed to add ${addEndpointData.name} endpoint`,
+                result.error.message,
             ]);
         } else {
-            if (!this.endpoints[endpoint.provider || "other"]) {
-                this.endpoints[endpoint.provider || "other"] = {};
+            if (!this.endpoints[addEndpointData.provider || "other"]) {
+                this.endpoints[addEndpointData.provider || "other"] = {};
             }
             //すでに存在するか確かめる
-            if (!this.endpoints[endpoint.provider || "other"][endpoint.name] || addEndpointData.data.forcedAssignment) {
-                this.endpoints[endpoint.provider || "other"][endpoint.name] = addEndpointData.data;
+            if (!this.endpoints[addEndpointData.provider || "other"][addEndpointData.name] || addEndpointData.forcedAssignment) {
+                this.endpoints[addEndpointData.provider || "other"][addEndpointData.name] = addEndpointData;
             } else {
                 catchError("endpointValidation", [
-                    `Failed to add ${endpoint.name} endpoint`,
-                    `The endpoint name ${endpoint.name} is already in use`,
+                    `Failed to add ${addEndpointData.name} endpoint`,
+                    `The endpoint name ${addEndpointData.name} is already in use`,
                 ]);
             }
 
