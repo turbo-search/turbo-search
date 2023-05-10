@@ -2,7 +2,7 @@
 export type AddEndpointData = {
     name: string;
     provider: "core" | string;
-    function: (request: any, option?: any) => any | void;
+    function: (request: any, option?: any) => Promise<any | void>;
     forcedAssignment?: boolean; //強制的に割り当てるかどうか
 };
 
@@ -10,7 +10,7 @@ export type AddEndpointData = {
 export type Endpoint = {
     name: string;
     provider: "core" | string;
-    function: (request: any, option?: any) => any | void;
+    function: (request: any, option?: any) => Promise<any | void>;
 };
 
 export type Endpoints = {

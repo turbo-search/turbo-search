@@ -44,7 +44,7 @@ export type DataManagementKit = {
 export type AddTaskAndEndpointData = {
   name: string;
   provider: "core" | string;
-  function: () => void;
+  function: () => Promise<any | void>;
 };
 
 export type TurboSearchCoreOptions = {
