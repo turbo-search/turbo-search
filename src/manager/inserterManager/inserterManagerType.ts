@@ -10,7 +10,7 @@ export type Ran =
   | "pipe"
   | "indexer";
 
-export type AdderManifesto = {
+export type InserterManifesto = {
   name: string;
   queryPath?: string;
   coreDependence?: string;
@@ -22,8 +22,8 @@ export type AdderManifesto = {
   version: string;
 }
 
-export type Adder = {
-  adderManifesto: AdderManifesto,
+export type Inserter = {
+  inserterManifesto: InserterManifesto,
   init?: (dataManagementKit: DataManagementKit) => Promise<void>;
   middleware: Middleware[];
   crawler: Crawler;
@@ -31,4 +31,4 @@ export type Adder = {
   indexer: Indexer;
 }
 
-export type AddAdderData = Adder;
+export type AddInserterData = Inserter;

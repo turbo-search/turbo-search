@@ -71,13 +71,13 @@ export class InterceptorManager {
                     await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
                     databaseDependenceVersion
                 )) {
-                    catchError("adder", [
+                    catchError("inserter", [
                         "interceptor database dependence error",
                         `interceptor ${this._interceptor.interceptorManifesto.name} request database version is not equal to database version`
                     ])
                 }
             } else {
-                catchError("adder", [
+                catchError("inserter", [
                     "interceptor database dependence error",
                     `interceptor ${this._interceptor.interceptorManifesto.name} request database version is not equal to database version`
                 ])

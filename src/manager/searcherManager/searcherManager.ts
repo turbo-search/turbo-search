@@ -167,13 +167,13 @@ export class SearcherManager {
                     await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
                     databaseDependenceVersion
                 )) {
-                    catchError("adder", [
+                    catchError("inserter", [
                         "searcher database dependence error",
                         `searcher ${this._searcher.searcherManifesto.name} request database version is not equal to database version`
                     ])
                 }
             } else {
-                catchError("adder", [
+                catchError("inserter", [
                     "searcher database dependence error",
                     `searcher ${this._searcher.searcherManifesto.name} request database version is not equal to database version`
                 ])

@@ -14,7 +14,7 @@ import { MemoryStoreManager } from "./manager/memoryStoreManager/memoryStoreMana
 import { JobManager } from "./manager/jobManager/jobManager.js";
 import { DatabaseManager } from "./manager/databaseManager/databaseManager.js";
 import { SearcherManager } from "./manager/searcherManager/searcherManager.js";
-import { AdderManager } from "./manager/adderManager/adderManager.js";
+import { InserterManager } from "./manager/inserterManager/inserterManager.js";
 import { catchError } from "./error/catchError.js";
 
 export class TurboSearchCore {
@@ -27,7 +27,7 @@ export class TurboSearchCore {
   private _memoryStoreManager;
   private _jobManager;
   private _searcherManager: SearcherManager | undefined = undefined;
-  private _adderManagerList: AdderManager[] = [];
+  private _inserterManagerList: InserterManager[] = [];
   private _options;
 
   constructor(options: TurboSearchCoreOptions) {
@@ -79,15 +79,15 @@ export class TurboSearchCore {
     await this._searcherManager.setup()
   }
 
-  async adderSetup() {
-    //setup adder
+  async inserterSetup() {
+    //setup inserter
 
-    if (typeof this._options.adders === "undefined") return
+    if (typeof this._options.inserters === "undefined") return
 
-    for (let i = 0; i < this._options.adders.length; i++) {
-      this._adderManagerList.push(
-        await new AdderManager(
-          this._options.adders[i],
+    for (let i = 0; i < this._options.inserters.length; i++) {
+      this._inserterManagerList.push(
+        await new InserterManager(
+          this._options.inserters[i],
           this.dataManagementKit(),
           this.turboSearchKit(),
           this._schemaCheck
@@ -95,8 +95,8 @@ export class TurboSearchCore {
       )
     }
 
-    for (let i = 0; i < this._adderManagerList.length; i++) {
-      await this._adderManagerList[i].setup()
+    for (let i = 0; i < this._inserterManagerList.length; i++) {
+      await this._inserterManagerList[i].setup()
     }
 
   }
@@ -104,7 +104,7 @@ export class TurboSearchCore {
   async setup() {
 
     await this.searcherSetup()
-    await this.adderSetup()
+    await this.inserterSetup()
 
   }
 
@@ -169,7 +169,7 @@ export class TurboSearchCore {
   }
 
   async insert(endpointName: string, data: any) {
-    return await this.processEndpoint("core", "adder/" + endpointName, data)
+    return await this.processEndpoint("core", "inserter/" + endpointName, data)
   }
 
   async search(data: any) {
@@ -180,7 +180,7 @@ export class TurboSearchCore {
 
 //出力
 export * from "./indexType.js";
-export * from "./manager/adderManager/adderManagerType.js";
+export * from "./manager/inserterManager/inserterManagerType.js";
 export * from "./manager/api/crawlerManager/crawlerManagerType.js";
 export * from "./manager/api/indexerManager/indexerManagerType.js";
 export * from "./manager/api/interceptorManager/interceptorManagerType.js";

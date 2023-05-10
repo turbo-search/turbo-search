@@ -71,13 +71,13 @@ export class IndexerManager {
                     await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
                     databaseDependenceVersion
                 )) {
-                    catchError("adder", [
+                    catchError("inserter", [
                         "indexer database dependence error",
                         `indexer ${this._indexer.indexerManifesto.name} request database version is not equal to database version`
                     ])
                 }
             } else {
-                catchError("adder", [
+                catchError("inserter", [
                     "indexer database dependence error",
                     `indexer ${this._indexer.indexerManifesto.name} request database version is not equal to database version`
                 ])

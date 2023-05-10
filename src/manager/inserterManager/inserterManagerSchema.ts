@@ -4,8 +4,8 @@ import { addIndexerDataSchema } from "../api/indexerManager/indexerManagerSchema
 import { addPipeDataSchema } from "../api/pipeManager/pipeManagerSchema";
 import { addMiddlewareDataSchema } from "../api/middlewareManager/middlewareManagerSchema";
 
-export const addAdderDataSchema = z.object({
-    adderManifesto: z.object({
+export const addInserterDataSchema = z.object({
+    inserterManifesto: z.object({
         name: z.string(),
         queryPath: z.string().optional(),
         version: z.string(),

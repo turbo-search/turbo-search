@@ -2,7 +2,7 @@ import { AddTaskData, Tasks } from "./manager/taskManager/taskManagerType";
 import { Extension } from "./manager/extensionManager/extensionManagerType";
 import { AddEndpointData, Endpoints } from "./manager/endpointManager/endpointManagerType";
 import { AddDatabaseData } from "./manager/databaseManager/databaseManagerType";
-import { AddAdderData } from "./manager/adderManager/adderManagerType";
+import { AddInserterData } from "./manager/inserterManager/inserterManagerType";
 import { AddSearcherData } from "./manager/searcherManager/searcherManagerType";
 import { JobManager } from "./manager/jobManager/jobManager";
 import { DatabaseManager } from "./manager/databaseManager/databaseManager";
@@ -48,7 +48,7 @@ export type AddTaskAndEndpointData = {
 };
 
 export type TurboSearchCoreOptions = {
-  adders?: AddAdderData[];
+  inserters?: AddInserterData[];
   searcher?: AddSearcherData;
   database: AddDatabaseData;
   extensions?: Extension[];

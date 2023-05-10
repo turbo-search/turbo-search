@@ -66,13 +66,13 @@ export class MiddlewareManager {
                         await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
                         databaseDependenceVersion
                     )) {
-                        catchError("adder", [
+                        catchError("inserter", [
                             "middleware database dependence error",
                             `middleware ${middleware.middlewareManifesto.name} request database version is not equal to database version`
                         ])
                     }
                 } else {
-                    catchError("adder", [
+                    catchError("inserter", [
                         "middleware database dependence error",
                         `middleware ${middleware.middlewareManifesto.name} request database version is not equal to database version`
                     ])

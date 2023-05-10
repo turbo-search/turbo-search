@@ -67,13 +67,13 @@ export class RankerManager {
                     await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
                     databaseDependenceVersion
                 )) {
-                    catchError("adder", [
+                    catchError("inserter", [
                         "ranker database dependence error",
                         `ranker ${this._ranker.rankerManifesto.name} request database version is not equal to database version`
                     ])
                 }
             } else {
-                catchError("adder", [
+                catchError("inserter", [
                     "ranker database dependence error",
                     `ranker ${this._ranker.rankerManifesto.name} request database version is not equal to database version`
                 ])

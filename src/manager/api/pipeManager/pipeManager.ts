@@ -124,13 +124,13 @@ export class PipeManager {
                         await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
                         databaseDependenceVersion
                     )) {
-                        catchError("adder", [
+                        catchError("inserter", [
                             "pipe database dependence error",
                             `pipe ${pipe.pipeManifesto.name} request database version is not equal to database version`
                         ])
                     }
                 } else {
-                    catchError("adder", [
+                    catchError("inserter", [
                         "pipe database dependence error",
                         `pipe ${pipe.pipeManifesto.name} request database version is not equal to database version`
                     ])

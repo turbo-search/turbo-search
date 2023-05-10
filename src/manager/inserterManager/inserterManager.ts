@@ -6,14 +6,14 @@ import { CrawlerManager } from '../api/crawlerManager/crawlerManager.js';
 import { IndexerManager } from '../api/indexerManager/indexerManager.js';
 import { MiddlewareManager } from '../api/middlewareManager/middlewareManager.js';
 import { PipeManager } from '../api/pipeManager/pipeManager.js';
-import { addAdderDataSchema } from './adderManagerSchema.js';
-import type { AddAdderData, Adder, Ran } from './adderManagerType.js';
+import { addInserterDataSchema } from './inserterManagerSchema.js';
+import type { AddInserterData, Inserter, Ran } from './inserterManagerType.js';
 import { compareZodSchemas } from '../../utils/compareZodSchemas.js';
 import { deepEqualZodSchema } from '../../utils/deepEqualZodSchema.js';
 
-export class AdderManager {
+export class InserterManager {
 
-    private _adder: Adder;
+    private _inserter: Inserter;
     private _dataManagementKit: DataManagementKit;
     private _schemaCheck: SchemaCheck;
     private _middlewareManager: MiddlewareManager;
@@ -23,14 +23,14 @@ export class AdderManager {
     private _turboSearchKit: TurboSearchKit;
 
 
-    constructor(addAdderData: AddAdderData, dataManagementKit: DataManagementKit, turboSearchKit: TurboSearchKit, schemaCheck: SchemaCheck) {
+    constructor(addInserterData: AddInserterData, dataManagementKit: DataManagementKit, turboSearchKit: TurboSearchKit, schemaCheck: SchemaCheck) {
 
-        const result = addAdderDataSchema.safeParse(addAdderData);
+        const result = addInserterDataSchema.safeParse(addInserterData);
 
         if (!result.success) {
-            catchError("adder", ["adder validation error", result.error.message]);
+            catchError("inserter", ["inserter validation error", result.error.message]);
         } else {
-            this._adder = result.data as unknown as Adder;
+            this._inserter = result.data as unknown as Inserter;
         }
 
         this._dataManagementKit = dataManagementKit;
@@ -39,13 +39,13 @@ export class AdderManager {
 
         this._turboSearchKit = turboSearchKit;
 
-        this._middlewareManager = new MiddlewareManager(this._adder.middleware, this._dataManagementKit, this._turboSearchKit);
+        this._middlewareManager = new MiddlewareManager(this._inserter.middleware, this._dataManagementKit, this._turboSearchKit);
 
-        this._crawlerManager = new CrawlerManager(this._adder.crawler, this._dataManagementKit, this._turboSearchKit);
+        this._crawlerManager = new CrawlerManager(this._inserter.crawler, this._dataManagementKit, this._turboSearchKit);
 
-        this._pipeManager = new PipeManager(this._adder.pipe, this._dataManagementKit, this._schemaCheck, this._turboSearchKit);
+        this._pipeManager = new PipeManager(this._inserter.pipe, this._dataManagementKit, this._schemaCheck, this._turboSearchKit);
 
-        this._indexerManager = new IndexerManager(this._adder.indexer, this._dataManagementKit, this._turboSearchKit);
+        this._indexerManager = new IndexerManager(this._inserter.indexer, this._dataManagementKit, this._turboSearchKit);
 
     }
 
@@ -61,25 +61,25 @@ export class AdderManager {
             if (inputPipeSchema && outputPipeSchema) {
 
                 if (!deepEqualZodSchema(outputCrawlerSchema, inputPipeSchema)) {
-                    catchError("adder", [
-                        "adder schema error",
-                        `adder ${this._adder.adderManifesto.name} outputCrawlerSchema is not equal to inputPipeSchema`
+                    catchError("inserter", [
+                        "inserter schema error",
+                        `inserter ${this._inserter.inserterManifesto.name} outputCrawlerSchema is not equal to inputPipeSchema`
                     ])
                 }
 
                 if (!deepEqualZodSchema(outputPipeSchema, inputIndexerSchema)) {
-                    catchError("adder", [
-                        "adder schema error",
-                        `adder ${this._adder.adderManifesto.name} outputPipeSchema is not equal to inputIndexerSchema`
+                    catchError("inserter", [
+                        "inserter schema error",
+                        `inserter ${this._inserter.inserterManifesto.name} outputPipeSchema is not equal to inputIndexerSchema`
                     ])
                 }
 
             } else {
 
                 if (!deepEqualZodSchema(outputCrawlerSchema, inputIndexerSchema)) {
-                    catchError("adder", [
-                        "adder schema error",
-                        `adder ${this._adder.adderManifesto.name} outputCrawlerSchema is not equal to inputIndexerSchema`
+                    catchError("inserter", [
+                        "inserter schema error",
+                        `inserter ${this._inserter.inserterManifesto.name} outputCrawlerSchema is not equal to inputIndexerSchema`
                     ])
                 }
 
@@ -92,25 +92,25 @@ export class AdderManager {
             if (inputPipeSchema && outputPipeSchema) {
 
                 if (!compareZodSchemas(inputPipeSchema, outputCrawlerSchema)) {
-                    catchError("adder", [
-                        "adder schema error",
-                        `adder ${this._adder.adderManifesto.name} outputCrawlerSchema is not equal to inputPipeSchema`
+                    catchError("inserter", [
+                        "inserter schema error",
+                        `inserter ${this._inserter.inserterManifesto.name} outputCrawlerSchema is not equal to inputPipeSchema`
                     ])
                 }
 
                 if (!compareZodSchemas(inputIndexerSchema, outputPipeSchema)) {
-                    catchError("adder", [
-                        "adder schema error",
-                        `adder ${this._adder.adderManifesto.name} outputPipeSchema is not equal to inputIndexerSchema`
+                    catchError("inserter", [
+                        "inserter schema error",
+                        `inserter ${this._inserter.inserterManifesto.name} outputPipeSchema is not equal to inputIndexerSchema`
                     ])
                 }
 
             } else {
 
                 if (!compareZodSchemas(inputIndexerSchema, outputCrawlerSchema)) {
-                    catchError("adder", [
-                        "adder schema error",
-                        `adder ${this._adder.adderManifesto.name} outputCrawlerSchema is not equal to inputIndexerSchema`
+                    catchError("inserter", [
+                        "inserter schema error",
+                        `inserter ${this._inserter.inserterManifesto.name} outputCrawlerSchema is not equal to inputIndexerSchema`
                     ])
                 }
 
@@ -121,26 +121,26 @@ export class AdderManager {
     }
 
     async init() {
-        if (this._adder.init) {
-            await this._adder.init(this._dataManagementKit);
+        if (this._inserter.init) {
+            await this._inserter.init(this._dataManagementKit);
         }
     }
 
     async checkDependence() {
-        const coreDependence = this._adder.adderManifesto.coreDependence;
+        const coreDependence = this._inserter.inserterManifesto.coreDependence;
         if (coreDependence && coreDependence != "") {
             if (!compareDependenceVersion(
                 version,
                 coreDependence
             )) {
-                catchError("adder", [
-                    "adder core dependence error",
-                    `adder ${this._adder.adderManifesto.name} request version is not equal to core version`
+                catchError("inserter", [
+                    "inserter core dependence error",
+                    `inserter ${this._inserter.inserterManifesto.name} request version is not equal to core version`
                 ])
             }
         }
 
-        const databaseDependence = this._adder.adderManifesto.databaseDependence;
+        const databaseDependence = this._inserter.inserterManifesto.databaseDependence;
         if (databaseDependence && databaseDependence.length > 0) {
 
             const databaseName = await this._dataManagementKit.database.getDatabase().databaseManifesto.name;
@@ -154,21 +154,21 @@ export class AdderManager {
                     await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
                     databaseDependenceVersion
                 )) {
-                    catchError("adder", [
-                        "adder database dependence error",
-                        `adder ${this._adder.adderManifesto.name} request database version is not equal to database version`
+                    catchError("inserter", [
+                        "inserter database dependence error",
+                        `inserter ${this._inserter.inserterManifesto.name} request database version is not equal to database version`
                     ])
                 }
             } else {
-                catchError("adder", [
-                    "adder database dependence error",
-                    `adder ${this._adder.adderManifesto.name} request database version is not equal to database version`
+                catchError("inserter", [
+                    "inserter database dependence error",
+                    `inserter ${this._inserter.inserterManifesto.name} request database version is not equal to database version`
                 ])
             }
 
         }
 
-        const extensionDependence = this._adder.adderManifesto.extensionDependence;
+        const extensionDependence = this._inserter.inserterManifesto.extensionDependence;
         //依存している拡張機能があるかチェック
         if (
             extensionDependence &&
@@ -184,7 +184,7 @@ export class AdderManager {
                     );
                     if (!dependenceExtension) {
                         catchError("dependence", [
-                            "adder is dependent on " +
+                            "inserter is dependent on " +
                             dependenceExtensionName,
                             "The following solutions are available",
                             "Add the extension : " + dependenceExtensionName,
@@ -201,7 +201,7 @@ export class AdderManager {
                                 )
                             ) {
                                 catchError("dependence", [
-                                    "adder specifies " +
+                                    "inserter specifies " +
                                     dependenceExtensionName +
                                     " version " +
                                     extensionDependence[dependenceExtensionName] +
@@ -224,7 +224,7 @@ export class AdderManager {
     async addEndpoint() {
 
         await this._turboSearchKit.addEndpoint({
-            name: "adder/" + (this._adder.adderManifesto.queryPath || this._adder.adderManifesto.name),
+            name: "inserter/" + (this._inserter.inserterManifesto.queryPath || this._inserter.inserterManifesto.name),
             provider: "core",
             function: async (request: any) => {
                 return await this.process(request);

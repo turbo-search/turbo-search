@@ -67,13 +67,13 @@ export class CrawlerManager {
                     await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
                     databaseDependenceVersion
                 )) {
-                    catchError("adder", [
+                    catchError("inserter", [
                         "crawler database dependence error",
                         `crawler ${this._crawler.crawlerManifesto.name} request database version is not equal to database version`
                     ])
                 }
             } else {
-                catchError("adder", [
+                catchError("inserter", [
                     "crawler database dependence error",
                     `crawler ${this._crawler.crawlerManifesto.name} request database version is not equal to database version`
                 ])
