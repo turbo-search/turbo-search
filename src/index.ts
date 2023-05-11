@@ -1,10 +1,12 @@
 import { ExtensionManager } from "./manager/extensionManager/extensionManager.js";
+import { Extension } from "./manager/extensionManager/extensionManagerType.js";
 import {
   AddTaskAndEndpointData,
   DataManagementKit,
   ExtensionSetupKit,
   SchemaCheck,
   TurboSearchCoreOptions,
+  TurboSearchCoreType,
   TurboSearchKit,
 } from "./indexType.js";
 import { version } from "./version.js";
@@ -17,7 +19,7 @@ import { SearcherManager } from "./manager/searcherManager/searcherManager.js";
 import { InserterManager } from "./manager/inserterManager/inserterManager.js";
 import { catchError } from "./error/catchError.js";
 
-export class TurboSearchCore {
+export class TurboSearchCore<T extends TurboSearchCoreType> {
   public version = version;
   private _schemaCheck: SchemaCheck;
   private _database;
@@ -30,7 +32,7 @@ export class TurboSearchCore {
   private _inserterManagerList: InserterManager[] = [];
   private _options;
 
-  constructor(options: TurboSearchCoreOptions) {
+  constructor(options: TurboSearchCoreOptions<T>) {
 
     this._options = options;
 
