@@ -6,16 +6,16 @@ import {
   TurboSearchCoreOptions,
   TurboSearchCoreType,
   TurboSearchKit,
-} from "./indexType.js";
-import { version } from "./version.js";
-import { TaskManager } from "./manager/taskManager/taskManager.js";
-import { EndpointManager } from "./manager/endpointManager/endpointManager.js";
-import { MemoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManager.js";
-import { JobManager } from "./manager/jobManager/jobManager.js";
-import { DatabaseManager } from "./manager/databaseManager/databaseManager.js";
-import { SearcherManager } from "./manager/searcherManager/searcherManager.js";
-import { InserterManager } from "./manager/inserterManager/inserterManager.js";
-import { catchError } from "./error/catchError.js";
+} from "@/indexType";
+import { version } from "@/version";
+import { TaskManager } from "@/manager/taskManager/taskManager";
+import { EndpointManager } from "@/manager/endpointManager/endpointManager";
+import { MemoryStoreManager } from "@/manager/memoryStoreManager/memoryStoreManager";
+import { JobManager } from "@/manager/jobManager/jobManager";
+import { DatabaseManager } from "@/manager/databaseManager/databaseManager";
+import { SearcherManager } from "@/manager/searcherManager/searcherManager";
+import { InserterManager } from "@/manager/inserterManager/inserterManager";
+import { catchError } from "@/error/catchError";
 
 export class TurboSearchCore<T extends TurboSearchCoreType> {
   public version = version;

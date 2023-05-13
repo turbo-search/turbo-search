@@ -1,6 +1,6 @@
-import { catchError } from '../../error/catchError.js';
-import { AddTaskData, Tasks } from './taskManagerType.js';
-import { addTaskSchema } from "./taskSchema.js";
+import { catchError } from '@/error/catchError';
+import { AddTaskData, Tasks } from './taskManagerType';
+import { addTaskSchema } from './taskSchema';
 
 export class TaskManager {
 

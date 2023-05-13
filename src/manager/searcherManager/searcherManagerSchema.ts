@@ -1,8 +1,8 @@
 import z from "zod";
-import { addRankerDataSchema } from "../api/rankerManager/rankerManagerSchema";
-import { addInterceptorDataSchema } from "../api/interceptorManager/interceptorManagerSchema";
-import { addPipeDataSchema } from "../api/pipeManager/pipeManagerSchema";
 import { addMiddlewareDataSchema } from "../api/middlewareManager/middlewareManagerSchema";
+import { addRankerDataSchema } from "../api/rankerManager/rankerManagerSchema";
+import { addPipeDataSchema } from "../api/pipeManager/pipeManagerSchema";
+import { addInterceptorDataSchema } from "../api/interceptorManager/interceptorManagerSchema";
 
 export const addSearcherDataSchema = z.object({
     searcherManifesto: z.object({

@@ -1,12 +1,12 @@
-import { AddTaskData, Tasks } from "./manager/taskManager/taskManagerType";
-import { Extension } from "./manager/extensionManager/extensionManagerType";
-import { AddEndpointData, Endpoints } from "./manager/endpointManager/endpointManagerType";
-import { Database } from "./manager/databaseManager/databaseManagerType";
-import { Inserter } from "./manager/inserterManager/inserterManagerType";
-import { Searcher } from "./manager/searcherManager/searcherManagerType";
-import { JobManager } from "./manager/jobManager/jobManager";
-import { DatabaseManager } from "./manager/databaseManager/databaseManager";
-import { MemoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManager";
+import { AddTaskData, Tasks } from "@/manager/taskManager/taskManagerType";
+import { Extension } from "@/manager/extensionManager/extensionManagerType";
+import { AddEndpointData, Endpoints } from "@/manager/endpointManager/endpointManagerType";
+import { Database } from "@/manager/databaseManager/databaseManagerType";
+import { Inserter } from "@/manager/inserterManager/inserterManagerType";
+import { Searcher } from "@/manager/searcherManager/searcherManagerType";
+import { JobManager } from "@/manager/jobManager/jobManager";
+import { DatabaseManager } from "@/manager/databaseManager/databaseManager";
+import { MemoryStoreManager } from "@/manager/memoryStoreManager/memoryStoreManager";
 
 export type TurboSearchCoreType = {
   inserters?: Inserter[],
