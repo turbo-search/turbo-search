@@ -13,7 +13,7 @@ export class DatabaseManager {
         if (!result.success) {
             catchError("databaseValidation", ["database validation error", result.error.message]);
         } else {
-            this._databases = addDatabaseData;
+            this._databases = result.data;
         }
     }
 

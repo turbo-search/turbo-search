@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const addTaskSchema = z.object({
+export const taskSchema = z.object({
     name: z.string(),
     provider: z.string(),
     function: z.function(),

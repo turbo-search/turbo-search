@@ -1,6 +1,6 @@
 import { catchError } from '@/error/catchError';
-import { AddTaskData, Tasks } from './taskManagerType';
-import { addTaskSchema } from './taskSchema';
+import { Task, Tasks } from './taskManagerType';
+import { taskSchema } from './taskSchema';
 
 export class TaskManager {
 
@@ -11,14 +11,14 @@ export class TaskManager {
     }
 
     //DBなど内部から参照されるような処理を追加する
-    async addTask(addTaskData: AddTaskData) {
+    async addTask(addTaskData: Task) {
 
         if (typeof this.tasks == "undefined") {
             this.tasks = {};
         }
 
         //バリデーションする
-        const result = addTaskSchema.safeParse(addTaskData);
+        const result = taskSchema.safeParse(addTaskData);
         if (!result.success) {
             catchError("taskValidation", [
                 `Failed to add ${addTaskData.name} task`,

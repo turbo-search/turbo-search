@@ -1,15 +1,15 @@
-import { catchError } from '../../error/catchError.js';
-import { SchemaCheck, TurboSearchKit } from '../../indexType.js';
-import { compareDependenceVersion } from '../../utils/compareDependenceVersion.js';
-import { version } from '../../version.js';
-import { RankerManager } from '../api/rankerManager/rankerManager.js';
-import { InterceptorManager } from '../api/interceptorManager/interceptorManager.js';
-import { MiddlewareManager } from '../api/middlewareManager/middlewareManager.js';
-import { PipeManager } from '../api/pipeManager/pipeManager.js';
-import { addSearcherDataSchema } from './searcherManagerSchema.js';
-import type { AddSearcherData, Searcher, Ran } from './searcherManagerType.js';
-import { compareZodSchemas } from '../../utils/compareZodSchemas.js';
-import { deepEqualZodSchema } from '../../utils/deepEqualZodSchema.js';
+import { catchError } from '../../error/catchError';
+import { SchemaCheck, TurboSearchKit } from '../../indexType';
+import { compareDependenceVersion } from '../../utils/compareDependenceVersion';
+import { version } from '../../version';
+import { RankerManager } from '../api/rankerManager/rankerManager';
+import { InterceptorManager } from '../api/interceptorManager/interceptorManager';
+import { MiddlewareManager } from '../api/middlewareManager/middlewareManager';
+import { PipeManager } from '../api/pipeManager/pipeManager';
+import { addSearcherDataSchema } from './searcherManagerSchema';
+import type { AddSearcherData, Searcher, Ran } from './searcherManagerType';
+import { compareZodSchemas } from '../../utils/compareZodSchemas';
+import { deepEqualZodSchema } from '../../utils/deepEqualZodSchema';
 
 export class SearcherManager {
 
