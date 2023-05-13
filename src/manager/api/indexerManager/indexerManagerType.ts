@@ -1,5 +1,5 @@
 import Z from "zod";
-import { DataManagementKit } from "../../../indexType";
+import { TurboSearchKit } from "../../..";
 
 export type IndexerManifesto = {
     name: string;
@@ -17,11 +17,11 @@ export type Indexer = {
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
     indexerManifesto: IndexerManifesto;
-    init?: (dataManagementKit: DataManagementKit) => Promise<void>;
+    init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
     process: (
         requestData: Z.infer<AddIndexerData["requestSchema"]>,
         inputData: Z.infer<Indexer["inputSchema"]>,
-        dataManagementKit: DataManagementKit
+        turboSearchKit: TurboSearchKit
     ) => Promise<{
         success: false;
         message: string;

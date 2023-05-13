@@ -1,5 +1,5 @@
 import Z from "zod";
-import { DataManagementKit } from "../../../indexType";
+import { TurboSearchKit } from "../../..";
 
 export type CrawlerManifesto = {
     name: string;
@@ -16,10 +16,10 @@ export type Crawler = {
     requestSchema: Z.Schema;
     outputSchema: Z.Schema;
     crawlerManifesto: CrawlerManifesto;
-    init?: (dataManagementKit: DataManagementKit) => Promise<void>;
+    init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
     process: (
         requestData: Z.infer<Crawler["requestSchema"]>,
-        dataManagementKit: DataManagementKit
+        turboSearchKit: TurboSearchKit
     ) => Promise<{
         success: false;
         message: string;

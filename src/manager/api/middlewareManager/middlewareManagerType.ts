@@ -1,4 +1,4 @@
-import { DataManagementKit } from "../../../indexType";
+import { TurboSearchKit } from "../../..";
 
 export type middlewareManifesto = {
     name: string;
@@ -13,10 +13,10 @@ export type middlewareManifesto = {
 
 export type Middleware = {
     middlewareManifesto: middlewareManifesto;
-    init?: (dataManagementKit: DataManagementKit) => Promise<void>;
+    init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
     process: (
         inputData: any,
-        dataManagementKit: DataManagementKit
+        turboSearchKit: TurboSearchKit
     ) => Promise<{
         success: false;
         message: string;

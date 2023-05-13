@@ -1,5 +1,5 @@
 import { catchError } from "../../../error/catchError";
-import { DataManagementKit, TurboSearchKit } from "../../../indexType";
+import { TurboSearchKit } from "../../../indexType";
 import { addInterceptorDataSchema } from "./interceptorManagerSchema";
 import { AddInterceptorData } from "./interceptorManagerType"
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
@@ -8,10 +8,9 @@ import { version } from "../../../version";
 export class InterceptorManager {
 
     private _interceptor;
-    private _dataManagementKit: DataManagementKit;
     private _turboSearchKit: TurboSearchKit;
 
-    constructor(addInterceptorData: AddInterceptorData, dataManagementKit: DataManagementKit, turboSearchKit: TurboSearchKit) {
+    constructor(addInterceptorData: AddInterceptorData, turboSearchKit: TurboSearchKit) {
         const result = addInterceptorDataSchema.safeParse(addInterceptorData);
         if (!result.success) {
             catchError("interceptorValidation", ["interceptor validation error", result.error.message]);
@@ -20,14 +19,12 @@ export class InterceptorManager {
             this._interceptor = addInterceptorData;
         }
 
-        this._dataManagementKit = dataManagementKit;
-
         this._turboSearchKit = turboSearchKit;
     }
 
     async init() {
         if (this._interceptor.init) {
-            await this._interceptor.init(this._dataManagementKit);
+            await this._interceptor.init(this._turboSearchKit);
         }
     }
 
@@ -60,7 +57,7 @@ export class InterceptorManager {
         const databaseDependence = this._interceptor.interceptorManifesto.databaseDependence;
         if (databaseDependence && databaseDependence.length > 0) {
 
-            const databaseName = await this._dataManagementKit.database.getDatabase().databaseManifesto.name;
+            const databaseName = await this._turboSearchKit.database.getDatabase().databaseManifesto.name;
 
             const databaseDependenceVersion = databaseDependence.find((dependence) => {
                 return dependence.name == databaseName;
@@ -68,7 +65,7 @@ export class InterceptorManager {
 
             if (databaseDependenceVersion && databaseDependenceVersion != "") {
                 if (!compareDependenceVersion(
-                    await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
+                    await this._turboSearchKit.database.getDatabase().databaseManifesto.version,
                     databaseDependenceVersion
                 )) {
                     catchError("inserter", [
@@ -167,7 +164,7 @@ export class InterceptorManager {
                 error: any;
             }
         } else {
-            const result = await this._interceptor.process(safeRequest.data, safeInput.data, this._dataManagementKit);
+            const result = await this._interceptor.process(safeRequest.data, safeInput.data, this._turboSearchKit);
             return result;
         }
     }

@@ -1,9 +1,9 @@
 import { AddTaskData, Tasks } from "./manager/taskManager/taskManagerType";
 import { Extension } from "./manager/extensionManager/extensionManagerType";
 import { AddEndpointData, Endpoints } from "./manager/endpointManager/endpointManagerType";
-import { AddDatabaseData, Database } from "./manager/databaseManager/databaseManagerType";
-import { AddInserterData, Inserter } from "./manager/inserterManager/inserterManagerType";
-import { AddSearcherData, Searcher } from "./manager/searcherManager/searcherManagerType";
+import { Database } from "./manager/databaseManager/databaseManagerType";
+import { Inserter } from "./manager/inserterManager/inserterManagerType";
+import { Searcher } from "./manager/searcherManager/searcherManagerType";
 import { JobManager } from "./manager/jobManager/jobManager";
 import { DatabaseManager } from "./manager/databaseManager/databaseManager";
 import { MemoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManager";
@@ -45,14 +45,6 @@ export type ExtensionSetupKit = {
   database: DatabaseManager,
   memoryStore: MemoryStoreManager,
 }
-
-//Databaseへのアクセスを提供するもの
-export type DataManagementKit = {
-  database: DatabaseManager,
-  memoryStore: MemoryStoreManager,
-  endpoints: Endpoints;
-  tasks: Tasks;
-};
 
 //タスクとエンドポイントを追加するときのデータ
 export type AddTaskAndEndpointData = {

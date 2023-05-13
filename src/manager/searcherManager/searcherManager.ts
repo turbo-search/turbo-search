@@ -1,5 +1,5 @@
 import { catchError } from '../../error/catchError.js';
-import { DataManagementKit, SchemaCheck, TurboSearchKit } from '../../indexType.js';
+import { SchemaCheck, TurboSearchKit } from '../../indexType.js';
 import { compareDependenceVersion } from '../../utils/compareDependenceVersion.js';
 import { version } from '../../version.js';
 import { RankerManager } from '../api/rankerManager/rankerManager.js';
@@ -14,7 +14,6 @@ import { deepEqualZodSchema } from '../../utils/deepEqualZodSchema.js';
 export class SearcherManager {
 
     private _searcher: Searcher;
-    private _dataManagementKit: DataManagementKit;
     private _schemaCheck: SchemaCheck;
     private _middlewareManager: MiddlewareManager;
     private _rankerManager: RankerManager;
@@ -23,7 +22,7 @@ export class SearcherManager {
     private _turboSearchKit: TurboSearchKit;
 
 
-    constructor(addSearcherData: AddSearcherData, dataManagementKit: DataManagementKit, turboSearchKit: TurboSearchKit, schemaCheck: SchemaCheck) {
+    constructor(addSearcherData: AddSearcherData, turboSearchKit: TurboSearchKit, schemaCheck: SchemaCheck) {
 
         const result = addSearcherDataSchema.safeParse(addSearcherData);
 
@@ -33,19 +32,17 @@ export class SearcherManager {
             this._searcher = result.data as unknown as Searcher;
         }
 
-        this._dataManagementKit = dataManagementKit;
-
         this._schemaCheck = schemaCheck;
 
         this._turboSearchKit = turboSearchKit;
 
-        this._middlewareManager = new MiddlewareManager(this._searcher.middleware, this._dataManagementKit, this._turboSearchKit);
+        this._middlewareManager = new MiddlewareManager(this._searcher.middleware, this._turboSearchKit);
 
-        this._rankerManager = new RankerManager(this._searcher.ranker, this._dataManagementKit, this._turboSearchKit);
+        this._rankerManager = new RankerManager(this._searcher.ranker, this._turboSearchKit);
 
-        this._pipeManager = new PipeManager(this._searcher.pipe, this._dataManagementKit, this._schemaCheck, this._turboSearchKit);
+        this._pipeManager = new PipeManager(this._searcher.pipe, this._schemaCheck, this._turboSearchKit);
 
-        this._interceptorManager = new InterceptorManager(this._searcher.interceptor, this._dataManagementKit, this._turboSearchKit);
+        this._interceptorManager = new InterceptorManager(this._searcher.interceptor, this._turboSearchKit);
 
     }
 
@@ -122,7 +119,7 @@ export class SearcherManager {
 
     async init() {
         if (this._searcher.init) {
-            await this._searcher.init(this._dataManagementKit);
+            await this._searcher.init(this._turboSearchKit);
         }
 
     }
@@ -156,7 +153,7 @@ export class SearcherManager {
         const databaseDependence = this._searcher.searcherManifesto.databaseDependence;
         if (databaseDependence && databaseDependence.length > 0) {
 
-            const databaseName = await this._dataManagementKit.database.getDatabase().databaseManifesto.name;
+            const databaseName = await this._turboSearchKit.database.getDatabase().databaseManifesto.name;
 
             const databaseDependenceVersion = databaseDependence.find((dependence) => {
                 return dependence.name == databaseName;
@@ -164,7 +161,7 @@ export class SearcherManager {
 
             if (databaseDependenceVersion && databaseDependenceVersion != "") {
                 if (!compareDependenceVersion(
-                    await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
+                    await this._turboSearchKit.database.getDatabase().databaseManifesto.version,
                     databaseDependenceVersion
                 )) {
                     catchError("inserter", [

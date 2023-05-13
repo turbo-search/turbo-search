@@ -1,5 +1,5 @@
 import Z from "zod";
-import { DataManagementKit } from "../../../indexType";
+import { TurboSearchKit } from "../../..";
 
 export type RankerManifesto = {
     name: string;
@@ -16,10 +16,10 @@ export type Ranker = {
     requestSchema: Z.Schema;
     outputSchema: Z.Schema;
     rankerManifesto: RankerManifesto;
-    init?: (dataManagementKit: DataManagementKit) => Promise<void>;
+    init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
     process: (
         requestData: Z.infer<Ranker["requestSchema"]>,
-        dataManagementKit: DataManagementKit
+        turboSearchKit: TurboSearchKit
     ) => Promise<{
         success: false;
         message: string;

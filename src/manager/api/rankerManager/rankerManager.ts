@@ -1,5 +1,5 @@
 import { catchError } from "../../../error/catchError";
-import { DataManagementKit, TurboSearchKit } from "../../../indexType";
+import { TurboSearchKit } from "../../../indexType";
 import { addRankerDataSchema } from "./rankerManagerSchema";
 import { AddRankerData } from "./rankerManagerType"
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
@@ -8,10 +8,9 @@ import { version } from "../../../version";
 export class RankerManager {
 
     private _ranker;
-    private _dataManagementKit: DataManagementKit;
     private _turboSearchKit: TurboSearchKit;
 
-    constructor(addRankerData: AddRankerData, dataManagementKit: DataManagementKit, TurboSearchKit: TurboSearchKit) {
+    constructor(addRankerData: AddRankerData, TurboSearchKit: TurboSearchKit) {
         const result = addRankerDataSchema.safeParse(addRankerData);
         if (!result.success) {
             catchError("rankerValidation", ["ranker validation error", result.error.message]);
@@ -20,14 +19,12 @@ export class RankerManager {
             this._ranker = addRankerData;
         }
 
-        this._dataManagementKit = dataManagementKit;
-
         this._turboSearchKit = TurboSearchKit;
     }
 
     async init() {
         if (this._ranker.init) {
-            await this._ranker.init(this._dataManagementKit);
+            await this._ranker.init(this._turboSearchKit);
         }
     }
 
@@ -56,7 +53,7 @@ export class RankerManager {
         const databaseDependence = this._ranker.rankerManifesto.databaseDependence;
         if (databaseDependence && databaseDependence.length > 0) {
 
-            const databaseName = await this._dataManagementKit.database.getDatabase().databaseManifesto.name;
+            const databaseName = await this._turboSearchKit.database.getDatabase().databaseManifesto.name;
 
             const databaseDependenceVersion = databaseDependence.find((dependence) => {
                 return dependence.name == databaseName;
@@ -64,7 +61,7 @@ export class RankerManager {
 
             if (databaseDependenceVersion && databaseDependenceVersion != "") {
                 if (!compareDependenceVersion(
-                    await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
+                    await this._turboSearchKit.database.getDatabase().databaseManifesto.version,
                     databaseDependenceVersion
                 )) {
                     catchError("inserter", [
@@ -152,7 +149,7 @@ export class RankerManager {
                 error: any;
             }
         } else {
-            const result = await this._ranker.process(safeRequest.data, this._dataManagementKit);
+            const result = await this._ranker.process(safeRequest.data, this._turboSearchKit);
             return result;
         }
     }

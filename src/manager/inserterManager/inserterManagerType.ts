@@ -2,7 +2,7 @@ import { Crawler } from "../api/crawlerManager/crawlerManagerType";
 import { Indexer } from "../api/indexerManager/indexerManagerType";
 import { Pipe } from "../api/pipeManager/pipeManagerType";
 import { Middleware } from "../api/middlewareManager/middlewareManagerType";
-import { DataManagementKit } from "../../indexType";
+import { TurboSearchKit } from "../..";
 
 export type Ran =
   | "middleware"
@@ -24,7 +24,7 @@ export type InserterManifesto = {
 
 export type Inserter = {
   inserterManifesto: InserterManifesto,
-  init?: (dataManagementKit: DataManagementKit) => Promise<void>;
+  init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
   middleware: Middleware[];
   crawler: Crawler;
   pipe: Pipe[];

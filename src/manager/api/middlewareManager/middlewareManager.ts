@@ -1,4 +1,4 @@
-import { DataManagementKit, TurboSearchKit } from "../../../indexType";
+import { TurboSearchKit } from "../../../indexType";
 import { Middleware, AddMiddlewareData } from "./middlewareManagerType";
 import { addMiddlewareDataSchema } from "./middlewareManagerSchema";
 import { catchError } from "../../../error/catchError";
@@ -8,11 +8,10 @@ import { version } from "../../../version";
 export class MiddlewareManager {
 
     private _middlewareList: Middleware[] = [];
-    private _dataManagementKit: DataManagementKit;
     private _turboSearchKit: TurboSearchKit;
 
 
-    constructor(addMiddlewareDataList: AddMiddlewareData[], dataManagementKit: DataManagementKit, TurboSearchKit: TurboSearchKit) {
+    constructor(addMiddlewareDataList: AddMiddlewareData[], TurboSearchKit: TurboSearchKit) {
 
         const result = addMiddlewareDataSchema.safeParse(addMiddlewareDataList);
         if (!result.success) {
@@ -21,15 +20,13 @@ export class MiddlewareManager {
             this._middlewareList = addMiddlewareDataList;
         }
 
-        this._dataManagementKit = dataManagementKit;
-
         this._turboSearchKit = TurboSearchKit;
     }
 
     async init() {
         for (const middleware of this._middlewareList) {
             if (middleware.init) {
-                await middleware.init(this._dataManagementKit);
+                await middleware.init(this._turboSearchKit);
             }
         }
     }
@@ -55,7 +52,7 @@ export class MiddlewareManager {
             const databaseDependence = middleware.middlewareManifesto.databaseDependence;
             if (databaseDependence && databaseDependence.length > 0) {
 
-                const databaseName = await this._dataManagementKit.database.getDatabase().databaseManifesto.name;
+                const databaseName = await this._turboSearchKit.database.getDatabase().databaseManifesto.name;
 
                 const databaseDependenceVersion = databaseDependence.find((dependence) => {
                     return dependence.name == databaseName;
@@ -63,7 +60,7 @@ export class MiddlewareManager {
 
                 if (databaseDependenceVersion && databaseDependenceVersion != "") {
                     if (!compareDependenceVersion(
-                        await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
+                        await this._turboSearchKit.database.getDatabase().databaseManifesto.version,
                         databaseDependenceVersion
                     )) {
                         catchError("inserter", [
@@ -163,7 +160,7 @@ export class MiddlewareManager {
     }
 
     async process(inputData: any, middleware: Middleware) {
-        const result = await middleware.process(inputData, this._dataManagementKit);
+        const result = await middleware.process(inputData, this._turboSearchKit);
         return result;
     }
 

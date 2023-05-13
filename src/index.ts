@@ -1,8 +1,6 @@
-import { ExtensionManager } from "./manager/extensionManager/extensionManager.js";
-import { Extension } from "./manager/extensionManager/extensionManagerType.js";
+import { ExtensionManager } from "@/manager/extensionManager/extensionManager";
 import {
   AddTaskAndEndpointData,
-  DataManagementKit,
   ExtensionSetupKit,
   SchemaCheck,
   TurboSearchCoreOptions,
@@ -68,20 +66,19 @@ export class TurboSearchCore<T extends TurboSearchCoreType> {
 
   }
 
-  async searcherSetup() {
+  private async _searcherSetup() {
 
     if (typeof this._options.searcher === "undefined") return
     //setup searcher
     this._searcherManager = await new SearcherManager(
       this._options.searcher,
-      this.dataManagementKit(),
       this.turboSearchKit(),
       this._schemaCheck
     );
     await this._searcherManager.setup()
   }
 
-  async inserterSetup() {
+  private async _inserterSetup() {
     //setup inserter
 
     if (typeof this._options.inserters === "undefined") return
@@ -90,7 +87,6 @@ export class TurboSearchCore<T extends TurboSearchCoreType> {
       this._inserterManagerList.push(
         await new InserterManager(
           this._options.inserters[i],
-          this.dataManagementKit(),
           this.turboSearchKit(),
           this._schemaCheck
         )
@@ -105,13 +101,13 @@ export class TurboSearchCore<T extends TurboSearchCoreType> {
 
   async setup() {
 
-    await this.searcherSetup()
-    await this.inserterSetup()
+    await this._searcherSetup()
+    await this._inserterSetup()
 
   }
 
   // taskとendpoint両方を追加する
-  async addTaskAndEndpoint(taskAndEndpoint: AddTaskAndEndpointData) {
+  private async _addTaskAndEndpoint(taskAndEndpoint: AddTaskAndEndpointData) {
     await this._taskManager.addTask(taskAndEndpoint);
     await this._endpointManager.addEndpoint(taskAndEndpoint);
   }
@@ -122,7 +118,7 @@ export class TurboSearchCore<T extends TurboSearchCoreType> {
     return {
       addTask: this._taskManager.addTask,
       addEndpoint: this._endpointManager.addEndpoint,
-      addTaskAndEndpoint: this.addTaskAndEndpoint,
+      addTaskAndEndpoint: this._addTaskAndEndpoint,
       endpoints: this._endpointManager.endpoints,
       tasks: this._taskManager.tasks,
       jobManager: this._jobManager,
@@ -136,22 +132,13 @@ export class TurboSearchCore<T extends TurboSearchCoreType> {
     return {
       addTask: this._taskManager.addTask,
       addEndpoint: this._endpointManager.addEndpoint,
-      addTaskAndEndpoint: this.addTaskAndEndpoint,
+      addTaskAndEndpoint: this._addTaskAndEndpoint,
       endpoints: this._endpointManager.endpoints,
       tasks: this._taskManager.tasks,
       jobManager: this._jobManager,
       database: this._database,
       memoryStore: this._memoryStoreManager,
     }
-  }
-
-  dataManagementKit(): DataManagementKit {
-    return {
-      database: this._database,
-      memoryStore: this._memoryStoreManager,
-      endpoints: this._endpointManager.endpoints,
-      tasks: this._taskManager.tasks,
-    };
   }
 
   getEndpoints() {

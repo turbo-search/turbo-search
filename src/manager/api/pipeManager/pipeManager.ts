@@ -1,4 +1,4 @@
-import { DataManagementKit, SchemaCheck, TurboSearchKit } from "../../../indexType";
+import { SchemaCheck, TurboSearchKit } from "../../../indexType";
 import { Pipe, AddPipeData } from "./pipeManagerType";
 import { addPipeDataSchema } from "./pipeManagerSchema";
 import { catchError } from "../../../error/catchError";
@@ -10,11 +10,10 @@ import { deepEqualZodSchema } from "../../../utils/deepEqualZodSchema";
 export class PipeManager {
 
     private _pipeList: Pipe[] = [];
-    private _dataManagementKit: DataManagementKit;
     private _schemaCheck: SchemaCheck;
     private _turboSearchKit: TurboSearchKit;
 
-    constructor(addPipeDataList: AddPipeData[], dataManagementKit: DataManagementKit, schemaCheck: SchemaCheck, turboSearchKit: TurboSearchKit) {
+    constructor(addPipeDataList: AddPipeData[], schemaCheck: SchemaCheck, turboSearchKit: TurboSearchKit) {
 
         const result = addPipeDataSchema.safeParse(addPipeDataList);
         if (!result.success) {
@@ -22,8 +21,6 @@ export class PipeManager {
         } else {
             this._pipeList = addPipeDataList;
         }
-
-        this._dataManagementKit = dataManagementKit;
 
         this._schemaCheck = schemaCheck;
 
@@ -56,7 +53,7 @@ export class PipeManager {
     async init() {
         for (const pipe of this._pipeList) {
             if (pipe.init) {
-                await pipe.init(this._dataManagementKit);
+                await pipe.init(this._turboSearchKit);
             }
         }
     }
@@ -113,7 +110,7 @@ export class PipeManager {
             const databaseDependence = pipe.pipeManifesto.databaseDependence;
             if (databaseDependence && databaseDependence.length > 0) {
 
-                const databaseName = await this._dataManagementKit.database.getDatabase().databaseManifesto.name;
+                const databaseName = await this._turboSearchKit.database.getDatabase().databaseManifesto.name;
 
                 const databaseDependenceVersion = databaseDependence.find((dependence) => {
                     return dependence.name == databaseName;
@@ -121,7 +118,7 @@ export class PipeManager {
 
                 if (databaseDependenceVersion && databaseDependenceVersion != "") {
                     if (!compareDependenceVersion(
-                        await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
+                        await this._turboSearchKit.database.getDatabase().databaseManifesto.version,
                         databaseDependenceVersion
                     )) {
                         catchError("inserter", [
@@ -248,7 +245,7 @@ export class PipeManager {
                 error: any;
             }
         } else {
-            const result = await pipe.process(safeRequest.data, safeInput.data, this._dataManagementKit);
+            const result = await pipe.process(safeRequest.data, safeInput.data, this._turboSearchKit);
             return result;
         }
     }

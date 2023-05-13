@@ -1,5 +1,5 @@
 import { catchError } from "../../../error/catchError";
-import { DataManagementKit, TurboSearchKit } from "../../../indexType";
+import { TurboSearchKit } from "../../../indexType";
 import { addIndexerDataSchema } from "./indexerManagerSchema";
 import { AddIndexerData } from "./indexerManagerType"
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
@@ -8,10 +8,9 @@ import { version } from "../../../version";
 export class IndexerManager {
 
     private _indexer;
-    private _dataManagementKit: DataManagementKit;
     private _turboSearchKit: TurboSearchKit;
 
-    constructor(addIndexerData: AddIndexerData, dataManagementKit: DataManagementKit, turboSearchKit: TurboSearchKit) {
+    constructor(addIndexerData: AddIndexerData, turboSearchKit: TurboSearchKit) {
         const result = addIndexerDataSchema.safeParse(addIndexerData);
         if (!result.success) {
             catchError("indexerValidation", ["indexer validation error", result.error.message]);
@@ -20,14 +19,12 @@ export class IndexerManager {
             this._indexer = addIndexerData;
         }
 
-        this._dataManagementKit = dataManagementKit;
-
         this._turboSearchKit = turboSearchKit;
     }
 
     async init() {
         if (this._indexer.init) {
-            await this._indexer.init(this._dataManagementKit);
+            await this._indexer.init(this._turboSearchKit);
         }
     }
 
@@ -60,7 +57,7 @@ export class IndexerManager {
         const databaseDependence = this._indexer.indexerManifesto.databaseDependence;
         if (databaseDependence && databaseDependence.length > 0) {
 
-            const databaseName = await this._dataManagementKit.database.getDatabase().databaseManifesto.name;
+            const databaseName = await this._turboSearchKit.database.getDatabase().databaseManifesto.name;
 
             const databaseDependenceVersion = databaseDependence.find((dependence) => {
                 return dependence.name == databaseName;
@@ -68,7 +65,7 @@ export class IndexerManager {
 
             if (databaseDependenceVersion && databaseDependenceVersion != "") {
                 if (!compareDependenceVersion(
-                    await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
+                    await this._turboSearchKit.database.getDatabase().databaseManifesto.version,
                     databaseDependenceVersion
                 )) {
                     catchError("inserter", [
@@ -167,7 +164,7 @@ export class IndexerManager {
                 error: any;
             }
         } else {
-            const result = await this._indexer.process(safeRequest.data, safeInput.data, this._dataManagementKit);
+            const result = await this._indexer.process(safeRequest.data, safeInput.data, this._turboSearchKit);
             return result;
         }
     }

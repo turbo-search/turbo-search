@@ -1,5 +1,5 @@
 import Z from "zod";
-import { DataManagementKit } from "../../../indexType";
+import { TurboSearchKit } from "../../..";
 
 export type InterceptorManifesto = {
     name: string;
@@ -17,11 +17,11 @@ export type Interceptor = {
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
     interceptorManifesto: InterceptorManifesto;
-    init?: (dataManagementKit: DataManagementKit) => Promise<void>;
+    init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
     process: (
         requestData: Z.infer<AddInterceptorData["requestSchema"]>,
         inputData: Z.infer<Interceptor["inputSchema"]>,
-        dataManagementKit: DataManagementKit
+        turboSearchKit: TurboSearchKit
     ) => Promise<{
         success: false;
         message: string;

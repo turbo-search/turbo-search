@@ -1,5 +1,5 @@
 import { catchError } from "../../../error/catchError";
-import { DataManagementKit, TurboSearchKit } from "../../../indexType";
+import { TurboSearchKit } from "../../../indexType";
 import { addCrawlerDataSchema } from "./crawlerManagerSchema";
 import { AddCrawlerData } from "./crawlerManagerType"
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
@@ -8,10 +8,9 @@ import { version } from "../../../version";
 export class CrawlerManager {
 
     private _crawler;
-    private _dataManagementKit: DataManagementKit;
     private _turboSearchKit: TurboSearchKit;
 
-    constructor(addCrawlerData: AddCrawlerData, dataManagementKit: DataManagementKit, turboSearchKit: TurboSearchKit) {
+    constructor(addCrawlerData: AddCrawlerData, turboSearchKit: TurboSearchKit) {
         const result = addCrawlerDataSchema.safeParse(addCrawlerData);
         if (!result.success) {
             catchError("crawlerValidation", ["crawler validation error", result.error.message]);
@@ -20,14 +19,12 @@ export class CrawlerManager {
             this._crawler = addCrawlerData;
         }
 
-        this._dataManagementKit = dataManagementKit;
-
         this._turboSearchKit = turboSearchKit;
     }
 
     async init() {
         if (this._crawler.init) {
-            await this._crawler.init(this._dataManagementKit);
+            await this._crawler.init(this._turboSearchKit);
         }
     }
 
@@ -56,7 +53,7 @@ export class CrawlerManager {
         const databaseDependence = this._crawler.crawlerManifesto.databaseDependence;
         if (databaseDependence && databaseDependence.length > 0) {
 
-            const databaseName = await this._dataManagementKit.database.getDatabase().databaseManifesto.name;
+            const databaseName = await this._turboSearchKit.database.getDatabase().databaseManifesto.name;
 
             const databaseDependenceVersion = databaseDependence.find((dependence) => {
                 return dependence.name == databaseName;
@@ -64,7 +61,7 @@ export class CrawlerManager {
 
             if (databaseDependenceVersion && databaseDependenceVersion != "") {
                 if (!compareDependenceVersion(
-                    await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
+                    await this._turboSearchKit.database.getDatabase().databaseManifesto.version,
                     databaseDependenceVersion
                 )) {
                     catchError("inserter", [
@@ -152,7 +149,7 @@ export class CrawlerManager {
                 error: any;
             }
         } else {
-            const result = await this._crawler.process(safeRequest.data, this._dataManagementKit);
+            const result = await this._crawler.process(safeRequest.data, this._turboSearchKit);
             return result;
         }
     }

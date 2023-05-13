@@ -3,7 +3,7 @@ import { Ranker } from "../api/rankerManager/rankerManagerType";
 import { Interceptor } from "../api/interceptorManager/interceptorManagerType";
 import { Pipe } from "../api/pipeManager/pipeManagerType";
 import { Middleware } from "../api/middlewareManager/middlewareManagerType";
-import { DataManagementKit } from "../../indexType";
+import { TurboSearchKit } from "../../indexType";
 
 export type Ran =
   | "middleware"
@@ -24,7 +24,7 @@ export type SearcherManifesto = {
 
 export type Searcher = {
   searcherManifesto: SearcherManifesto,
-  init?: (dataManagementKit: DataManagementKit) => Promise<void>;
+  init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
   middleware: Middleware[];
   ranker: Ranker;
   pipe: Pipe[];

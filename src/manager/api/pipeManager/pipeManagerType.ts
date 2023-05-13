@@ -1,5 +1,5 @@
 import Z from "zod";
-import { DataManagementKit } from "../../../indexType";
+import { TurboSearchKit } from "../../..";
 
 export type PipeManifesto = {
     name: string;
@@ -17,11 +17,11 @@ export type Pipe = {
     inputSchema: Z.Schema;
     outputSchema: Z.Schema;
     pipeManifesto: PipeManifesto;
-    init?: (dataManagementKit: DataManagementKit) => Promise<void>;
+    init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
     process: (
         requestData: Z.infer<Pipe["requestSchema"]>,
         inputData: Z.infer<Pipe["inputSchema"]>,
-        dataManagementKit: DataManagementKit
+        turboSearchKit: TurboSearchKit
     ) => Promise<{
         success: false;
         message: string;

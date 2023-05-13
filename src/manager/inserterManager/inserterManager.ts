@@ -1,5 +1,5 @@
 import { catchError } from '../../error/catchError.js';
-import { DataManagementKit, SchemaCheck, TurboSearchKit } from '../../indexType.js';
+import { SchemaCheck, TurboSearchKit } from '../../indexType.js';
 import { compareDependenceVersion } from '../../utils/compareDependenceVersion.js';
 import { version } from '../../version.js';
 import { CrawlerManager } from '../api/crawlerManager/crawlerManager.js';
@@ -14,7 +14,6 @@ import { deepEqualZodSchema } from '../../utils/deepEqualZodSchema.js';
 export class InserterManager {
 
     private _inserter: Inserter;
-    private _dataManagementKit: DataManagementKit;
     private _schemaCheck: SchemaCheck;
     private _middlewareManager: MiddlewareManager;
     private _crawlerManager: CrawlerManager;
@@ -23,7 +22,7 @@ export class InserterManager {
     private _turboSearchKit: TurboSearchKit;
 
 
-    constructor(addInserterData: AddInserterData, dataManagementKit: DataManagementKit, turboSearchKit: TurboSearchKit, schemaCheck: SchemaCheck) {
+    constructor(addInserterData: AddInserterData, turboSearchKit: TurboSearchKit, schemaCheck: SchemaCheck) {
 
         const result = addInserterDataSchema.safeParse(addInserterData);
 
@@ -33,19 +32,17 @@ export class InserterManager {
             this._inserter = result.data as unknown as Inserter;
         }
 
-        this._dataManagementKit = dataManagementKit;
-
         this._schemaCheck = schemaCheck;
 
         this._turboSearchKit = turboSearchKit;
 
-        this._middlewareManager = new MiddlewareManager(this._inserter.middleware, this._dataManagementKit, this._turboSearchKit);
+        this._middlewareManager = new MiddlewareManager(this._inserter.middleware, this._turboSearchKit);
 
-        this._crawlerManager = new CrawlerManager(this._inserter.crawler, this._dataManagementKit, this._turboSearchKit);
+        this._crawlerManager = new CrawlerManager(this._inserter.crawler, this._turboSearchKit);
 
-        this._pipeManager = new PipeManager(this._inserter.pipe, this._dataManagementKit, this._schemaCheck, this._turboSearchKit);
+        this._pipeManager = new PipeManager(this._inserter.pipe, this._schemaCheck, this._turboSearchKit);
 
-        this._indexerManager = new IndexerManager(this._inserter.indexer, this._dataManagementKit, this._turboSearchKit);
+        this._indexerManager = new IndexerManager(this._inserter.indexer, this._turboSearchKit);
 
     }
 
@@ -122,7 +119,7 @@ export class InserterManager {
 
     async init() {
         if (this._inserter.init) {
-            await this._inserter.init(this._dataManagementKit);
+            await this._inserter.init(this._turboSearchKit);
         }
     }
 
@@ -143,7 +140,7 @@ export class InserterManager {
         const databaseDependence = this._inserter.inserterManifesto.databaseDependence;
         if (databaseDependence && databaseDependence.length > 0) {
 
-            const databaseName = await this._dataManagementKit.database.getDatabase().databaseManifesto.name;
+            const databaseName = await this._turboSearchKit.database.getDatabase().databaseManifesto.name;
 
             const databaseDependenceVersion = databaseDependence.find((dependence) => {
                 return dependence.name == databaseName;
@@ -151,7 +148,7 @@ export class InserterManager {
 
             if (databaseDependenceVersion && databaseDependenceVersion != "") {
                 if (!compareDependenceVersion(
-                    await this._dataManagementKit.database.getDatabase().databaseManifesto.version,
+                    await this._turboSearchKit.database.getDatabase().databaseManifesto.version,
                     databaseDependenceVersion
                 )) {
                     catchError("inserter", [
