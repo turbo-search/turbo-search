@@ -28,7 +28,7 @@ export type Ranker = {
     }
     | {
       success: true;
-      output: Z.infer<AddRankerData["outputSchema"]>;
+      output: Z.infer<Ranker["outputSchema"]>;
     }
   >;
 };

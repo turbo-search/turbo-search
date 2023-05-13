@@ -1,7 +1,7 @@
 import { Task, Tasks } from "@/manager/taskManager/taskManagerType";
 import { Extension } from "@/manager/extensionManager/extensionManagerType";
 import {
-  AddEndpointData,
+  Endpoint,
   Endpoints,
 } from "@/manager/endpointManager/endpointManagerType";
 import { Database } from "@/manager/databaseManager/databaseManagerType";
@@ -28,7 +28,7 @@ export type DefaultTurboSearchCoreType = {
 //拡張機能にturbo-searchへのアクセスを提供するもの
 export type TurboSearchKit = {
   addTask: (task: Task) => void;
-  addEndpoint: (endpoint: AddEndpointData) => void;
+  addEndpoint: (endpoint: Endpoint) => void;
   addTaskAndEndpoint: (addTaskAndEndpoint: AddTaskAndEndpointData) => void;
   endpoints: Endpoints;
   tasks: Tasks;
@@ -40,7 +40,7 @@ export type TurboSearchKit = {
 
 export type ExtensionSetupKit = {
   addTask: (task: Task) => void;
-  addEndpoint: (endpoint: AddEndpointData) => void;
+  addEndpoint: (endpoint: Endpoint) => void;
   addTaskAndEndpoint: (addTaskAndEndpoint: AddTaskAndEndpointData) => void;
   endpoints: Endpoints;
   tasks: Tasks;
