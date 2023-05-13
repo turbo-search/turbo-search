@@ -1,7 +1,7 @@
 import { catchError } from "../../../error/catchError";
 import { TurboSearchKit } from "../../../indexType";
-import { addInterceptorDataSchema } from "./interceptorManagerSchema";
-import { AddInterceptorData } from "./interceptorManagerType";
+import { interceptorSchema } from "./interceptorManagerSchema";
+import { Interceptor } from "./interceptorManagerType";
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
 
@@ -10,10 +10,10 @@ export class InterceptorManager {
   private _turboSearchKit: TurboSearchKit;
 
   constructor(
-    addInterceptorData: AddInterceptorData,
+    addInterceptorData: Interceptor,
     turboSearchKit: TurboSearchKit
   ) {
-    const result = addInterceptorDataSchema.safeParse(addInterceptorData);
+    const result = interceptorSchema.safeParse(addInterceptorData);
     if (!result.success) {
       catchError("interceptorValidation", [
         "interceptor validation error",
@@ -120,15 +120,15 @@ export class InterceptorManager {
             ) {
               catchError("dependence", [
                 "interceptor specifies " +
-                  dependenceExtensionName +
-                  " version " +
-                  extensionDependence[dependenceExtensionName] +
-                  ".",
+                dependenceExtensionName +
+                " version " +
+                extensionDependence[dependenceExtensionName] +
+                ".",
                 "The current version of " +
-                  dependenceExtensionName +
-                  " is " +
-                  dependenceExtension.manifesto.version +
-                  ".",
+                dependenceExtensionName +
+                " is " +
+                dependenceExtension.manifesto.version +
+                ".",
               ]);
             }
           }

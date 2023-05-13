@@ -19,20 +19,18 @@ export type Interceptor = {
   interceptorManifesto: InterceptorManifesto;
   init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
   process: (
-    requestData: Z.infer<AddInterceptorData["requestSchema"]>,
+    requestData: Z.infer<Interceptor["requestSchema"]>,
     inputData: Z.infer<Interceptor["inputSchema"]>,
     turboSearchKit: TurboSearchKit
   ) => Promise<
     | {
-        success: false;
-        message: string;
-        error: any;
-      }
+      success: false;
+      message: string;
+      error: any;
+    }
     | {
-        success: true;
-        output: Z.infer<Interceptor["outputSchema"]>;
-      }
+      success: true;
+      output: Z.infer<Interceptor["outputSchema"]>;
+    }
   >;
 };
-
-export type AddInterceptorData = Interceptor;

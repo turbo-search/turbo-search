@@ -5,16 +5,16 @@ import {
   SubscribeJobCallback,
 } from "./jobManagerType";
 import {
-  addJobDataSchema,
-  addSubscribeJobDataSchema,
-  addSubscribeJobsDataSchema,
+  addJobSchema,
+  subscribeJobSchema,
+  subscribeJobsSchema,
 } from "./jobManagerSchema";
 import { v4 as uuidv4 } from "uuid";
 import { catchError } from "../../error/catchError";
 import { MemoryStoreManager } from "../memoryStoreManager/memoryStoreManager";
 
 export class JobManager {
-  constructor(private memoryStoreManager: MemoryStoreManager) {}
+  constructor(private memoryStoreManager: MemoryStoreManager) { }
 
   async getJob(id: string) {
     const jobs = (await this.memoryStoreManager.find("jobs", "id", id)) as
@@ -33,7 +33,7 @@ export class JobManager {
 
   async addJob(addJobData: AddJobData) {
     //zod validation
-    const result = addJobDataSchema.safeParse(addJobData);
+    const result = addJobSchema.safeParse(addJobData);
     if (!result.success) {
       catchError("jobValidation", [
         "job validation error",
@@ -96,7 +96,7 @@ export class JobManager {
     jobId: string, //サブスクライブするjobのid
     callback: SubscribeJobCallback
   ) {
-    const result = addSubscribeJobDataSchema.safeParse({
+    const result = subscribeJobSchema.safeParse({
       id: id,
       jobId: jobId,
       callback: callback,
@@ -109,7 +109,11 @@ export class JobManager {
       ]);
     } else {
       //同じidが存在する場合も関係なく追加
-      await this.memoryStoreManager.add("jobSubscribes", result.data);
+      await this.memoryStoreManager.add("jobSubscribes", {
+        id: id,
+        jobId: jobId,
+        callback: callback,
+      });
     }
   }
 
@@ -122,7 +126,7 @@ export class JobManager {
     id: string,
     callback: SubscribeJobCallback
   ): Promise<void> {
-    const result = addSubscribeJobsDataSchema.safeParse({
+    const result = subscribeJobsSchema.safeParse({
       id: id,
       callback: callback,
     });
@@ -134,7 +138,10 @@ export class JobManager {
       ]);
     } else {
       //同じidが存在する場合も関係なく追加
-      await this.memoryStoreManager.add("jobsSubscribes", result.data);
+      await this.memoryStoreManager.add("jobsSubscribes", {
+        id: id,
+        callback: callback,
+      });
     }
   }
 

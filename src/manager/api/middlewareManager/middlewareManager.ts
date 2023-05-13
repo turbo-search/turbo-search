@@ -1,6 +1,6 @@
 import { TurboSearchKit } from "../../../indexType";
-import { Middleware, AddMiddlewareData } from "./middlewareManagerType";
-import { addMiddlewareDataSchema } from "./middlewareManagerSchema";
+import { Middleware } from "./middlewareManagerType";
+import { middlewareSchema } from "./middlewareManagerSchema";
 import { catchError } from "../../../error/catchError";
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
@@ -10,10 +10,10 @@ export class MiddlewareManager {
   private _turboSearchKit: TurboSearchKit;
 
   constructor(
-    addMiddlewareDataList: AddMiddlewareData[],
+    addMiddlewareDataList: Middleware[],
     TurboSearchKit: TurboSearchKit
   ) {
-    const result = addMiddlewareDataSchema.safeParse(addMiddlewareDataList);
+    const result = middlewareSchema.safeParse(addMiddlewareDataList);
     if (!result.success) {
       catchError("middlewareValidation", [
         "middleware validation error",
@@ -112,15 +112,15 @@ export class MiddlewareManager {
               ) {
                 catchError("dependence", [
                   "middleware specifies " +
-                    dependenceExtensionName +
-                    " version " +
-                    extensionDependence[dependenceExtensionName] +
-                    ".",
+                  dependenceExtensionName +
+                  " version " +
+                  extensionDependence[dependenceExtensionName] +
+                  ".",
                   "The current version of " +
-                    dependenceExtensionName +
-                    " is " +
-                    dependenceExtension.manifesto.version +
-                    ".",
+                  dependenceExtensionName +
+                  " is " +
+                  dependenceExtension.manifesto.version +
+                  ".",
                 ]);
               }
             }

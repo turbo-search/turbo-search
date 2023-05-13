@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const addInterceptorDataSchema = z.object({
+export const interceptorSchema = z.object({
   requestSchema: z.any(),
   inputSchema: z.any(),
   outputSchema: z.any(),

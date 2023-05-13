@@ -1,6 +1,6 @@
 import { catchError } from "@/error/catchError";
-import { AddEndpointData, Endpoints } from "./endpointManagerType";
-import { addEndpointSchema } from "./endpointSchema";
+import { Endpoint, Endpoints } from "./endpointManagerType";
+import { endpointSchema } from "./endpointSchema";
 
 export class EndpointManager {
   endpoints: Endpoints;
@@ -10,13 +10,13 @@ export class EndpointManager {
   }
 
   // APIなど外部から参照されるような処理を追加する
-  async addEndpoint(addEndpointData: AddEndpointData) {
+  async addEndpoint(addEndpointData: Endpoint) {
     if (typeof this.endpoints == "undefined") {
       this.endpoints = {};
     }
 
     //バリデーションする
-    const result = addEndpointSchema.safeParse(addEndpointData);
+    const result = endpointSchema.safeParse(addEndpointData);
     if (!result.success) {
       catchError("endpointValidation", [
         `Failed to add ${addEndpointData.name} endpoint`,
@@ -29,7 +29,7 @@ export class EndpointManager {
       //すでに存在するか確かめる
       if (
         !this.endpoints[addEndpointData.provider || "other"][
-          addEndpointData.name
+        addEndpointData.name
         ] ||
         addEndpointData.forcedAssignment
       ) {

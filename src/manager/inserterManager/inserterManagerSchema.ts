@@ -1,10 +1,10 @@
 import z from "zod";
-import { addCrawlerDataSchema } from "../api/crawlerManager/crawlerManagerSchema";
-import { addIndexerDataSchema } from "../api/indexerManager/indexerManagerSchema";
-import { addPipeDataSchema } from "../api/pipeManager/pipeManagerSchema";
-import { addMiddlewareDataSchema } from "../api/middlewareManager/middlewareManagerSchema";
+import { crawlerSchema } from "../api/crawlerManager/crawlerManagerSchema";
+import { indexerSchema } from "../api/indexerManager/indexerManagerSchema";
+import { pipeSchema } from "../api/pipeManager/pipeManagerSchema";
+import { middlewareSchema } from "../api/middlewareManager/middlewareManagerSchema";
 
-export const addInserterDataSchema = z.object({
+export const inserterSchema = z.object({
   inserterManifesto: z.object({
     name: z.string(),
     queryPath: z.string().optional(),
@@ -20,8 +20,8 @@ export const addInserterDataSchema = z.object({
       .optional(),
     extensionDependence: z.record(z.string()).optional(),
   }),
-  middleware: z.array(addMiddlewareDataSchema),
-  crawler: addCrawlerDataSchema,
-  pipe: z.array(addPipeDataSchema),
-  indexer: addIndexerDataSchema,
+  middleware: middlewareSchema,
+  crawler: crawlerSchema,
+  pipe: pipeSchema,
+  indexer: indexerSchema,
 });

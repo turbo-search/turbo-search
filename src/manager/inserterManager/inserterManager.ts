@@ -6,8 +6,8 @@ import { CrawlerManager } from "../api/crawlerManager/crawlerManager";
 import { IndexerManager } from "../api/indexerManager/indexerManager";
 import { MiddlewareManager } from "../api/middlewareManager/middlewareManager";
 import { PipeManager } from "../api/pipeManager/pipeManager";
-import { addInserterDataSchema } from "./inserterManagerSchema";
-import type { AddInserterData, Inserter, Ran } from "./inserterManagerType";
+import { inserterSchema } from "./inserterManagerSchema";
+import type { Inserter, Ran } from "./inserterManagerType";
 import { compareZodSchemas } from "@/utils/compareZodSchemas";
 import { deepEqualZodSchema } from "@/utils/deepEqualZodSchema";
 
@@ -21,11 +21,11 @@ export class InserterManager {
   private _turboSearchKit: TurboSearchKit;
 
   constructor(
-    addInserterData: AddInserterData,
+    addInserterData: Inserter,
     turboSearchKit: TurboSearchKit,
     schemaCheck: SchemaCheck
   ) {
-    const result = addInserterDataSchema.safeParse(addInserterData);
+    const result = inserterSchema.safeParse(addInserterData);
 
     if (!result.success) {
       catchError("inserter", [
@@ -33,7 +33,7 @@ export class InserterManager {
         result.error.message,
       ]);
     } else {
-      this._inserter = result.data as unknown as Inserter;
+      this._inserter = addInserterData as unknown as Inserter;
     }
 
     this._schemaCheck = schemaCheck;
@@ -200,15 +200,15 @@ export class InserterManager {
             ) {
               catchError("dependence", [
                 "inserter specifies " +
-                  dependenceExtensionName +
-                  " version " +
-                  extensionDependence[dependenceExtensionName] +
-                  ".",
+                dependenceExtensionName +
+                " version " +
+                extensionDependence[dependenceExtensionName] +
+                ".",
                 "The current version of " +
-                  dependenceExtensionName +
-                  " is " +
-                  dependenceExtension.manifesto.version +
-                  ".",
+                dependenceExtensionName +
+                " is " +
+                dependenceExtension.manifesto.version +
+                ".",
               ]);
             }
           }

@@ -19,15 +19,13 @@ export type Middleware = {
     turboSearchKit: TurboSearchKit
   ) => Promise<
     | {
-        success: false;
-        message: string;
-        error: any;
-      }
+      success: false;
+      message: string;
+      error: any;
+    }
     | {
-        success: true;
-        output: any;
-      }
+      success: true;
+      output: any;
+    }
   >;
 };
-
-export type AddMiddlewareData = Middleware;

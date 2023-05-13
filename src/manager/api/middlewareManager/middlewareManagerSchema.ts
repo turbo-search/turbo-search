@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const addMiddlewareDataSchema = z.array(
+export const middlewareSchema = z.array(
   z.object({
     inputSchema: z.any(),
     outputSchema: z.any(),

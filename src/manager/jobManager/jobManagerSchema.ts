@@ -22,7 +22,7 @@ export const jobSchema = z.object({
   ),
 });
 
-export const addJobDataSchema = z.object({
+export const addJobSchema = z.object({
   name: z.string(),
   description: z.string(),
   point: z.enum([
@@ -37,13 +37,13 @@ export const addJobDataSchema = z.object({
   performer: z.string(),
 });
 
-export const addSubscribeJobDataSchema = z.object({
+export const subscribeJobSchema = z.object({
   id: z.string(),
   jobId: z.string(),
   callback: z.function(),
 });
 
-export const addSubscribeJobsDataSchema = z.object({
+export const subscribeJobsSchema = z.object({
   id: z.string(),
   callback: z.function(),
 });

@@ -22,15 +22,13 @@ export type Ranker = {
     turboSearchKit: TurboSearchKit
   ) => Promise<
     | {
-        success: false;
-        message: string;
-        error: any;
-      }
+      success: false;
+      message: string;
+      error: any;
+    }
     | {
-        success: true;
-        output: Z.infer<AddRankerData["outputSchema"]>;
-      }
+      success: true;
+      output: Z.infer<AddRankerData["outputSchema"]>;
+    }
   >;
 };
-
-export type AddRankerData = Ranker;

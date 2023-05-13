@@ -16,5 +16,3 @@ export type Database = {
   vectorSearch?: (data: any) => Promise<any>;
   search?: (order: any, data: any) => Promise<any>;
 };
-
-export type AddDatabaseData = Database;

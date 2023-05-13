@@ -19,20 +19,18 @@ export type Indexer = {
   indexerManifesto: IndexerManifesto;
   init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
   process: (
-    requestData: Z.infer<AddIndexerData["requestSchema"]>,
+    requestData: Z.infer<Indexer["requestSchema"]>,
     inputData: Z.infer<Indexer["inputSchema"]>,
     turboSearchKit: TurboSearchKit
   ) => Promise<
     | {
-        success: false;
-        message: string;
-        error: any;
-      }
+      success: false;
+      message: string;
+      error: any;
+    }
     | {
-        success: true;
-        output: Z.infer<Indexer["outputSchema"]>;
-      }
+      success: true;
+      output: Z.infer<Indexer["outputSchema"]>;
+    }
   >;
 };
-
-export type AddIndexerData = Indexer;

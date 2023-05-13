@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const addPipeDataSchema = z.array(
+export const pipeSchema = z.array(
   z.object({
     requestSchema: z.any(),
     inputSchema: z.any(),

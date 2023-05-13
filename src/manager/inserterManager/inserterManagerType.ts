@@ -26,5 +26,3 @@ export type Inserter = {
   pipe: Pipe[];
   indexer: Indexer;
 };
-
-export type AddInserterData = Inserter;

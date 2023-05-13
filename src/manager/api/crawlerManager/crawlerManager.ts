@@ -1,7 +1,7 @@
 import { catchError } from "../../../error/catchError";
 import { TurboSearchKit } from "../../../indexType";
-import { addCrawlerDataSchema } from "./crawlerManagerSchema";
-import { AddCrawlerData } from "./crawlerManagerType";
+import { crawlerSchema } from "./crawlerManagerSchema";
+import { Crawler } from "./crawlerManagerType";
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
 
@@ -9,8 +9,8 @@ export class CrawlerManager {
   private _crawler;
   private _turboSearchKit: TurboSearchKit;
 
-  constructor(addCrawlerData: AddCrawlerData, turboSearchKit: TurboSearchKit) {
-    const result = addCrawlerDataSchema.safeParse(addCrawlerData);
+  constructor(addCrawlerData: Crawler, turboSearchKit: TurboSearchKit) {
+    const result = crawlerSchema.safeParse(addCrawlerData);
     if (!result.success) {
       catchError("crawlerValidation", [
         "crawler validation error",
@@ -113,15 +113,15 @@ export class CrawlerManager {
             ) {
               catchError("dependence", [
                 "crawler specifies " +
-                  dependenceExtensionName +
-                  " version " +
-                  extensionDependence[dependenceExtensionName] +
-                  ".",
+                dependenceExtensionName +
+                " version " +
+                extensionDependence[dependenceExtensionName] +
+                ".",
                 "The current version of " +
-                  dependenceExtensionName +
-                  " is " +
-                  dependenceExtension.manifesto.version +
-                  ".",
+                dependenceExtensionName +
+                " is " +
+                dependenceExtension.manifesto.version +
+                ".",
               ]);
             }
           }

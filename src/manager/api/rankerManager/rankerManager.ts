@@ -1,7 +1,7 @@
 import { catchError } from "../../../error/catchError";
 import { TurboSearchKit } from "../../../indexType";
-import { addRankerDataSchema } from "./rankerManagerSchema";
-import { AddRankerData } from "./rankerManagerType";
+import { rankerSchema } from "./rankerManagerSchema";
+import { Ranker } from "./rankerManagerType";
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
 
@@ -9,8 +9,8 @@ export class RankerManager {
   private _ranker;
   private _turboSearchKit: TurboSearchKit;
 
-  constructor(addRankerData: AddRankerData, TurboSearchKit: TurboSearchKit) {
-    const result = addRankerDataSchema.safeParse(addRankerData);
+  constructor(addRankerData: Ranker, TurboSearchKit: TurboSearchKit) {
+    const result = rankerSchema.safeParse(addRankerData);
     if (!result.success) {
       catchError("rankerValidation", [
         "ranker validation error",
@@ -112,15 +112,15 @@ export class RankerManager {
             ) {
               catchError("dependence", [
                 "ranker specifies " +
-                  dependenceExtensionName +
-                  " version " +
-                  extensionDependence[dependenceExtensionName] +
-                  ".",
+                dependenceExtensionName +
+                " version " +
+                extensionDependence[dependenceExtensionName] +
+                ".",
                 "The current version of " +
-                  dependenceExtensionName +
-                  " is " +
-                  dependenceExtension.manifesto.version +
-                  ".",
+                dependenceExtensionName +
+                " is " +
+                dependenceExtension.manifesto.version +
+                ".",
               ]);
             }
           }

@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const addDatabaseDataSchema = z.object({
+export const databaseSchema = z.object({
   databaseManifesto: z.object({
     name: z.string(),
     version: z.string(),

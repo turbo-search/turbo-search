@@ -1,10 +1,10 @@
 import z from "zod";
-import { addMiddlewareDataSchema } from "../api/middlewareManager/middlewareManagerSchema";
-import { addRankerDataSchema } from "../api/rankerManager/rankerManagerSchema";
-import { addPipeDataSchema } from "../api/pipeManager/pipeManagerSchema";
-import { addInterceptorDataSchema } from "../api/interceptorManager/interceptorManagerSchema";
+import { middlewareSchema } from "../api/middlewareManager/middlewareManagerSchema";
+import { rankerSchema } from "../api/rankerManager/rankerManagerSchema";
+import { pipeSchema } from "../api/pipeManager/pipeManagerSchema";
+import { interceptorSchema } from "../api/interceptorManager/interceptorManagerSchema";
 
-export const addSearcherDataSchema = z.object({
+export const searcherSchema = z.object({
   searcherManifesto: z.object({
     name: z.string(),
     version: z.string(),
@@ -19,8 +19,8 @@ export const addSearcherDataSchema = z.object({
       .optional(),
     extensionDependence: z.record(z.string()).optional(),
   }),
-  middleware: z.array(addMiddlewareDataSchema),
-  ranker: addRankerDataSchema,
-  pipe: z.array(addPipeDataSchema),
-  interceptor: addInterceptorDataSchema,
+  middleware: middlewareSchema,
+  ranker: rankerSchema,
+  pipe: pipeSchema,
+  interceptor: interceptorSchema,
 });

@@ -24,15 +24,13 @@ export type Pipe = {
     turboSearchKit: TurboSearchKit
   ) => Promise<
     | {
-        success: false;
-        message: string;
-        error: any;
-      }
+      success: false;
+      message: string;
+      error: any;
+    }
     | {
-        success: true;
-        output: Z.infer<Pipe["outputSchema"]>;
-      }
+      success: true;
+      output: Z.infer<Pipe["outputSchema"]>;
+    }
   >;
 };
-
-export type AddPipeData = Pipe;

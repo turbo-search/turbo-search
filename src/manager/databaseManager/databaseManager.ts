@@ -1,21 +1,21 @@
 import { catchError } from "../../error/catchError";
 import { compareDependenceVersion } from "../../utils/compareDependenceVersion";
 import { version } from "../../version";
-import { addDatabaseDataSchema } from "./databaseManagerSchema";
-import { AddDatabaseData, Database } from "./databaseManagerType";
+import { databaseSchema } from "./databaseManagerSchema";
+import { Database } from "./databaseManagerType";
 
 export class DatabaseManager {
   private _databases;
 
-  constructor(addDatabaseData: AddDatabaseData) {
-    const result = addDatabaseDataSchema.safeParse(addDatabaseData);
+  constructor(addDatabaseData: Database) {
+    const result = databaseSchema.safeParse(addDatabaseData);
     if (!result.success) {
       catchError("databaseValidation", [
         "database validation error",
         result.error.message,
       ]);
     } else {
-      this._databases = result.data;
+      this._databases = addDatabaseData;
     }
   }
 

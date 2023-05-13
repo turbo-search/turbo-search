@@ -22,15 +22,13 @@ export type Crawler = {
     turboSearchKit: TurboSearchKit
   ) => Promise<
     | {
-        success: false;
-        message: string;
-        error: any;
-      }
+      success: false;
+      message: string;
+      error: any;
+    }
     | {
-        success: true;
-        output: Z.infer<AddCrawlerData["outputSchema"]>;
-      }
+      success: true;
+      output: Z.infer<Crawler["outputSchema"]>;
+    }
   >;
 };
-
-export type AddCrawlerData = Crawler;

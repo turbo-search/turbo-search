@@ -7,7 +7,7 @@ import {
 import { compareDependenceVersion } from "@/utils/compareDependenceVersion";
 import { version } from "@/version";
 import { Extension } from "./extensionManagerType";
-import { addExtensionSchema } from "./extensionSchema";
+import { extensionSchema } from "./extensionSchema";
 
 export class ExtensionManager {
   private _error;
@@ -28,7 +28,7 @@ export class ExtensionManager {
   validate() {
     this._extensions.forEach((extension, index) => {
       //zodでバリデーション
-      const result = addExtensionSchema.safeParse(extension);
+      const result = extensionSchema.safeParse(extension);
       if (!result.success) {
         catchError("extensionValidation", [
           "extension validation error",
@@ -125,8 +125,8 @@ export class ExtensionManager {
             if (!dependenceExtension) {
               catchError("dependence", [
                 extension.manifesto.name +
-                  " is dependent on " +
-                  dependenceExtensionName,
+                " is dependent on " +
+                dependenceExtensionName,
                 "The following solutions are available",
                 "Add the extension : " + dependenceExtensionName,
                 "Remove the extension : " + extension.manifesto.name,
@@ -136,7 +136,7 @@ export class ExtensionManager {
               if (extension.manifesto.dependence) {
                 if (
                   extension.manifesto.dependence[dependenceExtensionName] !==
-                    "" &&
+                  "" &&
                   !compareDependenceVersion(
                     dependenceExtension.manifesto.version,
                     extension.manifesto.dependence[dependenceExtensionName]
@@ -144,17 +144,17 @@ export class ExtensionManager {
                 ) {
                   catchError("dependence", [
                     "Extension:" +
-                      extension.manifesto.name +
-                      " specifies " +
-                      dependenceExtensionName +
-                      " version " +
-                      extension.manifesto.dependence[dependenceExtensionName] +
-                      ".",
+                    extension.manifesto.name +
+                    " specifies " +
+                    dependenceExtensionName +
+                    " version " +
+                    extension.manifesto.dependence[dependenceExtensionName] +
+                    ".",
                     "The current version of " +
-                      dependenceExtensionName +
-                      " is " +
-                      dependenceExtension.manifesto.version +
-                      ".",
+                    dependenceExtensionName +
+                    " is " +
+                    dependenceExtension.manifesto.version +
+                    ".",
                   ]);
                 }
               }

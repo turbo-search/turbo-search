@@ -1,7 +1,7 @@
 import { catchError } from "../../../error/catchError";
 import { TurboSearchKit } from "../../../indexType";
-import { addIndexerDataSchema } from "./indexerManagerSchema";
-import { AddIndexerData } from "./indexerManagerType";
+import { indexerSchema } from "./indexerManagerSchema";
+import { Indexer } from "./indexerManagerType";
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
 
@@ -9,8 +9,8 @@ export class IndexerManager {
   private _indexer;
   private _turboSearchKit: TurboSearchKit;
 
-  constructor(addIndexerData: AddIndexerData, turboSearchKit: TurboSearchKit) {
-    const result = addIndexerDataSchema.safeParse(addIndexerData);
+  constructor(addIndexerData: Indexer, turboSearchKit: TurboSearchKit) {
+    const result = indexerSchema.safeParse(addIndexerData);
     if (!result.success) {
       catchError("indexerValidation", [
         "indexer validation error",
@@ -117,15 +117,15 @@ export class IndexerManager {
             ) {
               catchError("dependence", [
                 "indexer specifies " +
-                  dependenceExtensionName +
-                  " version " +
-                  extensionDependence[dependenceExtensionName] +
-                  ".",
+                dependenceExtensionName +
+                " version " +
+                extensionDependence[dependenceExtensionName] +
+                ".",
                 "The current version of " +
-                  dependenceExtensionName +
-                  " is " +
-                  dependenceExtension.manifesto.version +
-                  ".",
+                dependenceExtensionName +
+                " is " +
+                dependenceExtension.manifesto.version +
+                ".",
               ]);
             }
           }

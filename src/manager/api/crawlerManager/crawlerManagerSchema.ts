@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const addCrawlerDataSchema = z.object({
+export const crawlerSchema = z.object({
   requestSchema: z.any(),
   outputSchema: z.any(),
   crawlerManifesto: z.object({

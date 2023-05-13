@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const addEndpointSchema = z.object({
+export const endpointSchema = z.object({
   name: z.string(),
   provider: z.string(),
   function: z.function(),

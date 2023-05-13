@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const addRankerDataSchema = z.object({
+export const rankerSchema = z.object({
   requestSchema: z.any(),
   outputSchema: z.any(),
   rankerManifesto: z.object({

@@ -1,4 +1,3 @@
-import type Z from "zod";
 import { Ranker } from "../api/rankerManager/rankerManagerType";
 import { Interceptor } from "../api/interceptorManager/interceptorManagerType";
 import { Pipe } from "../api/pipeManager/pipeManagerType";
@@ -26,5 +25,3 @@ export type Searcher = {
   pipe: Pipe[];
   interceptor: Interceptor;
 };
-
-export type AddSearcherData = Searcher;

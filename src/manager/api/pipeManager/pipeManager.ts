@@ -1,6 +1,6 @@
 import { SchemaCheck, TurboSearchKit } from "../../../indexType";
-import { Pipe, AddPipeData } from "./pipeManagerType";
-import { addPipeDataSchema } from "./pipeManagerSchema";
+import { Pipe } from "./pipeManagerType";
+import { pipeSchema } from "./pipeManagerSchema";
 import { catchError } from "../../../error/catchError";
 import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
 import { version } from "../../../version";
@@ -13,11 +13,11 @@ export class PipeManager {
   private _turboSearchKit: TurboSearchKit;
 
   constructor(
-    addPipeDataList: AddPipeData[],
+    addPipeDataList: Pipe[],
     schemaCheck: SchemaCheck,
     turboSearchKit: TurboSearchKit
   ) {
-    const result = addPipeDataSchema.safeParse(addPipeDataList);
+    const result = pipeSchema.safeParse(addPipeDataList);
     if (!result.success) {
       catchError("pipeValidation", [
         "pipe validation error",
@@ -80,8 +80,7 @@ export class PipeManager {
       ) {
         catchError("pipeValidation", [
           "pipe validation error",
-          `pipe ${pipe.pipeManifesto.name} outputSchema is not equal to pipe ${
-            this._pipeList[index + 1].pipeManifesto.name
+          `pipe ${pipe.pipeManifesto.name} outputSchema is not equal to pipe ${this._pipeList[index + 1].pipeManifesto.name
           } inputSchema`,
         ]);
       }
@@ -97,8 +96,7 @@ export class PipeManager {
       ) {
         catchError("pipeValidation", [
           "pipe validation error",
-          `pipe ${pipe.pipeManifesto.name} outputSchema is not include pipe ${
-            this._pipeList[index + 1].pipeManifesto.name
+          `pipe ${pipe.pipeManifesto.name} outputSchema is not include pipe ${this._pipeList[index + 1].pipeManifesto.name
           } inputSchema`,
         ]);
       }
@@ -181,15 +179,15 @@ export class PipeManager {
               ) {
                 catchError("dependence", [
                   "pipe specifies " +
-                    dependenceExtensionName +
-                    " version " +
-                    extensionDependence[dependenceExtensionName] +
-                    ".",
+                  dependenceExtensionName +
+                  " version " +
+                  extensionDependence[dependenceExtensionName] +
+                  ".",
                   "The current version of " +
-                    dependenceExtensionName +
-                    " is " +
-                    dependenceExtension.manifesto.version +
-                    ".",
+                  dependenceExtensionName +
+                  " is " +
+                  dependenceExtension.manifesto.version +
+                  ".",
                 ]);
               }
             }
@@ -208,14 +206,14 @@ export class PipeManager {
   async processAll(requestData: any, inputData: any) {
     let outputData:
       | {
-          success: false;
-          message: string;
-          error: any;
-        }
+        success: false;
+        message: string;
+        error: any;
+      }
       | {
-          success: true;
-          output: any;
-        } = {
+        success: true;
+        output: any;
+      } = {
       success: true,
       output: inputData,
     };
