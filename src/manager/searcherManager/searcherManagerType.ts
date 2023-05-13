@@ -5,11 +5,7 @@ import { Pipe } from "../api/pipeManager/pipeManagerType";
 import { Middleware } from "../api/middlewareManager/middlewareManagerType";
 import { TurboSearchKit } from "../../indexType";
 
-export type Ran =
-  | "middleware"
-  | "ranker"
-  | "pipe"
-  | "interceptor";
+export type Ran = "middleware" | "ranker" | "pipe" | "interceptor";
 
 export type SearcherManifesto = {
   name: string;
@@ -20,15 +16,15 @@ export type SearcherManifesto = {
   }[];
   extensionDependence?: { [extensionName: string]: string };
   version: string;
-}
+};
 
 export type Searcher = {
-  searcherManifesto: SearcherManifesto,
+  searcherManifesto: SearcherManifesto;
   init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
   middleware: Middleware[];
   ranker: Ranker;
   pipe: Pipe[];
   interceptor: Interceptor;
-}
+};
 
 export type AddSearcherData = Searcher;

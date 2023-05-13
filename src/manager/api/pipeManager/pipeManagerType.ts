@@ -2,34 +2,37 @@ import Z from "zod";
 import { TurboSearchKit } from "../../..";
 
 export type PipeManifesto = {
+  name: string;
+  coreDependence?: string;
+  databaseDependence?: {
     name: string;
-    coreDependence?: string;
-    databaseDependence?: {
-        name: string;
-        version: string;
-    }[];
-    extensionDependence?: { [extensionName: string]: string };
     version: string;
-}
+  }[];
+  extensionDependence?: { [extensionName: string]: string };
+  version: string;
+};
 
 export type Pipe = {
-    requestSchema: Z.Schema;
-    inputSchema: Z.Schema;
-    outputSchema: Z.Schema;
-    pipeManifesto: PipeManifesto;
-    init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
-    process: (
-        requestData: Z.infer<Pipe["requestSchema"]>,
-        inputData: Z.infer<Pipe["inputSchema"]>,
-        turboSearchKit: TurboSearchKit
-    ) => Promise<{
+  requestSchema: Z.Schema;
+  inputSchema: Z.Schema;
+  outputSchema: Z.Schema;
+  pipeManifesto: PipeManifesto;
+  init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
+  process: (
+    requestData: Z.infer<Pipe["requestSchema"]>,
+    inputData: Z.infer<Pipe["inputSchema"]>,
+    turboSearchKit: TurboSearchKit
+  ) => Promise<
+    | {
         success: false;
         message: string;
         error: any;
-    } | {
+      }
+    | {
         success: true;
         output: Z.infer<Pipe["outputSchema"]>;
-    }>
-}
+      }
+  >;
+};
 
 export type AddPipeData = Pipe;

@@ -1,13 +1,13 @@
-import { catchError } from "../../error/catchError.js";
+import { catchError } from "@/error/catchError";
 import {
   ExtensionSetupKit,
   TurboSearchCoreOptions,
   TurboSearchKit,
-} from "../../indexType.js";
-import { compareDependenceVersion } from "../../utils/compareDependenceVersion.js";
-import { version } from "../../version.js";
-import { Extension } from "./extensionManagerType.js";
-import { addExtensionSchema } from "./extensionSchema.js";
+} from "@/indexType";
+import { compareDependenceVersion } from "@/utils/compareDependenceVersion";
+import { version } from "@/version";
+import { Extension } from "./extensionManagerType";
+import { addExtensionSchema } from "./extensionSchema";
 
 export class ExtensionManager {
   private _error;
@@ -99,10 +99,7 @@ export class ExtensionManager {
       if (extension.manifesto.coreDependence) {
         if (
           extension.manifesto.coreDependence !== "" &&
-          !compareDependenceVersion(
-            version,
-            extension.manifesto.coreDependence
-          )
+          !compareDependenceVersion(version, extension.manifesto.coreDependence)
         ) {
           catchError("dependence", [
             extension.manifesto.name + " coreDependence is not match",
@@ -128,8 +125,8 @@ export class ExtensionManager {
             if (!dependenceExtension) {
               catchError("dependence", [
                 extension.manifesto.name +
-                " is dependent on " +
-                dependenceExtensionName,
+                  " is dependent on " +
+                  dependenceExtensionName,
                 "The following solutions are available",
                 "Add the extension : " + dependenceExtensionName,
                 "Remove the extension : " + extension.manifesto.name,
@@ -139,7 +136,7 @@ export class ExtensionManager {
               if (extension.manifesto.dependence) {
                 if (
                   extension.manifesto.dependence[dependenceExtensionName] !==
-                  "" &&
+                    "" &&
                   !compareDependenceVersion(
                     dependenceExtension.manifesto.version,
                     extension.manifesto.dependence[dependenceExtensionName]
@@ -147,17 +144,17 @@ export class ExtensionManager {
                 ) {
                   catchError("dependence", [
                     "Extension:" +
-                    extension.manifesto.name +
-                    " specifies " +
-                    dependenceExtensionName +
-                    " version " +
-                    extension.manifesto.dependence[dependenceExtensionName] +
-                    ".",
+                      extension.manifesto.name +
+                      " specifies " +
+                      dependenceExtensionName +
+                      " version " +
+                      extension.manifesto.dependence[dependenceExtensionName] +
+                      ".",
                     "The current version of " +
-                    dependenceExtensionName +
-                    " is " +
-                    dependenceExtension.manifesto.version +
-                    ".",
+                      dependenceExtensionName +
+                      " is " +
+                      dependenceExtension.manifesto.version +
+                      ".",
                   ]);
                 }
               }

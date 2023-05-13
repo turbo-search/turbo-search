@@ -1,6 +1,9 @@
 import { Task, Tasks } from "@/manager/taskManager/taskManagerType";
 import { Extension } from "@/manager/extensionManager/extensionManagerType";
-import { AddEndpointData, Endpoints } from "@/manager/endpointManager/endpointManagerType";
+import {
+  AddEndpointData,
+  Endpoints,
+} from "@/manager/endpointManager/endpointManagerType";
 import { Database } from "@/manager/databaseManager/databaseManagerType";
 import { Inserter } from "@/manager/inserterManager/inserterManagerType";
 import { Searcher } from "@/manager/searcherManager/searcherManagerType";
@@ -9,18 +12,18 @@ import { DatabaseManager } from "@/manager/databaseManager/databaseManager";
 import { MemoryStoreManager } from "@/manager/memoryStoreManager/memoryStoreManager";
 
 export type TurboSearchCoreType = {
-  inserters?: Inserter[],
-  searcher?: Searcher,
-  database: Database,
-  extensions?: Extension[]
-}
+  inserters?: Inserter[];
+  searcher?: Searcher;
+  database: Database;
+  extensions?: Extension[];
+};
 
 export type DefaultTurboSearchCoreType = {
-  inserters?: Inserter[],
-  searcher?: Searcher,
-  database: Database,
-  extensions?: Extension[]
-}
+  inserters?: Inserter[];
+  searcher?: Searcher;
+  database: Database;
+  extensions?: Extension[];
+};
 
 //拡張機能にturbo-searchへのアクセスを提供するもの
 export type TurboSearchKit = {
@@ -42,9 +45,9 @@ export type ExtensionSetupKit = {
   endpoints: Endpoints;
   tasks: Tasks;
   jobManager: JobManager;
-  database: DatabaseManager,
-  memoryStore: MemoryStoreManager,
-}
+  database: DatabaseManager;
+  memoryStore: MemoryStoreManager;
+};
 
 //タスクとエンドポイントを追加するときのデータ
 export type AddTaskAndEndpointData = {
@@ -53,7 +56,9 @@ export type AddTaskAndEndpointData = {
   function: () => Promise<any | void>;
 };
 
-export type TurboSearchCoreOptions<T extends TurboSearchCoreType = DefaultTurboSearchCoreType> = {
+export type TurboSearchCoreOptions<
+  T extends TurboSearchCoreType = DefaultTurboSearchCoreType
+> = {
   inserters: T["inserters"];
   searcher: T["searcher"];
   database: T["database"];
@@ -65,6 +70,6 @@ export type TurboSearchCoreOptions<T extends TurboSearchCoreType = DefaultTurboS
 };
 
 export type SchemaCheck =
-  "match" //スキーマは完全に一致する必要がある if(schema === schema)
+  | "match" //スキーマは完全に一致する必要がある if(schema === schema)
   | "include" //スキーマは含まれている必要がある if(schema.includes(schema))
   | false;

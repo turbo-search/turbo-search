@@ -1,8 +1,8 @@
 export type Job = {
-    id: string;
-    name: string;
-    description: string;
-    point:
+  id: string;
+  name: string;
+  description: string;
+  point:
     | "core"
     | "extension"
     | "search"
@@ -10,17 +10,17 @@ export type Job = {
     | "indexer"
     | "pipe"
     | "middleware";
-    performer: string;
-    logs: {
-        time: string;
-        text: string;
-    }[];
+  performer: string;
+  logs: {
+    time: string;
+    text: string;
+  }[];
 };
 
 export type AddJobData = {
-    name: string;
-    description: string;
-    point:
+  name: string;
+  description: string;
+  point:
     | "core"
     | "extension"
     | "search"
@@ -28,11 +28,11 @@ export type AddJobData = {
     | "indexer"
     | "pipe"
     | "middleware";
-    performer: string;
-}
+  performer: string;
+};
 
 export type JobStatus = "add" | "update" | "addLogs" | "delete";
 export type SubscribeJobCallback = (
-    job: Job,
-    status: JobStatus
+  job: Job,
+  status: JobStatus
 ) => Promise<void>;

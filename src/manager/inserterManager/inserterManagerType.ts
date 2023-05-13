@@ -4,11 +4,7 @@ import { Pipe } from "../api/pipeManager/pipeManagerType";
 import { Middleware } from "../api/middlewareManager/middlewareManagerType";
 import { TurboSearchKit } from "../..";
 
-export type Ran =
-  | "middleware"
-  | "crawler"
-  | "pipe"
-  | "indexer";
+export type Ran = "middleware" | "crawler" | "pipe" | "indexer";
 
 export type InserterManifesto = {
   name: string;
@@ -20,15 +16,15 @@ export type InserterManifesto = {
   }[];
   extensionDependence?: { [extensionName: string]: string };
   version: string;
-}
+};
 
 export type Inserter = {
-  inserterManifesto: InserterManifesto,
+  inserterManifesto: InserterManifesto;
   init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
   middleware: Middleware[];
   crawler: Crawler;
   pipe: Pipe[];
   indexer: Indexer;
-}
+};
 
 export type AddInserterData = Inserter;
