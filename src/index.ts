@@ -239,17 +239,17 @@ export class TurboSearchCore<T extends TurboSearchCoreType> {
 }
 
 // //出力
-// export * from "@/manager/inserterManager/inserterManagerType";
-// export * from "@/manager/api/crawlerManager/crawlerManagerType";
-// export * from "@/manager/api/indexerManager/indexerManagerType";
-// export * from "@/manager/api/interceptorManager/interceptorManagerType";
-// export * from "@/manager/api/middlewareManager/middlewareManagerType";
-// export * from "@/manager/api/pipeManager/pipeManagerType";
-// export * from "@/manager/api/rankerManager/rankerManagerType";
-// export * from "@/manager/databaseManager/databaseManagerType";
-// export * from "@/manager/endpointManager/endpointManagerType";
-// export * from "@/manager/extensionManager/extensionManagerType";
-// export * from "@/manager/jobManager/jobManagerType";
-// export * from "@/manager/searcherManager/searcherManagerType";
+// export * from "@/manager/inserterManager/inserterManager";
+// export * from "@/manager/api/crawlerManager/crawlerManager";
+// export * from "@/manager/api/indexerManager/indexerManager";
+// export * from "@/manager/api/interceptorManager/interceptorManager";
+// export * from "@/manager/api/middlewareManager/middlewareManager";
+// export * from "@/manager/api/pipeManager/pipeManager";
+// export * from "@/manager/api/rankerManager/rankerManager";
+// export * from "@/manager/databaseManager/databaseManager";
+// export * from "@/manager/endpointManager/endpointManager";
+// export * from "@/manager/extensionManager/extensionManager";
+// export * from "@/manager/jobManager/jobManager";
+// export * from "@/manager/searcherManager/searcherManager";
 
 // export type Ran = "middleware" | "ranker" | "pipe" | "interceptor";
