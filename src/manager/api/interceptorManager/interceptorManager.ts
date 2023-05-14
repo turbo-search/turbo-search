@@ -1,9 +1,44 @@
-import { catchError } from "../../../error/catchError";
-import { TurboSearchKit } from "../../../indexType";
+import { TurboSearchKit } from "@/index";
+import { catchError } from "@/error/catchError";
 import { interceptorSchema } from "./interceptorManagerSchema";
-import { Interceptor } from "./interceptorManagerType";
-import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
-import { version } from "../../../version";
+import { compareDependenceVersion } from "@/utils/compareDependenceVersion";
+import { version } from "@/version";
+import Z from "zod";
+
+export type InterceptorManifesto = {
+  name: string;
+  coreDependence?: string;
+  databaseDependence?: {
+    name: string;
+    version: string;
+  }[];
+  extensionDependence?: { [extensionName: string]: string };
+  version: string;
+};
+
+export type Interceptor = {
+  requestSchema: Z.Schema;
+  inputSchema: Z.Schema;
+  outputSchema: Z.Schema;
+  interceptorManifesto: InterceptorManifesto;
+  init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
+  process: (
+    requestData: Z.infer<Interceptor["requestSchema"]>,
+    inputData: Z.infer<Interceptor["inputSchema"]>,
+    turboSearchKit: TurboSearchKit
+  ) => Promise<
+    | {
+      success: false;
+      message: string;
+      error: any;
+    }
+    | {
+      success: true;
+      output: Z.infer<Interceptor["outputSchema"]>;
+    }
+  >;
+};
+
 
 export class InterceptorManager {
   private _interceptor;

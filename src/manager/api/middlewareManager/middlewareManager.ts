@@ -1,9 +1,38 @@
-import { TurboSearchKit } from "../../../indexType";
-import { Middleware } from "./middlewareManagerType";
+import { TurboSearchKit } from "@/index";
 import { middlewareSchema } from "./middlewareManagerSchema";
-import { catchError } from "../../../error/catchError";
-import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
-import { version } from "../../../version";
+import { catchError } from "@/error/catchError";
+import { compareDependenceVersion } from "@/utils/compareDependenceVersion";
+import { version } from "@/version";
+
+export type middlewareManifesto = {
+  name: string;
+  coreDependence?: string;
+  databaseDependence?: {
+    name: string;
+    version: string;
+  }[];
+  extensionDependence?: { [extensionName: string]: string };
+  version: string;
+};
+
+export type Middleware = {
+  middlewareManifesto: middlewareManifesto;
+  init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
+  process: (
+    inputData: any,
+    turboSearchKit: TurboSearchKit
+  ) => Promise<
+    | {
+      success: false;
+      message: string;
+      error: any;
+    }
+    | {
+      success: true;
+      output: any;
+    }
+  >;
+};
 
 export class MiddlewareManager {
   private _middlewareList: Middleware[] = [];

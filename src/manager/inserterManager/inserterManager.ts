@@ -1,5 +1,4 @@
 import { catchError } from "@/error/catchError";
-import { SchemaCheck, TurboSearchKit } from "@/indexType";
 import { compareDependenceVersion } from "@/utils/compareDependenceVersion";
 import { version } from "@/version";
 import { CrawlerManager } from "../api/crawlerManager/crawlerManager";
@@ -7,9 +6,36 @@ import { IndexerManager } from "../api/indexerManager/indexerManager";
 import { MiddlewareManager } from "../api/middlewareManager/middlewareManager";
 import { PipeManager } from "../api/pipeManager/pipeManager";
 import { inserterSchema } from "./inserterManagerSchema";
-import type { Inserter, Ran } from "./inserterManagerType";
 import { compareZodSchemas } from "@/utils/compareZodSchemas";
 import { deepEqualZodSchema } from "@/utils/deepEqualZodSchema";
+import { SchemaCheck, TurboSearchKit } from "@/index";
+import { Middleware } from "../api/middlewareManager/middlewareManager";
+import { Crawler } from "../api/crawlerManager/crawlerManager";
+import { Pipe } from "../api/pipeManager/pipeManager";
+import { Indexer } from "../api/indexerManager/indexerManager";
+
+export type Ran = "middleware" | "crawler" | "pipe" | "indexer";
+
+export type InserterManifesto = {
+  name: string;
+  queryPath?: string;
+  coreDependence?: string;
+  databaseDependence?: {
+    name: string;
+    version: string;
+  }[];
+  extensionDependence?: { [extensionName: string]: string };
+  version: string;
+};
+
+export type Inserter = {
+  inserterManifesto: InserterManifesto;
+  init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
+  middleware: Middleware[];
+  crawler: Crawler;
+  pipe: Pipe[];
+  indexer: Indexer;
+};
 
 export class InserterManager {
   private _inserter: Inserter;

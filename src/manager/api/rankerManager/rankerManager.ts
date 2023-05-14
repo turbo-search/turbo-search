@@ -1,9 +1,41 @@
-import { catchError } from "../../../error/catchError";
-import { TurboSearchKit } from "../../../indexType";
+import { catchError } from "@/error/catchError";
+import { TurboSearchKit } from "@/index";
 import { rankerSchema } from "./rankerManagerSchema";
-import { Ranker } from "./rankerManagerType";
-import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
-import { version } from "../../../version";
+import { compareDependenceVersion } from "@/utils/compareDependenceVersion";
+import { version } from "@/version";
+import Z from "zod";
+
+export type RankerManifesto = {
+  name: string;
+  coreDependence?: string;
+  databaseDependence?: {
+    name: string;
+    version: string;
+  }[];
+  extensionDependence?: { [extensionName: string]: string };
+  version: string;
+};
+
+export type Ranker = {
+  requestSchema: Z.Schema;
+  outputSchema: Z.Schema;
+  rankerManifesto: RankerManifesto;
+  init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
+  process: (
+    requestData: Z.infer<Ranker["requestSchema"]>,
+    turboSearchKit: TurboSearchKit
+  ) => Promise<
+    | {
+      success: false;
+      message: string;
+      error: any;
+    }
+    | {
+      success: true;
+      output: Z.infer<Ranker["outputSchema"]>;
+    }
+  >;
+};
 
 export class RankerManager {
   private _ranker;

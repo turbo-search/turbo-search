@@ -1,9 +1,42 @@
-import { catchError } from "../../../error/catchError";
-import { TurboSearchKit } from "../../../indexType";
+import { catchError } from "@/error/catchError";
+import { TurboSearchKit } from "@/index";
 import { crawlerSchema } from "./crawlerManagerSchema";
-import { Crawler } from "./crawlerManagerType";
-import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
-import { version } from "../../../version";
+import { compareDependenceVersion } from "@/utils/compareDependenceVersion";
+import { version } from "@/version";
+import Z from "zod";
+
+export type CrawlerManifesto = {
+  name: string;
+  coreDependence?: string;
+  databaseDependence?: {
+    name: string;
+    version: string;
+  }[];
+  extensionDependence?: { [extensionName: string]: string };
+  version: string;
+};
+
+export type Crawler = {
+  requestSchema: Z.Schema;
+  outputSchema: Z.Schema;
+  crawlerManifesto: CrawlerManifesto;
+  init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
+  process: (
+    requestData: Z.infer<Crawler["requestSchema"]>,
+    turboSearchKit: TurboSearchKit
+  ) => Promise<
+    | {
+      success: false;
+      message: string;
+      error: any;
+    }
+    | {
+      success: true;
+      output: Z.infer<Crawler["outputSchema"]>;
+    }
+  >;
+};
+
 
 export class CrawlerManager {
   private _crawler;

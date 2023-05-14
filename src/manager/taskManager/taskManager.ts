@@ -1,6 +1,16 @@
 import { catchError } from "@/error/catchError";
-import { Task, Tasks } from "./taskManagerType";
 import { taskSchema } from "./taskSchema";
+
+//タスクのデータ
+export type Task = {
+  name: string;
+  provider: "core" | string;
+  function: (request: any, option?: any) => Promise<any | void>;
+  forcedAssignment?: boolean;
+};
+
+export type Tasks = { [provider: string]: { [taskName: string]: Task } };
+
 
 export class TaskManager {
   tasks: Tasks;

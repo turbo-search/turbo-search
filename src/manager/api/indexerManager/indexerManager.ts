@@ -1,9 +1,43 @@
-import { catchError } from "../../../error/catchError";
-import { TurboSearchKit } from "../../../indexType";
+import { catchError } from "@/error/catchError";
+import { TurboSearchKit } from "@/index";
 import { indexerSchema } from "./indexerManagerSchema";
-import { Indexer } from "./indexerManagerType";
-import { compareDependenceVersion } from "../../../utils/compareDependenceVersion";
-import { version } from "../../../version";
+import { compareDependenceVersion } from "@/utils/compareDependenceVersion";
+import { version } from "@/version";
+import Z from "zod";
+
+export type IndexerManifesto = {
+  name: string;
+  coreDependence?: string;
+  databaseDependence?: {
+    name: string;
+    version: string;
+  }[];
+  extensionDependence?: { [extensionName: string]: string };
+  version: string;
+};
+
+export type Indexer = {
+  requestSchema: Z.Schema;
+  inputSchema: Z.Schema;
+  outputSchema: Z.Schema;
+  indexerManifesto: IndexerManifesto;
+  init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
+  process: (
+    requestData: Z.infer<Indexer["requestSchema"]>,
+    inputData: Z.infer<Indexer["inputSchema"]>,
+    turboSearchKit: TurboSearchKit
+  ) => Promise<
+    | {
+      success: false;
+      message: string;
+      error: any;
+    }
+    | {
+      success: true;
+      output: Z.infer<Indexer["outputSchema"]>;
+    }
+  >;
+};
 
 export class IndexerManager {
   private _indexer;

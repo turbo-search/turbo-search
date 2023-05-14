@@ -3,9 +3,13 @@
   "description": "Your personal search engine",
   "version": "0.0.4",
   "main": "src/index.ts",
-  "types": "./dist/src/index.d.ts",
+  "types": "dist/src/index.d.ts",
+  "typings": "dist/src/index.d.ts",
   "type": "commonjs",
-  "exports": "./dist/src/index.js",
+  "exports": {
+    ".": "./dist/src/index.js",
+    "./types": "./dist/src/indexType.d.ts"
+  },
   "repository": "https://github.com/turbo-search/turbo-search.git",
   "author": "moons14 <moons@moons14.com>",
   "license": "MIT",

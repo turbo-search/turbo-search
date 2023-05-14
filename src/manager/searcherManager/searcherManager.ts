@@ -1,15 +1,40 @@
-import { catchError } from "../../error/catchError";
-import { SchemaCheck, TurboSearchKit } from "../../indexType";
-import { compareDependenceVersion } from "../../utils/compareDependenceVersion";
-import { version } from "../../version";
+import { catchError } from "@/error/catchError";
+import { compareDependenceVersion } from "@/utils/compareDependenceVersion";
+import { version } from "@/version";
 import { RankerManager } from "../api/rankerManager/rankerManager";
 import { InterceptorManager } from "../api/interceptorManager/interceptorManager";
 import { MiddlewareManager } from "../api/middlewareManager/middlewareManager";
 import { PipeManager } from "../api/pipeManager/pipeManager";
 import { searcherSchema } from "./searcherManagerSchema";
-import type { Searcher, Ran } from "./searcherManagerType";
-import { compareZodSchemas } from "../../utils/compareZodSchemas";
-import { deepEqualZodSchema } from "../../utils/deepEqualZodSchema";
+import { compareZodSchemas } from "@/utils/compareZodSchemas";
+import { deepEqualZodSchema } from "@/utils/deepEqualZodSchema";
+import { SchemaCheck, TurboSearchKit } from "@/index";
+import { Middleware } from "../api/middlewareManager/middlewareManager";
+import { Ranker } from "../api/rankerManager/rankerManager";
+import { Pipe } from "../api/pipeManager/pipeManager";
+import { Interceptor } from "../api/interceptorManager/interceptorManager";
+
+export type Ran = "middleware" | "ranker" | "pipe" | "interceptor";
+
+export type SearcherManifesto = {
+  name: string;
+  coreDependence?: string;
+  databaseDependence?: {
+    name: string;
+    version: string;
+  }[];
+  extensionDependence?: { [extensionName: string]: string };
+  version: string;
+};
+
+export type Searcher = {
+  searcherManifesto: SearcherManifesto;
+  init?: (turboSearchKit: TurboSearchKit) => Promise<void>;
+  middleware: Middleware[];
+  ranker: Ranker;
+  pipe: Pipe[];
+  interceptor: Interceptor;
+};
 
 export class SearcherManager {
   private _searcher: Searcher;

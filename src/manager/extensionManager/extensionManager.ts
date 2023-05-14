@@ -1,13 +1,22 @@
 import { catchError } from "@/error/catchError";
-import {
-  ExtensionSetupKit,
-  TurboSearchCoreOptions,
-  TurboSearchKit,
-} from "@/indexType";
 import { compareDependenceVersion } from "@/utils/compareDependenceVersion";
 import { version } from "@/version";
-import { Extension } from "./extensionManagerType";
 import { extensionSchema } from "./extensionSchema";
+import { ExtensionSetupKit, TurboSearchCoreOptions } from "@/index";
+
+export type ExtensionManifesto = {
+  name: string;
+  dependence?: { [extensionName: string]: string };
+  coreDependence?: string;
+  version: string;
+};
+
+export type Extension = {
+  init?: (extensionSetupKit?: ExtensionSetupKit) => void;
+  available?: () => { success: false; message: string } | { success: true };
+  manifesto: ExtensionManifesto;
+};
+
 
 export class ExtensionManager {
   private _error;

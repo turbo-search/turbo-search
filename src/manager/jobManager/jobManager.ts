@@ -1,17 +1,51 @@
 import {
-  AddJobData,
-  Job,
-  JobStatus,
-  SubscribeJobCallback,
-} from "./jobManagerType";
-import {
   addJobSchema,
   subscribeJobSchema,
   subscribeJobsSchema,
 } from "./jobManagerSchema";
 import { v4 as uuidv4 } from "uuid";
-import { catchError } from "../../error/catchError";
+import { catchError } from "@/error/catchError";
 import { MemoryStoreManager } from "../memoryStoreManager/memoryStoreManager";
+
+export type Job = {
+  id: string;
+  name: string;
+  description: string;
+  point:
+  | "core"
+  | "extension"
+  | "search"
+  | "crawler"
+  | "indexer"
+  | "pipe"
+  | "middleware";
+  performer: string;
+  logs: {
+    time: string;
+    text: string;
+  }[];
+};
+
+export type AddJobData = {
+  name: string;
+  description: string;
+  point:
+  | "core"
+  | "extension"
+  | "search"
+  | "crawler"
+  | "indexer"
+  | "pipe"
+  | "middleware";
+  performer: string;
+};
+
+export type JobStatus = "add" | "update" | "addLogs" | "delete";
+export type SubscribeJobCallback = (
+  job: Job,
+  status: JobStatus
+) => Promise<void>;
+
 
 export class JobManager {
   constructor(private memoryStoreManager: MemoryStoreManager) { }

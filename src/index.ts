@@ -1,12 +1,4 @@
 import { ExtensionManager } from "@/manager/extensionManager/extensionManager";
-import {
-  AddTaskAndEndpointData,
-  ExtensionSetupKit,
-  SchemaCheck,
-  TurboSearchCoreOptions,
-  TurboSearchCoreType,
-  TurboSearchKit,
-} from "@/indexType";
 import { version } from "@/version";
 import { TaskManager } from "@/manager/taskManager/taskManager";
 import { EndpointManager } from "@/manager/endpointManager/endpointManager";
@@ -16,6 +8,75 @@ import { DatabaseManager } from "@/manager/databaseManager/databaseManager";
 import { SearcherManager } from "@/manager/searcherManager/searcherManager";
 import { InserterManager } from "@/manager/inserterManager/inserterManager";
 import { catchError } from "@/error/catchError";
+import { Inserter } from "@/manager/inserterManager/inserterManager";
+import { Searcher } from "@/manager/searcherManager/searcherManager";
+import { Database } from "@/manager/databaseManager/databaseManager";
+import { Extension } from "@/manager/extensionManager/extensionManager";
+import { Task, Tasks } from "./manager/taskManager/taskManager";
+import { Endpoint, Endpoints } from "@/manager/endpointManager/endpointManager";
+
+export type TurboSearchCoreType = {
+  inserters?: Inserter[];
+  searcher?: Searcher;
+  database: Database;
+  extensions?: Extension[];
+};
+
+export type DefaultTurboSearchCoreType = {
+  inserters?: Inserter[];
+  searcher?: Searcher;
+  database: Database;
+  extensions?: Extension[];
+};
+
+//拡張機能にturbo-searchへのアクセスを提供するもの
+export type TurboSearchKit = {
+  addTask: (task: Task) => void;
+  addEndpoint: (endpoint: Endpoint) => void;
+  addTaskAndEndpoint: (addTaskAndEndpoint: AddTaskAndEndpointData) => void;
+  endpoints: Endpoints;
+  tasks: Tasks;
+  jobManager: JobManager;
+  extensions: Extension[];
+  database: DatabaseManager;
+  memoryStore: MemoryStoreManager;
+};
+
+export type ExtensionSetupKit = {
+  addTask: (task: Task) => void;
+  addEndpoint: (endpoint: Endpoint) => void;
+  addTaskAndEndpoint: (addTaskAndEndpoint: AddTaskAndEndpointData) => void;
+  endpoints: Endpoints;
+  tasks: Tasks;
+  jobManager: JobManager;
+  database: DatabaseManager;
+  memoryStore: MemoryStoreManager;
+};
+
+//タスクとエンドポイントを追加するときのデータ
+export type AddTaskAndEndpointData = {
+  name: string;
+  provider: "core" | string;
+  function: () => Promise<any | void>;
+};
+
+export type TurboSearchCoreOptions<
+  T extends TurboSearchCoreType = DefaultTurboSearchCoreType
+> = {
+  inserters: T["inserters"];
+  searcher: T["searcher"];
+  database: T["database"];
+  extensions: T["extensions"];
+  error?: {
+    strictAvailable?: boolean;
+  };
+  schemaCheck?: SchemaCheck;
+};
+
+export type SchemaCheck =
+  | "match" //スキーマは完全に一致する必要がある if(schema === schema)
+  | "include" //スキーマは含まれている必要がある if(schema.includes(schema))
+  | false;
 
 export class TurboSearchCore<T extends TurboSearchCoreType> {
   public version = version;
@@ -101,12 +162,16 @@ export class TurboSearchCore<T extends TurboSearchCoreType> {
   }
 
   // taskとendpoint両方を追加する
-  private async _addTaskAndEndpoint(taskAndEndpoint: AddTaskAndEndpointData) {
+  private async _addTaskAndEndpoint(taskAndEndpoint: {
+    name: string;
+    provider: "core" | string;
+    function: () => Promise<any | void>;
+  }) {
     await this._taskManager.addTask(taskAndEndpoint);
     await this._endpointManager.addEndpoint(taskAndEndpoint);
   }
 
-  turboSearchKit(): TurboSearchKit {
+  turboSearchKit() {
     return {
       addTask: this._taskManager.addTask,
       addEndpoint: this._endpointManager.addEndpoint,
@@ -120,7 +185,7 @@ export class TurboSearchCore<T extends TurboSearchCoreType> {
     };
   }
 
-  extensionSetupKit(): ExtensionSetupKit {
+  extensionSetupKit() {
     return {
       addTask: this._taskManager.addTask,
       addEndpoint: this._endpointManager.addEndpoint,
@@ -173,19 +238,18 @@ export class TurboSearchCore<T extends TurboSearchCoreType> {
   }
 }
 
-//出力
-export * from "@/indexType";
-export * from "@/manager/inserterManager/inserterManagerType";
-export * from "@/manager/api/crawlerManager/crawlerManagerType";
-export * from "@/manager/api/indexerManager/indexerManagerType";
-export * from "@/manager/api/interceptorManager/interceptorManagerType";
-export * from "@/manager/api/middlewareManager/middlewareManagerType";
-export * from "@/manager/api/pipeManager/pipeManagerType";
-export * from "@/manager/api/rankerManager/rankerManagerType";
-export * from "@/manager/databaseManager/databaseManagerType";
-export * from "@/manager/endpointManager/endpointManagerType";
-export * from "@/manager/extensionManager/extensionManagerType";
-export * from "@/manager/jobManager/jobManagerType";
-export * from "@/manager/searcherManager/searcherManagerType";
+// //出力
+// export * from "@/manager/inserterManager/inserterManagerType";
+// export * from "@/manager/api/crawlerManager/crawlerManagerType";
+// export * from "@/manager/api/indexerManager/indexerManagerType";
+// export * from "@/manager/api/interceptorManager/interceptorManagerType";
+// export * from "@/manager/api/middlewareManager/middlewareManagerType";
+// export * from "@/manager/api/pipeManager/pipeManagerType";
+// export * from "@/manager/api/rankerManager/rankerManagerType";
+// export * from "@/manager/databaseManager/databaseManagerType";
+// export * from "@/manager/endpointManager/endpointManagerType";
+// export * from "@/manager/extensionManager/extensionManagerType";
+// export * from "@/manager/jobManager/jobManagerType";
+// export * from "@/manager/searcherManager/searcherManagerType";
 
-export type Ran = "middleware" | "ranker" | "pipe" | "interceptor";
+// export type Ran = "middleware" | "ranker" | "pipe" | "interceptor";
