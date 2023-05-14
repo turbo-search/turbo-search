@@ -9,7 +9,7 @@
   "exports": {
     ".": "./dist/src/index.js",
     "./types/manager/inserter": "./dist/src/manager/inserterManager/inserterManager.d.ts",
-    "./types/manager/api/crawler": "./dist/src/manager/api/crawlerManager/crawlerManager.d.ts",
+    "./types/manager/crawler": "./dist/src/manager/api/crawlerManager/crawlerManager.d.ts",
     "./types/manager/indexer": "./dist/src/manager/api/indexerManager/indexerManager.d.ts",
     "./types/manager/interceptor": "./dist/src/manager/api/interceptorManager/interceptorManager.d.ts",
     "./types/manager/middleware": "./dist/src/manager/api/middlewareManager/middlewareManager.d.ts",
