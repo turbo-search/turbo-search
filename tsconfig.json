@@ -17,12 +17,22 @@
     "strictFunctionTypes": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"],
-      "@": ["*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@": [
+        "./src"
+      ]
     }
   },
-  "include": ["src/**/*.ts", "types/**/*.d.ts"],
-  "exclude": ["src/**/*.test.ts", "node_modules"]
+  "include": [
+    "src/**/*.ts",
+    "types/**/*.d.ts"
+  ],
+  "exclude": [
+    "src/**/*.test.ts",
+    "node_modules"
+  ]
 }

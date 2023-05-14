@@ -3,9 +3,9 @@
   "description": "Your personal search engine",
   "version": "0.0.3",
   "main": "src/index.ts",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/src/index.d.ts",
   "type": "commonjs",
-  "exports": "./dist/index.js",
+  "exports": "./dist/src/index.js",
   "repository": "https://github.com/turbo-search/turbo-search.git",
   "author": "moons14 <moons@moons14.com>",
   "license": "MIT",
@@ -21,8 +21,9 @@
     "lint:eslint": "eslint . --ext .ts,.tsx --fix",
     "lint:prettier": "prettier --write .",
     "prebuild": "rimraf dist",
-    "build": "tsc && tsc-alias",
-    "prepack": "yarn build"
+    "build": "yarn prebuild && tsc && tsc-alias",
+    "prepack": "yarn build",
+    "patchPublish": "npm version patch && npm publish"
   },
   "files": [
     "dist"
