@@ -238,18 +238,3 @@ export class TurboSearchCore<T extends TurboSearchCoreType> {
   }
 }
 
-// //出力
-// export * from "@/manager/inserterManager/inserterManager";
-// export * from "@/manager/api/crawlerManager/crawlerManager";
-// export * from "@/manager/api/indexerManager/indexerManager";
-// export * from "@/manager/api/interceptorManager/interceptorManager";
-// export * from "@/manager/api/middlewareManager/middlewareManager";
-// export * from "@/manager/api/pipeManager/pipeManager";
-// export * from "@/manager/api/rankerManager/rankerManager";
-// export * from "@/manager/databaseManager/databaseManager";
-// export * from "@/manager/endpointManager/endpointManager";
-// export * from "@/manager/extensionManager/extensionManager";
-// export * from "@/manager/jobManager/jobManager";
-// export * from "@/manager/searcherManager/searcherManager";
-
-// export type Ran = "middleware" | "ranker" | "pipe" | "interceptor";
