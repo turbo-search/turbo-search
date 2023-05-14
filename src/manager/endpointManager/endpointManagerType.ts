@@ -1,18 +1,12 @@
-//エンドポイントを追加するときのデータ
-export type AddEndpointData = {
-    name: string;
-    provider: "core" | string;
-    function: (request: any, option?: any) => any | void;
-    forcedAssignment?: boolean; //強制的に割り当てるかどうか
-};
 
 //エンドポイントのデータ
 export type Endpoint = {
-    name: string;
-    provider: "core" | string;
-    function: (request: any, option?: any) => any | void;
+  name: string;
+  provider: "core" | string;
+  function: (request: any, option?: any) => Promise<any | void>;
+  forcedAssignment?: boolean; //強制的に割り当てるかどうか
 };
 
 export type Endpoints = {
-    [provider: string]: { [endpointName: string]: Endpoint };
+  [provider: string]: { [endpointName: string]: Endpoint };
 };

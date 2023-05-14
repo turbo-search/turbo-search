@@ -1,12 +1,13 @@
 import z from "zod";
-import { middlewareSchema } from "../api/middlewareManager/middlewareManagerSchema";
-import { rankerSchema } from "../api/rankerManager/rankerManagerSchema";
+import { crawlerSchema } from "../api/crawlerManager/crawlerManagerSchema";
+import { indexerSchema } from "../api/indexerManager/indexerManagerSchema";
 import { pipeSchema } from "../api/pipeManager/pipeManagerSchema";
-import { interceptorSchema } from "../api/interceptorManager/interceptorManagerSchema";
+import { middlewareSchema } from "../api/middlewareManager/middlewareManagerSchema";
 
-export const searcherSchema = z.object({
-  searcherManifesto: z.object({
+export const inserterSchema = z.object({
+  inserterManifesto: z.object({
     name: z.string(),
+    queryPath: z.string().optional(),
     version: z.string(),
     coreDependence: z.string().optional(),
     databaseDependence: z
@@ -20,7 +21,7 @@ export const searcherSchema = z.object({
     extensionDependence: z.record(z.string()).optional(),
   }),
   middleware: middlewareSchema,
-  ranker: rankerSchema,
+  crawler: crawlerSchema,
   pipe: pipeSchema,
-  interceptor: interceptorSchema,
+  indexer: indexerSchema,
 });

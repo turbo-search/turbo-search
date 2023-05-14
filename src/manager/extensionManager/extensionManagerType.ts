@@ -1,4 +1,4 @@
-import { ExtensionSetupKit, TurboSearchKit } from "../../indexType";
+import { ExtensionSetupKit } from "../../indexType";
 
 export type ExtensionManifesto = {
   name: string;

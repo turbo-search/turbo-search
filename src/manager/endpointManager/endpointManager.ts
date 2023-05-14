@@ -1,45 +1,47 @@
-import { catchError } from "../../error/catchError";
-import { AddEndpointData, Endpoints } from "./endpointManagerType";
-import { addEndpointSchema } from "./endpointSchema.js"
+import { catchError } from "@/error/catchError";
+import { Endpoint, Endpoints } from "./endpointManagerType";
+import { endpointSchema } from "./endpointSchema";
 
 export class EndpointManager {
+  endpoints: Endpoints;
 
-    endpoints: Endpoints;
+  constructor() {
+    this.endpoints = {};
+  }
 
-    constructor() {
-        this.endpoints = {};
+  // APIなど外部から参照されるような処理を追加する
+  async addEndpoint(addEndpointData: Endpoint) {
+    if (typeof this.endpoints == "undefined") {
+      this.endpoints = {};
     }
 
-    // APIなど外部から参照されるような処理を追加する
-    async addEndpoint(endpoint: AddEndpointData) {
-
-        if (typeof this.endpoints == "undefined") {
-            this.endpoints = {};
-        }
-
-        //バリデーションする
-        const addEndpointData = addEndpointSchema.safeParse(endpoint);
-        if (!addEndpointData.success) {
-            catchError("endpointValidation", [
-                `Failed to add ${endpoint.name} endpoint`,
-                addEndpointData.error.message,
-            ]);
-        } else {
-            if (!this.endpoints[endpoint.provider || "other"]) {
-                this.endpoints[endpoint.provider || "other"] = {};
-            }
-            //すでに存在するか確かめる
-            if (!this.endpoints[endpoint.provider || "other"][endpoint.name] || addEndpointData.data.forcedAssignment) {
-                this.endpoints[endpoint.provider || "other"][endpoint.name] = addEndpointData.data;
-            } else {
-                catchError("endpointValidation", [
-                    `Failed to add ${endpoint.name} endpoint`,
-                    `The endpoint name ${endpoint.name} is already in use`,
-                ]);
-            }
-
-        }
-
+    //バリデーションする
+    const result = endpointSchema.safeParse(addEndpointData);
+    if (!result.success) {
+      catchError("endpointValidation", [
+        `Failed to add ${addEndpointData.name} endpoint`,
+        result.error.message,
+      ]);
+    } else {
+      if (!this.endpoints[addEndpointData.provider || "other"]) {
+        this.endpoints[addEndpointData.provider || "other"] = {};
+      }
+      //すでに存在するか確かめる
+      if (
+        !this.endpoints[addEndpointData.provider || "other"][
+        addEndpointData.name
+        ] ||
+        addEndpointData.forcedAssignment
+      ) {
+        this.endpoints[addEndpointData.provider || "other"][
+          addEndpointData.name
+        ] = addEndpointData;
+      } else {
+        catchError("endpointValidation", [
+          `Failed to add ${addEndpointData.name} endpoint`,
+          `The endpoint name ${addEndpointData.name} is already in use`,
+        ]);
+      }
     }
-
+  }
 }

@@ -7,4 +7,4 @@ export function catchError(type: ErrorType, message: string[]): never {
   });
 
   return process.exit(-1);
-};
+}

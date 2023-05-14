@@ -16,8 +16,13 @@
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"],
+      "@": ["*"]
+    }
   },
-  "include": ["src"],
+  "include": ["src/**/*.ts", "types/**/*.d.ts"],
   "exclude": ["src/**/*.test.ts", "node_modules"]
 }

@@ -1,13 +1,13 @@
-import { catchError } from "../../error/catchError.js";
+import { catchError } from "@/error/catchError";
 import {
   ExtensionSetupKit,
   TurboSearchCoreOptions,
   TurboSearchKit,
-} from "../../indexType.js";
-import { compareDependenceVersion } from "../../utils/compareDependenceVersion.js";
-import { version } from "../../version.js";
-import { Extension } from "./extensionManagerType.js";
-import { addExtensionSchema } from "./extensionSchema.js";
+} from "@/indexType";
+import { compareDependenceVersion } from "@/utils/compareDependenceVersion";
+import { version } from "@/version";
+import { Extension } from "./extensionManagerType";
+import { extensionSchema } from "./extensionSchema";
 
 export class ExtensionManager {
   private _error;
@@ -28,7 +28,7 @@ export class ExtensionManager {
   validate() {
     this._extensions.forEach((extension, index) => {
       //zodでバリデーション
-      const result = addExtensionSchema.safeParse(extension);
+      const result = extensionSchema.safeParse(extension);
       if (!result.success) {
         catchError("extensionValidation", [
           "extension validation error",
@@ -99,10 +99,7 @@ export class ExtensionManager {
       if (extension.manifesto.coreDependence) {
         if (
           extension.manifesto.coreDependence !== "" &&
-          !compareDependenceVersion(
-            version,
-            extension.manifesto.coreDependence
-          )
+          !compareDependenceVersion(version, extension.manifesto.coreDependence)
         ) {
           catchError("dependence", [
             extension.manifesto.name + " coreDependence is not match",

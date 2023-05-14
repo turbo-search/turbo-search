@@ -1,23 +1,23 @@
-import { ExtensionManager } from "./manager/extensionManager/extensionManager.js";
+import { ExtensionManager } from "@/manager/extensionManager/extensionManager";
 import {
   AddTaskAndEndpointData,
-  DataManagementKit,
   ExtensionSetupKit,
   SchemaCheck,
   TurboSearchCoreOptions,
+  TurboSearchCoreType,
   TurboSearchKit,
-} from "./indexType.js";
-import { version } from "./version.js";
-import { TaskManager } from "./manager/taskManager/taskManager.js";
-import { EndpointManager } from "./manager/endpointManager/endpointManager.js";
-import { MemoryStoreManager } from "./manager/memoryStoreManager/memoryStoreManager.js";
-import { JobManager } from "./manager/jobManager/jobManager.js";
-import { DatabaseManager } from "./manager/databaseManager/databaseManager.js";
-import { SearcherManager } from "./manager/searcherManager/searcherManager.js";
-import { AdderManager } from "./manager/adderManager/adderManager.js";
-import { catchError } from "./error/catchError.js";
+} from "@/indexType";
+import { version } from "@/version";
+import { TaskManager } from "@/manager/taskManager/taskManager";
+import { EndpointManager } from "@/manager/endpointManager/endpointManager";
+import { MemoryStoreManager } from "@/manager/memoryStoreManager/memoryStoreManager";
+import { JobManager } from "@/manager/jobManager/jobManager";
+import { DatabaseManager } from "@/manager/databaseManager/databaseManager";
+import { SearcherManager } from "@/manager/searcherManager/searcherManager";
+import { InserterManager } from "@/manager/inserterManager/inserterManager";
+import { catchError } from "@/error/catchError";
 
-export class TurboSearchCore {
+export class TurboSearchCore<T extends TurboSearchCoreType> {
   public version = version;
   private _schemaCheck: SchemaCheck;
   private _database;
@@ -27,11 +27,10 @@ export class TurboSearchCore {
   private _memoryStoreManager;
   private _jobManager;
   private _searcherManager: SearcherManager | undefined = undefined;
-  private _adderManagerList: AdderManager[] = [];
+  private _inserterManagerList: InserterManager[] = [];
   private _options;
 
-  constructor(options: TurboSearchCoreOptions) {
-
+  constructor(options: TurboSearchCoreOptions<T>) {
     this._options = options;
 
     if (options.schemaCheck) {
@@ -42,6 +41,7 @@ export class TurboSearchCore {
 
     //setup database
     this._database = new DatabaseManager(options.database);
+    this._database.setup();
 
     //setup tasks
     this._taskManager = new TaskManager();
@@ -62,64 +62,55 @@ export class TurboSearchCore {
       this.extensionSetupKit()
     );
     this._extensionManager.setupExtensions();
-
   }
 
-  async searcherSetup() {
-
-    if (typeof this._options.searcher === "undefined") return
+  private async _searcherSetup() {
+    if (typeof this._options.searcher === "undefined") return;
     //setup searcher
     this._searcherManager = await new SearcherManager(
       this._options.searcher,
-      this.dataManagementKit(),
       this.turboSearchKit(),
       this._schemaCheck
     );
-    await this._searcherManager.setup()
+    await this._searcherManager.setup();
   }
 
-  async adderSetup() {
-    //setup adder
+  private async _inserterSetup() {
+    //setup inserter
 
-    if (typeof this._options.adders === "undefined") return
+    if (typeof this._options.inserters === "undefined") return;
 
-    for (let i = 0; i < this._options.adders.length; i++) {
-      this._adderManagerList.push(
-        await new AdderManager(
-          this._options.adders[i],
-          this.dataManagementKit(),
+    for (let i = 0; i < this._options.inserters.length; i++) {
+      this._inserterManagerList.push(
+        await new InserterManager(
+          this._options.inserters[i],
           this.turboSearchKit(),
           this._schemaCheck
         )
-      )
+      );
     }
 
-    for (let i = 0; i < this._adderManagerList.length; i++) {
-      await this._adderManagerList[i].setup()
+    for (let i = 0; i < this._inserterManagerList.length; i++) {
+      await this._inserterManagerList[i].setup();
     }
-
   }
 
   async setup() {
-
-    await this.searcherSetup()
-    await this.adderSetup()
-
+    await this._searcherSetup();
+    await this._inserterSetup();
   }
 
   // taskとendpoint両方を追加する
-  async addTaskAndEndpoint(taskAndEndpoint: AddTaskAndEndpointData) {
+  private async _addTaskAndEndpoint(taskAndEndpoint: AddTaskAndEndpointData) {
     await this._taskManager.addTask(taskAndEndpoint);
     await this._endpointManager.addEndpoint(taskAndEndpoint);
   }
-
-
 
   turboSearchKit(): TurboSearchKit {
     return {
       addTask: this._taskManager.addTask,
       addEndpoint: this._endpointManager.addEndpoint,
-      addTaskAndEndpoint: this.addTaskAndEndpoint,
+      addTaskAndEndpoint: this._addTaskAndEndpoint,
       endpoints: this._endpointManager.endpoints,
       tasks: this._taskManager.tasks,
       jobManager: this._jobManager,
@@ -133,17 +124,10 @@ export class TurboSearchCore {
     return {
       addTask: this._taskManager.addTask,
       addEndpoint: this._endpointManager.addEndpoint,
-      addTaskAndEndpoint: this.addTaskAndEndpoint,
+      addTaskAndEndpoint: this._addTaskAndEndpoint,
       endpoints: this._endpointManager.endpoints,
       tasks: this._taskManager.tasks,
       jobManager: this._jobManager,
-      database: this._database,
-      memoryStore: this._memoryStoreManager,
-    }
-  }
-
-  dataManagementKit(): DataManagementKit {
-    return {
       database: this._database,
       memoryStore: this._memoryStoreManager,
     };
@@ -153,15 +137,55 @@ export class TurboSearchCore {
     return this._endpointManager.endpoints;
   }
 
-  processEndpoint(provider: string, endpointName: string, data: any, options?: any) {
-    if (this._endpointManager.endpoints && this._endpointManager.endpoints[provider] && this._endpointManager.endpoints[provider][endpointName]) {
-      return this._endpointManager.endpoints[provider][endpointName].function(data, options);
+  async processEndpoint(
+    provider: string,
+    endpointName: string,
+    data: any,
+    options?: any
+  ) {
+    if (
+      this._endpointManager.endpoints &&
+      this._endpointManager.endpoints[provider] &&
+      this._endpointManager.endpoints[provider][endpointName]
+    ) {
+      return await this._endpointManager.endpoints[provider][
+        endpointName
+      ].function(data, options);
     } else {
-      catchError("endpoint", ["endpoint not found", "provider : " + provider, "endpointName : " + endpointName]);
+      catchError("endpoint", [
+        "endpoint not found",
+        "provider : " + provider,
+        "endpointName : " + endpointName,
+      ]);
     }
   }
 
   turbo(): void {
-    console.log("⚡turbo")
+    console.log("⚡turbo");
+  }
+
+  async insert(endpointName: string, data: any) {
+    return await this.processEndpoint("core", "inserter/" + endpointName, data);
+  }
+
+  async search(data: any) {
+    return await this.processEndpoint("core", "searcher", data);
   }
 }
+
+//出力
+export * from "@/indexType";
+export * from "@/manager/inserterManager/inserterManagerType";
+export * from "@/manager/api/crawlerManager/crawlerManagerType";
+export * from "@/manager/api/indexerManager/indexerManagerType";
+export * from "@/manager/api/interceptorManager/interceptorManagerType";
+export * from "@/manager/api/middlewareManager/middlewareManagerType";
+export * from "@/manager/api/pipeManager/pipeManagerType";
+export * from "@/manager/api/rankerManager/rankerManagerType";
+export * from "@/manager/databaseManager/databaseManagerType";
+export * from "@/manager/endpointManager/endpointManagerType";
+export * from "@/manager/extensionManager/extensionManagerType";
+export * from "@/manager/jobManager/jobManagerType";
+export * from "@/manager/searcherManager/searcherManagerType";
+
+export type Ran = "middleware" | "ranker" | "pipe" | "interceptor";

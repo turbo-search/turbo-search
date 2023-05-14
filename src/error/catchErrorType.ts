@@ -6,7 +6,7 @@ export type ErrorType =
   | "pipe"
   | "crawler"
   | "indexer"
-  | "adder"
+  | "inserter"
   | "searcher"
   | "database"
   | "endpoint"

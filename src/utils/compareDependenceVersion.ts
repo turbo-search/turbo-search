@@ -22,9 +22,13 @@ function normalizeVersionObj(version: string) {
   //戻り値は、{operator:">=",version:"1.0.0"}のようなオブジェクト
   const versionParts = version.match(/^(>=|>|<=|<)?(.*)$/);
 
-  return (
-    (versionParts && (versionParts[1] == ">=" || versionParts[1] == ">" || versionParts[1] == "<" || versionParts[1] == "<=") ? versionParts[1] + version : ("=" + semver.valid(semver.coerce(version))))
-  );
+  return versionParts &&
+    (versionParts[1] == ">=" ||
+      versionParts[1] == ">" ||
+      versionParts[1] == "<" ||
+      versionParts[1] == "<=")
+    ? versionParts[1] + version
+    : "=" + semver.valid(semver.coerce(version));
 }
 
 function normalizeVersion(version: string) {

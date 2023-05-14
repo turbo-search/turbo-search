@@ -1,39 +1,39 @@
-import { catchError } from "../../error/catchError";
-import { SchemaCheck, TurboSearchKit } from "../../indexType";
-import { compareDependenceVersion } from "../../utils/compareDependenceVersion";
-import { version } from "../../version";
-import { RankerManager } from "../api/rankerManager/rankerManager";
-import { InterceptorManager } from "../api/interceptorManager/interceptorManager";
+import { catchError } from "@/error/catchError";
+import { SchemaCheck, TurboSearchKit } from "@/indexType";
+import { compareDependenceVersion } from "@/utils/compareDependenceVersion";
+import { version } from "@/version";
+import { CrawlerManager } from "../api/crawlerManager/crawlerManager";
+import { IndexerManager } from "../api/indexerManager/indexerManager";
 import { MiddlewareManager } from "../api/middlewareManager/middlewareManager";
 import { PipeManager } from "../api/pipeManager/pipeManager";
-import { searcherSchema } from "./searcherManagerSchema";
-import type { Searcher, Ran } from "./searcherManagerType";
-import { compareZodSchemas } from "../../utils/compareZodSchemas";
-import { deepEqualZodSchema } from "../../utils/deepEqualZodSchema";
+import { inserterSchema } from "./inserterManagerSchema";
+import type { Inserter, Ran } from "./inserterManagerType";
+import { compareZodSchemas } from "@/utils/compareZodSchemas";
+import { deepEqualZodSchema } from "@/utils/deepEqualZodSchema";
 
-export class SearcherManager {
-  private _searcher: Searcher;
+export class InserterManager {
+  private _inserter: Inserter;
   private _schemaCheck: SchemaCheck;
   private _middlewareManager: MiddlewareManager;
-  private _rankerManager: RankerManager;
+  private _crawlerManager: CrawlerManager;
   private _pipeManager: PipeManager;
-  private _interceptorManager: InterceptorManager;
+  private _indexerManager: IndexerManager;
   private _turboSearchKit: TurboSearchKit;
 
   constructor(
-    addSearcherData: Searcher,
+    addInserterData: Inserter,
     turboSearchKit: TurboSearchKit,
     schemaCheck: SchemaCheck
   ) {
-    const result = searcherSchema.safeParse(addSearcherData);
+    const result = inserterSchema.safeParse(addInserterData);
 
     if (!result.success) {
-      catchError("searcher", [
-        "searcher validation error",
+      catchError("inserter", [
+        "inserter validation error",
         result.error.message,
       ]);
     } else {
-      this._searcher = addSearcherData as unknown as Searcher;
+      this._inserter = addInserterData as unknown as Inserter;
     }
 
     this._schemaCheck = schemaCheck;
@@ -41,53 +41,53 @@ export class SearcherManager {
     this._turboSearchKit = turboSearchKit;
 
     this._middlewareManager = new MiddlewareManager(
-      this._searcher.middleware,
+      this._inserter.middleware,
       this._turboSearchKit
     );
 
-    this._rankerManager = new RankerManager(
-      this._searcher.ranker,
+    this._crawlerManager = new CrawlerManager(
+      this._inserter.crawler,
       this._turboSearchKit
     );
 
     this._pipeManager = new PipeManager(
-      this._searcher.pipe,
+      this._inserter.pipe,
       this._schemaCheck,
       this._turboSearchKit
     );
 
-    this._interceptorManager = new InterceptorManager(
-      this._searcher.interceptor,
+    this._indexerManager = new IndexerManager(
+      this._inserter.indexer,
       this._turboSearchKit
     );
   }
 
   async checkSchema() {
-    const outputRankerSchema = this._rankerManager.outputSchema;
+    const outputCrawlerSchema = this._crawlerManager.outputSchema;
     const inputPipeSchema = this._pipeManager.inputSchema;
     const outputPipeSchema = this._pipeManager.outputSchema;
-    const inputInterceptorSchema = this._interceptorManager.inputSchema;
+    const inputIndexerSchema = this._indexerManager.inputSchema;
 
     if (this._schemaCheck == "match") {
       if (inputPipeSchema && outputPipeSchema) {
-        if (!deepEqualZodSchema(outputRankerSchema, inputPipeSchema)) {
-          catchError("searcher", [
-            "searcher schema error",
-            `searcher ${this._searcher.searcherManifesto.name} outputRankerSchema is not equal to inputPipeSchema`,
+        if (!deepEqualZodSchema(outputCrawlerSchema, inputPipeSchema)) {
+          catchError("inserter", [
+            "inserter schema error",
+            `inserter ${this._inserter.inserterManifesto.name} outputCrawlerSchema is not equal to inputPipeSchema`,
           ]);
         }
 
-        if (!deepEqualZodSchema(outputPipeSchema, inputInterceptorSchema)) {
-          catchError("searcher", [
-            "searcher schema error",
-            `searcher ${this._searcher.searcherManifesto.name} outputPipeSchema is not equal to inputInterceptorSchema`,
+        if (!deepEqualZodSchema(outputPipeSchema, inputIndexerSchema)) {
+          catchError("inserter", [
+            "inserter schema error",
+            `inserter ${this._inserter.inserterManifesto.name} outputPipeSchema is not equal to inputIndexerSchema`,
           ]);
         }
       } else {
-        if (!deepEqualZodSchema(outputRankerSchema, inputInterceptorSchema)) {
-          catchError("searcher", [
-            "searcher schema error",
-            `searcher ${this._searcher.searcherManifesto.name} outputRankerSchema is not equal to inputInterceptorSchema`,
+        if (!deepEqualZodSchema(outputCrawlerSchema, inputIndexerSchema)) {
+          catchError("inserter", [
+            "inserter schema error",
+            `inserter ${this._inserter.inserterManifesto.name} outputCrawlerSchema is not equal to inputIndexerSchema`,
           ]);
         }
       }
@@ -95,24 +95,24 @@ export class SearcherManager {
 
     if (this._schemaCheck == "include") {
       if (inputPipeSchema && outputPipeSchema) {
-        if (!compareZodSchemas(inputPipeSchema, outputRankerSchema)) {
-          catchError("searcher", [
-            "searcher schema error",
-            `searcher ${this._searcher.searcherManifesto.name} outputRankerSchema is not equal to inputPipeSchema`,
+        if (!compareZodSchemas(inputPipeSchema, outputCrawlerSchema)) {
+          catchError("inserter", [
+            "inserter schema error",
+            `inserter ${this._inserter.inserterManifesto.name} outputCrawlerSchema is not equal to inputPipeSchema`,
           ]);
         }
 
-        if (!compareZodSchemas(inputInterceptorSchema, outputPipeSchema)) {
-          catchError("searcher", [
-            "searcher schema error",
-            `searcher ${this._searcher.searcherManifesto.name} outputPipeSchema is not equal to inputInterceptorSchema`,
+        if (!compareZodSchemas(inputIndexerSchema, outputPipeSchema)) {
+          catchError("inserter", [
+            "inserter schema error",
+            `inserter ${this._inserter.inserterManifesto.name} outputPipeSchema is not equal to inputIndexerSchema`,
           ]);
         }
       } else {
-        if (!compareZodSchemas(inputInterceptorSchema, outputRankerSchema)) {
-          catchError("searcher", [
-            "searcher schema error",
-            `searcher ${this._searcher.searcherManifesto.name} outputRankerSchema is not equal to inputInterceptorSchema`,
+        if (!compareZodSchemas(inputIndexerSchema, outputCrawlerSchema)) {
+          catchError("inserter", [
+            "inserter schema error",
+            `inserter ${this._inserter.inserterManifesto.name} outputCrawlerSchema is not equal to inputIndexerSchema`,
           ]);
         }
       }
@@ -120,34 +120,24 @@ export class SearcherManager {
   }
 
   async init() {
-    if (this._searcher.init) {
-      await this._searcher.init(this._turboSearchKit);
+    if (this._inserter.init) {
+      await this._inserter.init(this._turboSearchKit);
     }
   }
 
-  async addEndpoint() {
-    await this._turboSearchKit.addEndpoint({
-      name: "searcher",
-      provider: "core",
-      function: async (request: any) => {
-        return await this.process(request);
-      },
-    });
-  }
-
   async checkDependence() {
-    const dependence = this._searcher.searcherManifesto.coreDependence;
-    if (dependence && dependence != "") {
-      if (!compareDependenceVersion(version, dependence)) {
-        catchError("searcher", [
-          "searcher dependence error",
-          `searcher ${this._searcher.searcherManifesto.name} request version is not equal to core version`,
+    const coreDependence = this._inserter.inserterManifesto.coreDependence;
+    if (coreDependence && coreDependence != "") {
+      if (!compareDependenceVersion(version, coreDependence)) {
+        catchError("inserter", [
+          "inserter core dependence error",
+          `inserter ${this._inserter.inserterManifesto.name} request version is not equal to core version`,
         ]);
       }
     }
 
     const databaseDependence =
-      this._searcher.searcherManifesto.databaseDependence;
+      this._inserter.inserterManifesto.databaseDependence;
     if (databaseDependence && databaseDependence.length > 0) {
       const databaseName = await this._turboSearchKit.database.getDatabase()
         .databaseManifesto.name;
@@ -167,20 +157,20 @@ export class SearcherManager {
           )
         ) {
           catchError("inserter", [
-            "searcher database dependence error",
-            `searcher ${this._searcher.searcherManifesto.name} request database version is not equal to database version`,
+            "inserter database dependence error",
+            `inserter ${this._inserter.inserterManifesto.name} request database version is not equal to database version`,
           ]);
         }
       } else {
         catchError("inserter", [
-          "searcher database dependence error",
-          `searcher ${this._searcher.searcherManifesto.name} request database version is not equal to database version`,
+          "inserter database dependence error",
+          `inserter ${this._inserter.inserterManifesto.name} request database version is not equal to database version`,
         ]);
       }
     }
 
     const extensionDependence =
-      this._searcher.searcherManifesto.extensionDependence;
+      this._inserter.inserterManifesto.extensionDependence;
     //依存している拡張機能があるかチェック
     if (
       extensionDependence &&
@@ -194,7 +184,7 @@ export class SearcherManager {
         );
         if (!dependenceExtension) {
           catchError("dependence", [
-            "searcher is dependent on " + dependenceExtensionName,
+            "inserter is dependent on " + dependenceExtensionName,
             "The following solutions are available",
             "Add the extension : " + dependenceExtensionName,
           ]);
@@ -209,7 +199,7 @@ export class SearcherManager {
               )
             ) {
               catchError("dependence", [
-                "searcher specifies " +
+                "inserter specifies " +
                 dependenceExtensionName +
                 " version " +
                 extensionDependence[dependenceExtensionName] +
@@ -227,11 +217,24 @@ export class SearcherManager {
     }
   }
 
+  async addEndpoint() {
+    await this._turboSearchKit.addEndpoint({
+      name:
+        "inserter/" +
+        (this._inserter.inserterManifesto.queryPath ||
+          this._inserter.inserterManifesto.name),
+      provider: "core",
+      function: async (request: any) => {
+        return await this.process(request);
+      },
+    });
+  }
+
   async setup() {
     await this._middlewareManager.setup();
-    await this._rankerManager.setup();
+    await this._crawlerManager.setup();
     await this._pipeManager.setup();
-    await this._interceptorManager.setup();
+    await this._indexerManager.setup();
 
     await this.init();
     await this.checkSchema();
@@ -245,46 +248,43 @@ export class SearcherManager {
     //TODO:エラー処理をzodに書き換える
 
     if (middlewareResult.success) {
-      const rankerResult = await this._rankerManager.process(
+      const crawlerResult = await this._crawlerManager.process(
         middlewareResult.output
       );
 
-      if (rankerResult.success) {
+      if (crawlerResult.success) {
         const pipeResult = await this._pipeManager.processAll(
           middlewareResult.output,
-          rankerResult.output
+          crawlerResult.output
         );
 
         if (pipeResult.success) {
-          const interceptorResult = await this._interceptorManager.process(
+          const indexerResult = await this._indexerManager.process(
             middlewareResult.output,
             pipeResult.output
           );
 
-          if (interceptorResult.success) {
+          if (indexerResult.success) {
             return {
-              ...interceptorResult,
-              ran: ["middleware", "ranker", "pipe", "interceptor"] as Ran[],
+              ...indexerResult,
+              ran: ["middleware", "crawler", "pipe", "indexer"] as Ran[],
             };
           } else {
-            if (
-              interceptorResult.success == false &&
-              interceptorResult.message
-            ) {
-              return { ...interceptorResult, ran: [] as Ran[] };
+            if (indexerResult.success == false && indexerResult.message) {
+              return { ...indexerResult, ran: [] as Ran[] };
             } else {
-              if (interceptorResult.error) {
+              if (indexerResult.error) {
                 return {
                   success: false,
                   message: "middleware error",
-                  error: interceptorResult.error,
-                  ran: ["middleware", "ranker", "pipe"] as Ran[],
+                  error: indexerResult.error,
+                  ran: ["middleware", "crawler", "pipe"] as Ran[],
                 };
               } else {
                 return {
                   success: false,
                   message: "middleware error",
-                  ran: ["middleware", "ranker", "pipe"] as Ran[],
+                  ran: ["middleware", "crawler", "pipe"] as Ran[],
                 };
               }
             }
@@ -298,26 +298,26 @@ export class SearcherManager {
                 success: false,
                 message: "middleware error",
                 error: pipeResult.error,
-                ran: ["middleware", "ranker"] as Ran[],
+                ran: ["middleware", "crawler"] as Ran[],
               };
             } else {
               return {
                 success: false,
                 message: "middleware error",
-                ran: ["middleware", "ranker"] as Ran[],
+                ran: ["middleware", "crawler"] as Ran[],
               };
             }
           }
         }
       } else {
-        if (rankerResult.success == false && rankerResult.message) {
-          return { ...rankerResult, ran: [] as Ran[] };
+        if (crawlerResult.success == false && crawlerResult.message) {
+          return { ...crawlerResult, ran: [] as Ran[] };
         } else {
-          if (rankerResult.error) {
+          if (crawlerResult.error) {
             return {
               success: false,
               message: "middleware error",
-              error: rankerResult.error,
+              error: crawlerResult.error,
               ran: ["middleware"] as Ran[],
             };
           } else {
